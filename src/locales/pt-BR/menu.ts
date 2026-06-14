@@ -51,4 +51,9 @@ export default {
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
+  'menu.exercise': 'Bài Tập',
+  'menu.class': 'Lớp Học',
+  'menu.exam': 'Đề Thi',
+  'menu.exam.new': 'Tạo Đề Thi',
+  'menu.exam.edit': 'Sửa Đề Thi',
 };

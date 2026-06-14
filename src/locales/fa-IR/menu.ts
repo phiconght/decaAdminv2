@@ -49,4 +49,9 @@ export default {
   'menu.editor.flow': 'ویرایشگر جریان',
   'menu.editor.mind': 'ویرایشگر ذهن',
   'menu.editor.koni': 'ویرایشگر Koni',
+  'menu.exercise': 'Bài Tập',
+  'menu.class': 'Lớp Học',
+  'menu.exam': 'Đề Thi',
+  'menu.exam.new': 'Tạo Đề Thi',
+  'menu.exam.edit': 'Sửa Đề Thi',
 };

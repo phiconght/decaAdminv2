@@ -281,6 +281,36 @@ export default [
     ],
   },
   {
+    path: '/exercise',
+    name: 'exercise',
+    icon: 'read',
+    component: './exercise',
+  },
+  {
+    path: '/class',
+    name: 'class',
+    icon: 'team',
+    component: './class',
+  },
+  {
+    path: '/exam',
+    name: 'exam',
+    icon: 'fileText',
+    component: './exam',
+  },
+  {
+    path: '/exam/new',
+    name: 'exam.new',
+    component: './exam/Editor',
+    hideInMenu: true,
+  },
+  {
+    path: '/exam/:id/edit',
+    name: 'exam.edit',
+    component: './exam/Editor',
+    hideInMenu: true,
+  },
+  {
     path: '/chatbot',
     name: 'chatbot',
     icon: 'robot',

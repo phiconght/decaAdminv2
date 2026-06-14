@@ -19,7 +19,7 @@ import {
   OfflineBanner,
   VersionDropdown,
 } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
+import { getMe, toCurrentUser } from '@/services/auth';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
@@ -38,10 +38,8 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
-        skipErrorHandler: true,
-      });
-      return msg.data;
+      const user = await getMe();
+      return toCurrentUser(user);
     } catch (_error) {
       const { pathname, search, hash } = history.location;
       history.replace(

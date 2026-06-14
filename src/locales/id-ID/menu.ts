@@ -50,4 +50,9 @@ export default {
   'menu.editor.flow': 'Penyusun Alur',
   'menu.editor.mind': 'Penyusun Mind',
   'menu.editor.koni': 'Penyusun Koni',
+  'menu.exercise': 'Bài Tập',
+  'menu.class': 'Lớp Học',
+  'menu.exam': 'Đề Thi',
+  'menu.exam.new': 'Tạo Đề Thi',
+  'menu.exam.edit': 'Sửa Đề Thi',
 };

@@ -49,4 +49,9 @@ export default {
   'menu.editor.flow': 'フローエディタ',
   'menu.editor.mind': 'マインドエディター',
   'menu.editor.koni': 'コニエディター',
+  'menu.exercise': 'Bài Tập',
+  'menu.class': 'Lớp Học',
+  'menu.exam': 'Đề Thi',
+  'menu.exam.new': 'Tạo Đề Thi',
+  'menu.exam.edit': 'Sửa Đề Thi',
 };

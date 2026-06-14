@@ -49,4 +49,9 @@ export default {
   'menu.editor.flow': '流程編輯器',
   'menu.editor.mind': '腦圖編輯器',
   'menu.editor.koni': '拓撲編輯器',
+  'menu.exercise': 'Bài Tập',
+  'menu.class': 'Lớp Học',
+  'menu.exam': 'Đề Thi',
+  'menu.exam.new': 'Tạo Đề Thi',
+  'menu.exam.edit': 'Sửa Đề Thi',
 };

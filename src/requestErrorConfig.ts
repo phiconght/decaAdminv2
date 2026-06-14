@@ -93,12 +93,14 @@ export const errorConfig: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: RequestOptions) => {
-      // 拦截请求配置，进行个性化处理。
-      // 示例：为请求附加 token（按需启用）
-      // const token = localStorage.getItem('token');
-      // if (token) {
-      //   config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
-      // }
+      // Gan JWT access token vao header cho moi request goi backend
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
       return config;
     },
   ],

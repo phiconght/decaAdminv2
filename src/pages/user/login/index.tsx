@@ -23,8 +23,8 @@ import { Alert, App, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { startTransition, useState } from 'react';
 import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { login, tokenStore } from '@/services/auth';
 import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(({ token }) => {
@@ -152,23 +152,23 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // 登录
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        const redirectUrl = getSafeRedirectUrl(urlParams.get('redirect'));
-        window.location.href = redirectUrl;
-        return;
-      }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
+      // Goi login cua backend Spring Boot, luu token
+      const result = await login({
+        username: values.username ?? '',
+        password: values.password ?? '',
+      });
+      tokenStore.set(result.accessToken, result.refreshToken);
+
+      const defaultLoginSuccessMessage = intl.formatMessage({
+        id: 'pages.login.success',
+        defaultMessage: '登录成功！',
+      });
+      message.success(defaultLoginSuccessMessage);
+      await fetchUserInfo();
+      const urlParams = new URL(window.location.href).searchParams;
+      const redirectUrl = getSafeRedirectUrl(urlParams.get('redirect'));
+      window.location.href = redirectUrl;
+      return;
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
@@ -176,6 +176,8 @@ const Login: React.FC = () => {
       });
       console.log(error);
       message.error(defaultLoginFailureMessage);
+      // Hien thi canh bao sai tai khoan/mat khau tren tab account
+      setUserLoginState({ status: 'error', type: 'account' });
     }
   };
   const { status, type: loginType } = userLoginState;
