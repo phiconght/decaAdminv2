@@ -7,7 +7,6 @@ import {
 } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
 import { Button, message } from 'antd';
-import dayjs from 'dayjs';
 import React from 'react';
 import type { ClassDetail } from '../data';
 import { createClass } from '../service';
@@ -20,16 +19,7 @@ const CreateClassForm: React.FC<CreateClassFormProps> = ({ onSuccess }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleFinish = async (values: ClassDetail) => {
-    const payload = {
-      ...values,
-      startDate: values.startDate
-        ? dayjs(values.startDate).format('YYYY-MM-DD')
-        : undefined,
-      endDate: values.endDate
-        ? dayjs(values.endDate).format('YYYY-MM-DD')
-        : undefined,
-    };
-    await createClass(payload);
+    await createClass(values);
     messageApi.success('Tạo lớp thành công');
     onSuccess?.();
     return true;
@@ -48,6 +38,7 @@ const CreateClassForm: React.FC<CreateClassFormProps> = ({ onSuccess }) => {
         }
         initialValues={{ status: 'ACTIVE' }}
         drawerProps={{ destroyOnHidden: true }}
+        dateFormatter={(value) => value.format('YYYY-MM-DD')}
         onFinish={handleFinish}
       >
         <ProFormText

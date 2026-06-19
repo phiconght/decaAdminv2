@@ -71,9 +71,10 @@ export const errorConfig: RequestConfig = {
           }
         }
       } else if (error.response) {
-        // Axios 的错误
-        // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        message.error(`Response status:${error.response.status}`);
+        // BE tra loi nghiep vu qua HTTP 4xx/5xx voi body { success, error: { code, message } }
+        const data: any = error.response.data;
+        const bizMessage: string | undefined = data?.error?.message;
+        message.error(bizMessage || `Response status:${error.response.status}`);
       } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
         message.error(
           getIntl().formatMessage({

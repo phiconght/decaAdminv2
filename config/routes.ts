@@ -311,6 +311,21 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/system',
+    name: 'system',
+    icon: 'setting',
+    access: 'canAdmin',
+    routes: [
+      { path: '/system', redirect: '/system/user' },
+      {
+        path: '/system/user',
+        name: 'system.user',
+        icon: 'team',
+        component: './system/user',
+      },
+    ],
+  },
+  {
     path: '/chatbot',
     name: 'chatbot',
     icon: 'robot',

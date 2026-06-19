@@ -1,4 +1,4 @@
-export default {
+﻿export default {
   'menu.welcome': '歡迎',
   'menu.more-blocks': '更多區塊',
   'menu.home': '首頁',
@@ -54,4 +54,6 @@ export default {
   'menu.exam': 'Đề Thi',
   'menu.exam.new': 'Tạo Đề Thi',
   'menu.exam.edit': 'Sửa Đề Thi',
+  'menu.system': 'Hệ Thống',
+  'menu.system.user': 'Người Dùng',
 };

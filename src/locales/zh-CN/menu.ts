@@ -55,4 +55,6 @@ export default {
   'menu.exam': 'Đề Thi',
   'menu.exam.new': 'Tạo Đề Thi',
   'menu.exam.edit': 'Sửa Đề Thi',
+  'menu.system': 'Hệ Thống',
+  'menu.system.user': 'Người Dùng',
 };
