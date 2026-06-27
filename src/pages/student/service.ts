@@ -2,6 +2,8 @@ import { request } from '@umijs/max';
 import type { ClassItem } from '@/pages/class/data';
 import type {
   CreateUserPayload,
+  GuardianRelationship,
+  RelativeItem,
   StudentExamItem,
   StudentExamStatus,
   UserDetail,
@@ -70,5 +72,43 @@ export async function updateStudentExamStatus(
   return request(`/api/v1/exams/${examId}/students/${userId}/status`, {
     method: 'PATCH',
     data: { status },
+  });
+}
+
+// Phụ huynh của 1 học viên.
+export async function queryStudentParents(
+  studentId: number,
+): Promise<{ success: boolean; data: RelativeItem[] }> {
+  return request(`/api/v1/admin/students/${studentId}/parents`);
+}
+
+// Gán / cập nhật liên kết học viên ↔ phụ huynh (BE upsert theo cặp).
+export async function linkStudentParent(
+  studentId: number,
+  parentId: number,
+  relationship?: GuardianRelationship | null,
+): Promise<{ success: boolean }> {
+  return request(`/api/v1/admin/students/${studentId}/parents`, {
+    method: 'POST',
+    data: { parentId, relationship: relationship ?? null },
+  });
+}
+
+// Gỡ liên kết học viên ↔ phụ huynh.
+export async function unlinkStudentParent(
+  studentId: number,
+  parentId: number,
+): Promise<{ success: boolean }> {
+  return request(`/api/v1/admin/students/${studentId}/parents/${parentId}`, {
+    method: 'DELETE',
+  });
+}
+
+// Picker phụ huynh (lọc role PARENT phía BE theo keyword).
+export async function queryParentOptions(
+  keyword?: string,
+): Promise<{ success: boolean; data: RelativeItem[] }> {
+  return request('/api/v1/admin/parents/options', {
+    params: keyword ? { keyword } : {},
   });
 }

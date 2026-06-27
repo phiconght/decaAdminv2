@@ -10,6 +10,7 @@ import {
 import { request } from '@umijs/max';
 import { Button, Dropdown, message, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import TimetableDrawer from '@/pages/timetable/components/TimetableDrawer';
 import TeacherClassesDrawer from './components/TeacherClassesDrawer';
 import TeacherForm from './components/TeacherForm';
 import ViewTeacherDrawer from './components/ViewTeacherDrawer';
@@ -34,6 +35,10 @@ const TeacherPage: React.FC = () => {
   const searchParamsRef = useRef<UserQuery>({});
 
   const [viewId, setViewId] = useState<number | null>(null);
+  const [scheduleFor, setScheduleFor] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleStatusChange = async (record: UserItem, status: UserStatus) => {
@@ -93,8 +98,17 @@ const TeacherPage: React.FC = () => {
       title: 'Lịch dạy',
       key: 'schedule',
       width: 90,
-      render: () => (
-        <Button type="link" size="small" onClick={() => comingSoon('Lịch dạy')}>
+      render: (_, record) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() =>
+            setScheduleFor({
+              id: record.id,
+              name: record.fullName || record.username,
+            })
+          }
+        >
           Xem
         </Button>
       ),
@@ -197,6 +211,14 @@ const TeacherPage: React.FC = () => {
   return (
     <PageContainer>
       {contextHolder}
+
+      <TimetableDrawer
+        open={scheduleFor !== null}
+        view="TEACHER"
+        refId={scheduleFor?.id}
+        title={scheduleFor ? `Lịch dạy — ${scheduleFor.name}` : 'Lịch dạy'}
+        onClose={() => setScheduleFor(null)}
+      />
 
       <ViewTeacherDrawer
         id={viewId}

@@ -53,6 +53,19 @@ export type StudentExamItem = {
   canTake: boolean;
 };
 
+export type GuardianRelationship = 'FATHER' | 'MOTHER' | 'GUARDIAN' | 'OTHER';
+
+// Khớp RelativeItem.java (BE)
+export type RelativeItem = {
+  id: number;
+  username: string;
+  fullName: string;
+  email?: string | null;
+  phone?: string | null;
+  status?: string | null;
+  relationship?: GuardianRelationship | null;
+};
+
 export type UserQuery = {
   username?: string;
   fullName?: string;

@@ -12,6 +12,7 @@ import { request } from '@umijs/max';
 import { message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import ClassForm from './components/ClassForm';
+import ClassScheduleDrawer from './components/ClassScheduleDrawer';
 import ManageStudentsDrawer from './components/ManageStudentsDrawer';
 import ViewClassDrawer from './components/ViewClassDrawer';
 import ViewClassExamsDrawer from './components/ViewClassExamsDrawer';
@@ -35,6 +36,10 @@ const ClassPage: React.FC = () => {
     className: string;
   } | null>(null);
   const [viewExams, setViewExams] = useState<{
+    classId: number;
+    className: string;
+  } | null>(null);
+  const [scheduleFor, setScheduleFor] = useState<{
     classId: number;
     className: string;
   } | null>(null);
@@ -93,8 +98,15 @@ const ClassPage: React.FC = () => {
       title: 'Lịch học',
       key: 'schedule',
       width: 90,
-      render: () => (
-        <a onClick={() => message.info('Lịch học: tính năng đang phát triển')}>
+      render: (_, record) => (
+        <a
+          onClick={() =>
+            setScheduleFor({
+              classId: Number(record.id),
+              className: record.name,
+            })
+          }
+        >
           Xem
         </a>
       ),
@@ -199,6 +211,12 @@ const ClassPage: React.FC = () => {
         className={viewExams?.className}
         open={viewExams !== null}
         onClose={() => setViewExams(null)}
+      />
+      <ClassScheduleDrawer
+        classId={scheduleFor?.classId ?? null}
+        className={scheduleFor?.className}
+        open={scheduleFor !== null}
+        onClose={() => setScheduleFor(null)}
       />
       <ClassForm
         mode="edit"

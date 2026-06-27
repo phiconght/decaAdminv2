@@ -7,13 +7,13 @@ import {
   ProTable,
   QueryFilter,
 } from '@ant-design/pro-components';
-import { Dropdown, message, Popconfirm, Tag } from 'antd';
+import { Button, message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import TimetableDrawer from '@/pages/timetable/components/TimetableDrawer';
 import ParentForm from './components/ParentForm';
-import ResetPasswordModal from './components/ResetPasswordModal';
-import ViewParentDrawer from './components/ViewParentDrawer';
-import type { UserDetail, UserItem, UserQuery, UserStatus } from './data';
-import { deleteParent, queryParents, updateParentStatus } from './service';
+import ParentInfoDrawer from './components/ParentInfoDrawer';
+import type { UserItem, UserQuery } from './data';
+import { queryParents } from './service';
 
 const STATUS_OPTIONS = [
   { label: 'ACTIVE', value: 'ACTIVE' },
@@ -31,43 +31,28 @@ const STATUS_COLOR: Record<string, string> = {
 const ParentPage: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const searchParamsRef = useRef<UserQuery>({});
-
-  const [viewId, setViewId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<UserDetail | null>(null);
-  const [editOpen, setEditOpen] = useState(false);
-  const [resetUser, setResetUser] = useState<{
-    id: number;
-    username: string;
-  } | null>(null);
-
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleStatusChange = async (record: UserItem, status: UserStatus) => {
-    try {
-      await updateParentStatus(record.id, status);
-      actionRef.current?.reload();
-    } catch {
-      // Lỗi đã hiện ở global error handler
-    }
-  };
+  const [infoFor, setInfoFor] = useState<{ id: number; name: string } | null>(
+    null,
+  );
+  const [scheduleFor, setScheduleFor] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
-  const handleSoftDelete = async (record: UserItem) => {
-    try {
-      await deleteParent(record.id);
-      messageApi.success('Đã vô hiệu hóa phụ huynh');
-      actionRef.current?.reload();
-    } catch {
-      // Lỗi đã hiện ở global error handler
-    }
-  };
+  // Tính năng chưa có backend → báo đang phát triển.
+  const comingSoon = (label: string) =>
+    messageApi.info(`${label}: tính năng đang phát triển`);
+
+  const openInfo = (record: UserItem) =>
+    setInfoFor({ id: record.id, name: record.fullName || record.username });
 
   const columns: ProColumns<UserItem>[] = [
     {
       title: 'Tên đăng nhập',
       dataIndex: 'username',
-      render: (dom, record) => (
-        <a onClick={() => setViewId(record.id)}>{dom}</a>
-      ),
+      render: (dom, record) => <a onClick={() => openInfo(record)}>{dom}</a>,
     },
     { title: 'Họ tên', dataIndex: 'fullName' },
     { title: 'Email', dataIndex: 'email', render: (val) => val || '—' },
@@ -82,103 +67,57 @@ const ParentPage: React.FC = () => {
       ),
     },
     {
-      title: 'Ngày tạo',
-      dataIndex: 'createdAt',
-      valueType: 'date',
-      sorter: true,
+      title: 'Báo cáo',
+      key: 'report',
+      width: 90,
+      render: () => (
+        <Button type="link" size="small" onClick={() => comingSoon('Báo cáo')}>
+          Xem
+        </Button>
+      ),
     },
     {
-      title: 'Thao tác',
-      valueType: 'option',
-      key: 'option',
-      width: 200,
-      render: (_, record) => [
-        <a
-          key="edit"
-          onClick={async () => {
-            const { getParentDetail } = await import('./service');
-            const res = await getParentDetail(record.id);
-            if (res.success) {
-              setEditData(res.data);
-              setEditOpen(true);
-            }
-          }}
-        >
-          Sửa
-        </a>,
-        <a
-          key="reset"
+      title: 'Lịch học',
+      key: 'schedule',
+      width: 90,
+      render: (_, record) => (
+        <Button
+          type="link"
+          size="small"
           onClick={() =>
-            setResetUser({ id: record.id, username: record.username })
+            setScheduleFor({
+              id: record.id,
+              name: record.fullName || record.username,
+            })
           }
         >
-          Đặt lại MK
-        </a>,
-        <Dropdown
-          key="more"
-          menu={{
-            items: [
-              record.status !== 'ACTIVE' && {
-                key: 'activate',
-                label: (
-                  <Popconfirm
-                    title="Kích hoạt tài khoản này?"
-                    okText="Kích hoạt"
-                    cancelText="Hủy"
-                    onConfirm={() => handleStatusChange(record, 'ACTIVE')}
-                  >
-                    <span>Kích hoạt</span>
-                  </Popconfirm>
-                ),
-              },
-              record.status !== 'DISABLED' && {
-                key: 'disable',
-                label: (
-                  <Popconfirm
-                    title="Vô hiệu hóa tài khoản này?"
-                    okText="Vô hiệu hóa"
-                    cancelText="Hủy"
-                    onConfirm={() => handleStatusChange(record, 'DISABLED')}
-                  >
-                    <span style={{ color: '#fa8c16' }}>Vô hiệu hóa</span>
-                  </Popconfirm>
-                ),
-              },
-              record.status !== 'LOCKED' && {
-                key: 'lock',
-                label: (
-                  <Popconfirm
-                    title="Khóa tài khoản này?"
-                    okText="Khóa"
-                    cancelText="Hủy"
-                    onConfirm={() => handleStatusChange(record, 'LOCKED')}
-                  >
-                    <span style={{ color: '#ff4d4f' }}>Khóa</span>
-                  </Popconfirm>
-                ),
-              },
-              { type: 'divider' },
-              {
-                key: 'delete',
-                label: (
-                  <Popconfirm
-                    title="Vô hiệu hóa và xóa phụ huynh này?"
-                    description="Tài khoản sẽ bị vô hiệu hóa, dữ liệu được giữ lại."
-                    okText="Xác nhận"
-                    cancelText="Hủy"
-                    okButtonProps={{ danger: true }}
-                    onConfirm={() => handleSoftDelete(record)}
-                  >
-                    <span style={{ color: '#ff4d4f' }}>Xóa (vô hiệu hóa)</span>
-                  </Popconfirm>
-                ),
-              },
-            ].filter(Boolean) as any,
-          }}
+          Xem
+        </Button>
+      ),
+    },
+    {
+      title: 'Thanh toán',
+      key: 'payment',
+      width: 100,
+      render: () => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => comingSoon('Thanh toán')}
         >
-          <a>⋯</a>
-        </Dropdown>,
-      ],
+          Xem
+        </Button>
+      ),
+    },
+    {
+      title: 'Thông tin',
+      key: 'info',
+      width: 90,
+      render: (_, record) => (
+        <Button type="link" size="small" onClick={() => openInfo(record)}>
+          Xem
+        </Button>
+      ),
     },
   ];
 
@@ -186,32 +125,22 @@ const ParentPage: React.FC = () => {
     <PageContainer>
       {contextHolder}
 
-      <ViewParentDrawer
-        id={viewId}
-        open={viewId !== null}
-        onClose={() => setViewId(null)}
+      <ParentInfoDrawer
+        open={infoFor !== null}
+        parentId={infoFor?.id}
+        parentName={infoFor?.name}
+        onClose={() => setInfoFor(null)}
+        onChanged={() => actionRef.current?.reload()}
       />
 
-      <ParentForm
-        mode="edit"
-        editData={editData}
-        open={editOpen}
-        onOpenChange={(o) => {
-          setEditOpen(o);
-          if (!o) setEditData(null);
-        }}
-        onSuccess={() => {
-          setEditOpen(false);
-          setEditData(null);
-          actionRef.current?.reload();
-        }}
-      />
-
-      <ResetPasswordModal
-        userId={resetUser?.id ?? null}
-        username={resetUser?.username}
-        open={resetUser !== null}
-        onClose={() => setResetUser(null)}
+      <TimetableDrawer
+        open={scheduleFor !== null}
+        view="PARENT"
+        refId={scheduleFor?.id}
+        title={
+          scheduleFor ? `Lịch học các con — ${scheduleFor.name}` : 'Lịch học'
+        }
+        onClose={() => setScheduleFor(null)}
       />
 
       <ProCard title="Tìm kiếm phụ huynh" style={{ marginBottom: 16 }}>

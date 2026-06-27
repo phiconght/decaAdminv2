@@ -59,6 +59,9 @@
   'menu.exam': 'Đề Thi',
   'menu.exam.new': 'Tạo Đề Thi',
   'menu.exam.edit': 'Sửa Đề Thi',
+  'menu.timetable': 'Thời Khóa Biểu',
+  'menu.leave': 'Nghỉ Phép',
+  'menu.room': 'Phòng Học',
   'menu.system': 'Hệ Thống',
   'menu.system.user': 'Tài khoản',
 };

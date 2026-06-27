@@ -337,6 +337,26 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/timetable',
+    name: 'timetable',
+    icon: 'calendar',
+    component: './timetable',
+  },
+  {
+    path: '/leave',
+    name: 'leave',
+    icon: 'carryOut',
+    access: 'canReadLeave',
+    component: './leave',
+  },
+  {
+    path: '/room',
+    name: 'room',
+    icon: 'bank',
+    access: 'canReadRoom',
+    component: './room',
+  },
+  {
     path: '/system',
     name: 'system',
     icon: 'setting',

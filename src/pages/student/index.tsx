@@ -10,8 +10,10 @@ import {
 import { request } from '@umijs/max';
 import { Button, Dropdown, message, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import TimetableDrawer from '@/pages/timetable/components/TimetableDrawer';
 import StudentClassesDrawer from './components/StudentClassesDrawer';
 import StudentForm from './components/StudentForm';
+import StudentParentsDrawer from './components/StudentParentsDrawer';
 import ViewStudentDrawer from './components/ViewStudentDrawer';
 import type { UserItem, UserQuery, UserStatus } from './data';
 import { deleteStudent, queryStudents, updateStudentStatus } from './service';
@@ -34,6 +36,10 @@ const StudentPage: React.FC = () => {
   const searchParamsRef = useRef<UserQuery>({});
 
   const [viewId, setViewId] = useState<number | null>(null);
+  const [scheduleFor, setScheduleFor] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleStatusChange = async (record: UserItem, status: UserStatus) => {
@@ -93,8 +99,17 @@ const StudentPage: React.FC = () => {
       title: 'Lịch học',
       key: 'schedule',
       width: 90,
-      render: () => (
-        <Button type="link" size="small" onClick={() => comingSoon('Lịch học')}>
+      render: (_, record) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() =>
+            setScheduleFor({
+              id: record.id,
+              name: record.fullName || record.username,
+            })
+          }
+        >
           Xem
         </Button>
       ),
@@ -113,10 +128,15 @@ const StudentPage: React.FC = () => {
       title: 'Tác vụ khác',
       valueType: 'option',
       key: 'option',
-      width: 160,
+      width: 240,
       render: (_, record) => [
         <StudentClassesDrawer
           key="classes"
+          studentId={record.id}
+          studentName={record.fullName || record.username}
+        />,
+        <StudentParentsDrawer
+          key="parents"
           studentId={record.id}
           studentName={record.fullName || record.username}
         />,
@@ -191,6 +211,14 @@ const StudentPage: React.FC = () => {
   return (
     <PageContainer>
       {contextHolder}
+
+      <TimetableDrawer
+        open={scheduleFor !== null}
+        view="STUDENT"
+        refId={scheduleFor?.id}
+        title={scheduleFor ? `Lịch học — ${scheduleFor.name}` : 'Lịch học'}
+        onClose={() => setScheduleFor(null)}
+      />
 
       <ViewStudentDrawer
         id={viewId}
