@@ -28,20 +28,30 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
     getClassDetail(id)
       .then((res) => {
         if (res.success) setDetail(res.data);
-        else messageApi.error('Không tải được lớp học');
+        else messageApi.error('Không tải được khóa học');
       })
-      .catch(() => messageApi.error('Không tải được lớp học'))
+      .catch(() => messageApi.error('Không tải được khóa học'))
       .finally(() => setLoading(false));
   }, [open, id]);
 
   const descItems: DescriptionsProps['items'] = detail
     ? [
-        { key: 'code', label: 'Mã lớp', children: detail.code },
-        { key: 'name', label: 'Tên lớp', children: detail.name },
+        { key: 'code', label: 'Mã khóa', children: detail.code },
+        { key: 'name', label: 'Tên khóa', children: detail.name },
         {
           key: 'subject',
           label: 'Môn học',
           children: `${detail.subjectName} — ${detail.gradeLevel}`,
+        },
+        {
+          key: 'teachers',
+          label: 'Giáo viên',
+          span: 2,
+          children: detail.teachers?.length
+            ? detail.teachers
+                .map((t) => `${t.fullName} (${t.username})`)
+                .join(', ')
+            : '—',
         },
         {
           key: 'startDate',
@@ -62,7 +72,7 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
           label: 'Trạng thái',
           children: (
             <Tag color={detail.status === 'ACTIVE' ? 'success' : 'default'}>
-              {detail.status}
+              {detail.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm dừng'}
             </Tag>
           ),
         },
@@ -81,7 +91,7 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
     <>
       {contextHolder}
       <Drawer
-        title="Xem lớp học"
+        title="Xem khóa học"
         width="520px"
         open={open}
         onClose={onClose}

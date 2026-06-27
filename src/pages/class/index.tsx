@@ -11,7 +11,7 @@ import {
 import { request } from '@umijs/max';
 import { message, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
-import CreateClassForm from './components/CreateClassForm';
+import ClassForm from './components/ClassForm';
 import ManageStudentsDrawer from './components/ManageStudentsDrawer';
 import ViewClassDrawer from './components/ViewClassDrawer';
 import ViewClassExamsDrawer from './components/ViewClassExamsDrawer';
@@ -19,8 +19,8 @@ import type { ClassItem, ClassQuery } from './data';
 import { queryClasses, updateClassStatus } from './service';
 
 const STATUS_OPTIONS = [
-  { label: 'ACTIVE', value: 'ACTIVE' },
-  { label: 'INACTIVE', value: 'INACTIVE' },
+  { label: 'Hoạt động', value: 'ACTIVE' },
+  { label: 'Tạm dừng', value: 'INACTIVE' },
 ];
 
 const ClassPage: React.FC = () => {
@@ -38,6 +38,8 @@ const ClassPage: React.FC = () => {
     classId: number;
     className: string;
   } | null>(null);
+  const [editData, setEditData] = useState<ClassItem | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   const handleToggleStatus = async (record: ClassItem) => {
     if (togglingIds.has(record.id)) return;
@@ -59,14 +61,14 @@ const ClassPage: React.FC = () => {
 
   const columns: ProColumns<ClassItem>[] = [
     {
-      title: 'Mã lớp',
+      title: 'Mã khóa',
       dataIndex: 'code',
       render: (dom, record) => (
         <a onClick={() => setViewId(Number(record.id))}>{dom}</a>
       ),
     },
     {
-      title: 'Tên lớp',
+      title: 'Tên khóa',
       dataIndex: 'name',
     },
     {
@@ -76,6 +78,26 @@ const ClassPage: React.FC = () => {
     {
       title: 'Khối',
       dataIndex: 'gradeLevel',
+    },
+    {
+      title: 'Giáo viên',
+      dataIndex: 'teachers',
+      render: (_, record) =>
+        record.teachers?.length
+          ? record.teachers
+              .map((t) => `${t.fullName} (${t.username})`)
+              .join(', ')
+          : '—',
+    },
+    {
+      title: 'Lịch học',
+      key: 'schedule',
+      width: 90,
+      render: () => (
+        <a onClick={() => message.info('Lịch học: tính năng đang phát triển')}>
+          Xem
+        </a>
+      ),
     },
     {
       title: 'Ngày bắt đầu',
@@ -96,7 +118,11 @@ const ClassPage: React.FC = () => {
           style={{ cursor: 'pointer' }}
           onClick={() => handleToggleStatus(record)}
         >
-          {togglingIds.has(record.id) ? '...' : record.status}
+          {togglingIds.has(record.id)
+            ? '...'
+            : record.status === 'ACTIVE'
+              ? 'Hoạt động'
+              : 'Tạm dừng'}
         </Tag>
       ),
     },
@@ -142,6 +168,15 @@ const ClassPage: React.FC = () => {
         <a key="view" onClick={() => setViewId(Number(record.id))}>
           Xem
         </a>,
+        <a
+          key="edit"
+          onClick={() => {
+            setEditData(record);
+            setEditOpen(true);
+          }}
+        >
+          Sửa
+        </a>,
       ],
     },
   ];
@@ -165,7 +200,21 @@ const ClassPage: React.FC = () => {
         open={viewExams !== null}
         onClose={() => setViewExams(null)}
       />
-      <ProCard title="Tìm kiếm lớp học" style={{ marginBottom: 16 }}>
+      <ClassForm
+        mode="edit"
+        editData={editData}
+        open={editOpen}
+        onOpenChange={(o) => {
+          setEditOpen(o);
+          if (!o) setEditData(null);
+        }}
+        onSuccess={() => {
+          setEditOpen(false);
+          setEditData(null);
+          actionRef.current?.reload();
+        }}
+      />
+      <ProCard title="Tìm kiếm khóa học" style={{ marginBottom: 16 }}>
         <QueryFilter<ClassQuery>
           initialValues={{ status: 'ACTIVE' }}
           defaultCollapsed={false}
@@ -183,8 +232,12 @@ const ClassPage: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <ProFormText name="code" label="Mã lớp" placeholder="Nhập mã lớp" />
-          <ProFormText name="name" label="Tên lớp" placeholder="Nhập tên lớp" />
+          <ProFormText name="code" label="Mã khóa" placeholder="Nhập mã khóa" />
+          <ProFormText
+            name="name"
+            label="Tên khóa"
+            placeholder="Nhập tên khóa"
+          />
           <ProFormSelect
             name="subjectId"
             label="Môn học"
@@ -231,14 +284,15 @@ const ClassPage: React.FC = () => {
       </ProCard>
 
       <ProTable<ClassItem, ClassQuery>
-        headerTitle="Danh sách lớp học"
+        headerTitle="Danh sách khóa học"
         actionRef={actionRef}
         rowKey="id"
         search={false}
         options={false}
         toolBarRender={() => [
-          <CreateClassForm
+          <ClassForm
             key="create"
+            mode="create"
             onSuccess={() => actionRef.current?.reload()}
           />,
         ]}

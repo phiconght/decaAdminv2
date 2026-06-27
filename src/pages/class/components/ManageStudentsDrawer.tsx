@@ -43,7 +43,7 @@ const ManageStudentsDrawer: React.FC<Props> = ({
     setRemovingId(userId);
     try {
       await removeClassStudent(classId, userId);
-      message.success('Đã xóa học sinh khỏi lớp');
+      message.success('Đã xóa học sinh khỏi khóa');
       fetchStudents();
     } catch {
       message.error('Xóa thất bại');
@@ -85,7 +85,7 @@ const ManageStudentsDrawer: React.FC<Props> = ({
               width: 100,
               render: (_, record) => (
                 <Popconfirm
-                  title="Xóa học sinh khỏi lớp?"
+                  title="Xóa học sinh khỏi khóa?"
                   okText="Xóa"
                   cancelText="Hủy"
                   onConfirm={() => handleRemove(record.id)}

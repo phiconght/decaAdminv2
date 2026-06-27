@@ -7,19 +7,37 @@ import {
   ProTable,
   QueryFilter,
 } from '@ant-design/pro-components';
-import { history, request } from '@umijs/max';
+import { request } from '@umijs/max';
 import { message, Popconfirm, Tag } from 'antd';
+import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
+import ExamClassesDrawer from './components/ExamClassesDrawer';
+import ExamEditorDrawer from './components/ExamEditorDrawer';
 import type { ExamItem, ExamQuery } from './data';
-import { deleteExam, queryExams, updateExamStatus } from './service';
+import { deleteExam, queryExams } from './service';
+
+// Trạng thái phát hành cấp đề, suy từ status + thời gian (khớp bộ trạng thái đề thi).
+const examStatus = (r: ExamItem): { label: string; color: string } => {
+  if (r.status === 'INACTIVE') {
+    return { label: 'Chưa phát hành', color: 'default' };
+  }
+  const now = dayjs();
+  if (!r.publishAt || now.isBefore(dayjs(r.publishAt))) {
+    return { label: 'Chưa phát hành', color: 'default' };
+  }
+  if (r.endAt && now.isAfter(dayjs(r.endAt))) {
+    return { label: 'Quá hạn', color: 'error' };
+  }
+  return { label: 'Đã phát hành', color: 'processing' };
+};
 
 const TYPE_OPTIONS = [
-  { label: 'Theo lớp', value: 'BY_CLASS' },
+  { label: 'Theo khóa', value: 'BY_CLASS' },
   { label: 'Bổ sung', value: 'SUPPLEMENTARY' },
 ];
 const STATUS_OPTIONS = [
-  { label: 'ACTIVE', value: 'ACTIVE' },
-  { label: 'INACTIVE', value: 'INACTIVE' },
+  { label: 'Đã phát hành', value: 'ACTIVE' },
+  { label: 'Chưa phát hành', value: 'INACTIVE' },
 ];
 
 const ExamPage: React.FC = () => {
@@ -27,25 +45,14 @@ const ExamPage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<ExamQuery>({
     status: 'ACTIVE',
   });
-  const [togglingIds, setTogglingIds] = useState<Set<number>>(new Set());
-
-  const handleToggleStatus = async (record: ExamItem) => {
-    if (togglingIds.has(record.id)) return;
-    setTogglingIds((prev) => new Set(prev).add(record.id));
-    try {
-      const newStatus = record.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-      await updateExamStatus(record.id, newStatus);
-      actionRef.current?.reload();
-    } catch {
-      message.error('Không thể thay đổi trạng thái');
-    } finally {
-      setTogglingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(record.id);
-        return next;
-      });
-    }
-  };
+  const [classesFor, setClassesFor] = useState<{
+    examId: number;
+    examName: string;
+  } | null>(null);
+  // editor: undefined = đóng; null = tạo mới; number = sửa id
+  const [editorId, setEditorId] = useState<number | null | undefined>(
+    undefined,
+  );
 
   const handleDelete = async (id: number) => {
     try {
@@ -62,7 +69,7 @@ const ExamPage: React.FC = () => {
       title: 'Mã đề',
       dataIndex: 'code',
       render: (dom, record) => (
-        <a onClick={() => history.push(`/exam/${record.id}/edit`)}>{dom}</a>
+        <a onClick={() => setEditorId(record.id)}>{dom}</a>
       ),
     },
     { title: 'Tên đề', dataIndex: 'name', ellipsis: true },
@@ -71,11 +78,16 @@ const ExamPage: React.FC = () => {
       render: (_, r) => `${r.subjectName} — ${r.gradeLevel}`,
     },
     {
+      title: 'Chuyên đề',
+      dataIndex: 'topicName',
+      render: (val) => val || '—',
+    },
+    {
       title: 'Loại',
       dataIndex: 'type',
       render: (_, r) => (
         <Tag color={r.type === 'BY_CLASS' ? 'blue' : 'purple'}>
-          {r.type === 'BY_CLASS' ? 'Theo lớp' : 'Bổ sung'}
+          {r.type === 'BY_CLASS' ? 'Theo khóa' : 'Bổ sung'}
         </Tag>
       ),
     },
@@ -85,14 +97,37 @@ const ExamPage: React.FC = () => {
       width: 110,
     },
     {
+      title: 'Bắt đầu',
+      dataIndex: 'publishAt',
+      width: 140,
+      render: (_, r) =>
+        r.publishAt ? dayjs(r.publishAt).format('DD/MM/YYYY HH:mm') : '—',
+    },
+    {
+      title: 'Kết thúc',
+      dataIndex: 'endAt',
+      width: 140,
+      render: (_, r) =>
+        r.endAt ? dayjs(r.endAt).format('DD/MM/YYYY HH:mm') : '—',
+    },
+    {
       title: 'Số câu',
       dataIndex: 'exerciseCount',
       width: 80,
     },
     {
-      title: 'Số lớp',
+      title: 'Số khóa',
       dataIndex: 'classCount',
-      width: 80,
+      width: 90,
+      render: (count, record) => (
+        <a
+          onClick={() =>
+            setClassesFor({ examId: record.id, examName: record.name })
+          }
+        >
+          {count ?? 0} khóa
+        </a>
+      ),
     },
     { title: 'Người tạo', dataIndex: 'createdBy' },
     {
@@ -104,21 +139,17 @@ const ExamPage: React.FC = () => {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (_, record) => (
-        <Tag
-          color={record.status === 'ACTIVE' ? 'success' : 'default'}
-          style={{ cursor: 'pointer' }}
-          onClick={() => handleToggleStatus(record)}
-        >
-          {togglingIds.has(record.id) ? '...' : record.status}
-        </Tag>
-      ),
+      width: 140,
+      render: (_, record) => {
+        const s = examStatus(record);
+        return <Tag color={s.color}>{s.label}</Tag>;
+      },
     },
     {
       title: 'Thao tác',
       valueType: 'option',
       render: (_, record) => [
-        <a key="edit" onClick={() => history.push(`/exam/${record.id}/edit`)}>
+        <a key="edit" onClick={() => setEditorId(record.id)}>
           Sửa
         </a>,
         <Popconfirm
@@ -136,6 +167,21 @@ const ExamPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <ExamClassesDrawer
+        examId={classesFor?.examId ?? null}
+        examName={classesFor?.examName}
+        open={classesFor !== null}
+        onClose={() => setClassesFor(null)}
+      />
+      <ExamEditorDrawer
+        examId={editorId ?? null}
+        open={editorId !== undefined}
+        onClose={() => setEditorId(undefined)}
+        onSaved={() => {
+          setEditorId(undefined);
+          actionRef.current?.reload();
+        }}
+      />
       <ProCard title="Tìm kiếm đề thi" style={{ marginBottom: 16 }}>
         <QueryFilter<ExamQuery>
           initialValues={{ status: 'ACTIVE' }}
@@ -202,7 +248,7 @@ const ExamPage: React.FC = () => {
         search={false}
         options={false}
         toolBarRender={() => [
-          <a key="create" onClick={() => history.push('/exam/new')}>
+          <a key="create" onClick={() => setEditorId(null)}>
             <Tag
               color="blue"
               style={{ cursor: 'pointer', padding: '4px 12px' }}

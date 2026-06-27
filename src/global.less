@@ -69,6 +69,21 @@ canvas {
   display: block;
 }
 
+/* Template chung: mọi popup Drawer (trượt từ cạnh trái/phải) rộng 2/3 màn hình */
+.ant-drawer-right > .ant-drawer-content-wrapper,
+.ant-drawer-left > .ant-drawer-content-wrapper {
+  width: 66vw !important;
+  max-width: 100vw;
+}
+
+/* Màn hình nhỏ: cho full để không bị chật */
+@media (max-width: 768px) {
+  .ant-drawer-right > .ant-drawer-content-wrapper,
+  .ant-drawer-left > .ant-drawer-content-wrapper {
+    width: 100vw !important;
+  }
+}
+
 ul,
 ol {
   list-style: none;

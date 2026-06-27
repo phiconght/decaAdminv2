@@ -2,6 +2,8 @@ export type ExerciseStatus = 'ACTIVE' | 'INACTIVE';
 
 export type ExerciseType = 'MULTIPLE_CHOICE' | 'ESSAY' | 'TRUE_FALSE';
 
+export type ExerciseDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
+
 /** 1 đáp án trắc nghiệm */
 export type ChoiceOption = {
   text: string;
@@ -23,7 +25,10 @@ export type ExerciseItem = {
   subjectId: number;
   subjectName: string;
   gradeLevel: string;
+  topicId?: number;
+  topicName?: string;
   type: string;
+  difficulty: ExerciseDifficulty;
   createdBy: string;
   createdAt: string;
   status: ExerciseStatus;
@@ -33,6 +38,8 @@ export type ExerciseItem = {
 export type ExerciseDetail = {
   title?: string;
   subjectId: number;
+  topicId?: number;
+  difficulty: ExerciseDifficulty;
   status: ExerciseStatus;
   type: ExerciseType;
   questionText: string;
@@ -54,7 +61,10 @@ export type ExerciseDetailView = {
   subjectId: number;
   subjectName: string;
   gradeLevel: string;
+  topicId?: number;
+  topicName?: string;
   type: ExerciseType;
+  difficulty: ExerciseDifficulty;
   status: ExerciseStatus;
   questionText: string;
   questionImage?: string;
@@ -70,6 +80,8 @@ export type ExerciseDetailView = {
 export type ExerciseQuery = {
   code?: string;
   subjectId?: number;
+  topicId?: number;
+  difficulty?: ExerciseDifficulty;
   createdBy?: string;
   createdFrom?: string;
   createdTo?: string;

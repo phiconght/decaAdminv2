@@ -20,6 +20,18 @@ const STATUS_OPTIONS = [
   { label: 'INACTIVE', value: 'INACTIVE' },
 ];
 
+const DIFFICULTY_OPTIONS = [
+  { label: 'Dễ', value: 'EASY' },
+  { label: 'Trung bình', value: 'MEDIUM' },
+  { label: 'Khó', value: 'HARD' },
+];
+
+const DIFFICULTY_META: Record<string, { label: string; color: string }> = {
+  EASY: { label: 'Dễ', color: 'success' },
+  MEDIUM: { label: 'Trung bình', color: 'warning' },
+  HARD: { label: 'Khó', color: 'error' },
+};
+
 const ExercisePage: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const [searchParams, setSearchParams] = useState<ExerciseQuery>({
@@ -65,6 +77,19 @@ const ExercisePage: React.FC = () => {
     {
       title: 'Môn học',
       dataIndex: 'subjectName',
+    },
+    {
+      title: 'Chuyên đề',
+      dataIndex: 'topicName',
+      render: (val) => val || '—',
+    },
+    {
+      title: 'Độ khó',
+      dataIndex: 'difficulty',
+      render: (_, record) => {
+        const meta = DIFFICULTY_META[record.difficulty];
+        return meta ? <Tag color={meta.color}>{meta.label}</Tag> : '—';
+      },
     },
     {
       title: 'Người tạo',
@@ -156,6 +181,13 @@ const ExercisePage: React.FC = () => {
                   .toLowerCase()
                   .includes(input.toLowerCase()),
             }}
+          />
+          <ProFormSelect
+            name="difficulty"
+            label="Độ khó"
+            placeholder="Tất cả"
+            allowClear
+            options={DIFFICULTY_OPTIONS}
           />
           <ProFormText
             name="createdBy"

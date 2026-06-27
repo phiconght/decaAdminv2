@@ -8,6 +8,8 @@ export type ExamItem = {
   subjectId: number;
   subjectName: string;
   gradeLevel: string;
+  topicId?: number;
+  topicName?: string;
   type: ExamType;
   durationMinutes?: number;
   publishAt?: string;
@@ -49,6 +51,24 @@ export type StudentOption = {
   fullName: string;
 };
 
+export type ExamClassItem = {
+  classId: number;
+  code: string;
+  name: string;
+  subjectName: string;
+  gradeLevel: string;
+  teachers: { id: number; username: string; fullName: string }[];
+  studentCount: number;
+};
+
+export type ClassStudentInfo = {
+  id: number;
+  username: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+};
+
 export type ExamDetailView = {
   id: number;
   code: string;
@@ -56,6 +76,8 @@ export type ExamDetailView = {
   subjectId: number;
   subjectName: string;
   gradeLevel: string;
+  topicId?: number;
+  topicName?: string;
   type: ExamType;
   durationMinutes?: number;
   publishAt?: string;
@@ -83,6 +105,7 @@ export type ExamQuery = {
 export type ExamPayload = {
   name: string;
   subjectId: number;
+  topicId?: number;
   type: ExamType;
   durationMinutes?: number;
   publishAt?: string;

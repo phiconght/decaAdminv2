@@ -28,6 +28,13 @@ export async function createClass(
   return request('/api/v1/classes', { method: 'POST', data });
 }
 
+export async function updateClass(
+  id: number,
+  data: ClassDetail,
+): Promise<{ success: boolean; data: ClassItem }> {
+  return request(`/api/v1/classes/${id}`, { method: 'PUT', data });
+}
+
 export async function updateClassStatus(
   id: number,
   status: ClassStatus,

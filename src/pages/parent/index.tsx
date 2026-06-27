@@ -9,20 +9,11 @@ import {
 } from '@ant-design/pro-components';
 import { Dropdown, message, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import ParentForm from './components/ParentForm';
 import ResetPasswordModal from './components/ResetPasswordModal';
-import UserForm from './components/UserForm';
-import ViewUserDrawer from './components/ViewUserDrawer';
+import ViewParentDrawer from './components/ViewParentDrawer';
 import type { UserDetail, UserItem, UserQuery, UserStatus } from './data';
-import { deleteUser, queryUsers, updateUserStatus } from './service';
-
-const ROLE_OPTIONS = [
-  { label: 'ADMIN', value: 'ADMIN' },
-  { label: 'EMPLOYEE', value: 'EMPLOYEE' },
-  { label: 'TEACHER', value: 'TEACHER' },
-  { label: 'ASSISTANT', value: 'ASSISTANT' },
-  { label: 'STUDENT', value: 'STUDENT' },
-  { label: 'PARENT', value: 'PARENT' },
-];
+import { deleteParent, queryParents, updateParentStatus } from './service';
 
 const STATUS_OPTIONS = [
   { label: 'ACTIVE', value: 'ACTIVE' },
@@ -30,23 +21,14 @@ const STATUS_OPTIONS = [
   { label: 'LOCKED', value: 'LOCKED' },
 ];
 
-const ROLE_COLOR: Record<string, string> = {
-  ADMIN: 'red',
-  EMPLOYEE: 'blue',
-  TEACHER: 'green',
-  ASSISTANT: 'cyan',
-  STUDENT: 'purple',
-  PARENT: 'orange',
-};
-
 const STATUS_COLOR: Record<string, string> = {
   ACTIVE: 'success',
   DISABLED: 'default',
   LOCKED: 'error',
 };
 
-// Màn Hệ thống > Tài khoản: quản lý toàn bộ người dùng (mọi vai trò).
-const UserPage: React.FC = () => {
+// Module Phụ Huynh: người dùng có vai trò PARENT.
+const ParentPage: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const searchParamsRef = useRef<UserQuery>({});
 
@@ -62,7 +44,7 @@ const UserPage: React.FC = () => {
 
   const handleStatusChange = async (record: UserItem, status: UserStatus) => {
     try {
-      await updateUserStatus(record.id, status);
+      await updateParentStatus(record.id, status);
       actionRef.current?.reload();
     } catch {
       // Lỗi đã hiện ở global error handler
@@ -71,8 +53,8 @@ const UserPage: React.FC = () => {
 
   const handleSoftDelete = async (record: UserItem) => {
     try {
-      await deleteUser(record.id);
-      messageApi.success('Đã vô hiệu hóa người dùng');
+      await deleteParent(record.id);
+      messageApi.success('Đã vô hiệu hóa phụ huynh');
       actionRef.current?.reload();
     } catch {
       // Lỗi đã hiện ở global error handler
@@ -90,18 +72,6 @@ const UserPage: React.FC = () => {
     { title: 'Họ tên', dataIndex: 'fullName' },
     { title: 'Email', dataIndex: 'email', render: (val) => val || '—' },
     { title: 'Số điện thoại', dataIndex: 'phone', render: (val) => val || '—' },
-    {
-      title: 'Vai trò',
-      dataIndex: 'roles',
-      render: (_, record) =>
-        record.roles.length > 0
-          ? record.roles.map((r) => (
-              <Tag key={r} color={ROLE_COLOR[r] ?? 'blue'}>
-                {r}
-              </Tag>
-            ))
-          : '—',
-    },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
@@ -126,8 +96,8 @@ const UserPage: React.FC = () => {
         <a
           key="edit"
           onClick={async () => {
-            const { getUserDetail } = await import('./service');
-            const res = await getUserDetail(record.id);
+            const { getParentDetail } = await import('./service');
+            const res = await getParentDetail(record.id);
             if (res.success) {
               setEditData(res.data);
               setEditOpen(true);
@@ -192,7 +162,7 @@ const UserPage: React.FC = () => {
                 key: 'delete',
                 label: (
                   <Popconfirm
-                    title="Vô hiệu hóa và xóa người dùng này?"
+                    title="Vô hiệu hóa và xóa phụ huynh này?"
                     description="Tài khoản sẽ bị vô hiệu hóa, dữ liệu được giữ lại."
                     okText="Xác nhận"
                     cancelText="Hủy"
@@ -216,13 +186,13 @@ const UserPage: React.FC = () => {
     <PageContainer>
       {contextHolder}
 
-      <ViewUserDrawer
+      <ViewParentDrawer
         id={viewId}
         open={viewId !== null}
         onClose={() => setViewId(null)}
       />
 
-      <UserForm
+      <ParentForm
         mode="edit"
         editData={editData}
         open={editOpen}
@@ -244,7 +214,7 @@ const UserPage: React.FC = () => {
         onClose={() => setResetUser(null)}
       />
 
-      <ProCard title="Tìm kiếm người dùng" style={{ marginBottom: 16 }}>
+      <ProCard title="Tìm kiếm phụ huynh" style={{ marginBottom: 16 }}>
         <QueryFilter<UserQuery>
           defaultCollapsed={false}
           collapseRender={false}
@@ -277,13 +247,6 @@ const UserPage: React.FC = () => {
             placeholder="Nhập tên đăng nhập"
           />
           <ProFormSelect
-            name="role"
-            label="Vai trò"
-            options={ROLE_OPTIONS}
-            placeholder="Tất cả"
-            allowClear
-          />
-          <ProFormSelect
             name="status"
             label="Trạng thái"
             options={STATUS_OPTIONS}
@@ -294,13 +257,13 @@ const UserPage: React.FC = () => {
       </ProCard>
 
       <ProTable<UserItem, UserQuery>
-        headerTitle="Danh sách người dùng"
+        headerTitle="Danh sách phụ huynh"
         actionRef={actionRef}
         rowKey="id"
         search={false}
         options={false}
         toolBarRender={() => [
-          <UserForm
+          <ParentForm
             key="create"
             mode="create"
             onSuccess={() => actionRef.current?.reload()}
@@ -311,8 +274,9 @@ const UserPage: React.FC = () => {
             (k) => sort[k] != null,
           );
           const sortOrder = sortField ? (sort[sortField] as string) : undefined;
-          return queryUsers({
+          return queryParents({
             ...searchParamsRef.current,
+            role: 'PARENT',
             current,
             pageSize,
             sortField,
@@ -325,4 +289,4 @@ const UserPage: React.FC = () => {
   );
 };
 
-export default UserPage;
+export default ParentPage;

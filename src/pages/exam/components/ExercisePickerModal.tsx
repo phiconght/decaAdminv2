@@ -19,6 +19,7 @@ type ExerciseRow = {
 type Props = {
   open: boolean;
   subjectId?: number;
+  topicId?: number;
   alreadyIds: Set<number>;
   onClose: () => void;
   onAdd: (lines: ExamExerciseLine[]) => void;
@@ -39,6 +40,7 @@ const TYPE_COLOR: Record<string, string> = {
 const ExercisePickerModal: React.FC<Props> = ({
   open,
   subjectId,
+  topicId,
   alreadyIds,
   onClose,
   onAdd,
@@ -141,6 +143,7 @@ const ExercisePickerModal: React.FC<Props> = ({
           options={{ reload: true, density: false, setting: false }}
           size="small"
           pagination={{ pageSize: 8, showSizeChanger: false }}
+          params={{ subjectId, topicId }}
           toolbar={{
             search: {
               placeholder: 'Tìm mã / tên bài tập',
@@ -154,6 +157,7 @@ const ExercisePickerModal: React.FC<Props> = ({
             const res = await request('/api/v1/exercises', {
               params: {
                 subjectId,
+                topicId,
                 status: 'ACTIVE',
                 current: params.current,
                 pageSize: params.pageSize,

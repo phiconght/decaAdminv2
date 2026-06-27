@@ -3,11 +3,13 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { history, request, useParams } from '@umijs/max';
 import {
   Button,
+  Col,
   DatePicker,
   Form,
   Input,
   InputNumber,
   message,
+  Row,
   Select,
   Space,
   Spin,
@@ -27,6 +29,7 @@ import type {
 import {
   createExam,
   getExamDetail,
+  queryClassesByIds,
   queryStudentOptions,
   updateExam,
 } from './service';
@@ -41,9 +44,26 @@ type ClassOption = {
   subjectName: string;
 };
 
-const ExamEditor: React.FC = () => {
-  const { id } = useParams<{ id?: string }>();
+type EditorProps = {
+  id?: number;
+  embedded?: boolean;
+  onClose?: () => void;
+  onSaved?: () => void;
+};
+
+const ExamEditor: React.FC<EditorProps> = ({
+  id: idProp,
+  embedded,
+  onClose,
+  onSaved,
+}) => {
+  const params = useParams<{ id?: string }>();
+  // Giữ id dạng string để các chỗ Number(id) bên dưới không phải đổi
+  const id = idProp != null ? String(idProp) : params.id;
   const isEdit = !!id;
+
+  const finish = () => (onSaved ? onSaved() : history.push('/exam'));
+  const cancel = () => (onClose ? onClose() : history.push('/exam'));
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -59,7 +79,12 @@ const ExamEditor: React.FC = () => {
 
   const [subjects, setSubjects] = useState<SubjectOption[]>([]);
   const [classes, setClasses] = useState<ClassOption[]>([]);
+  // Khóa đã chọn (lấy theo id) — đảm bảo hiển thị đủ nhãn dù không nằm trong list theo môn
+  const [selectedClassInfo, setSelectedClassInfo] = useState<ClassOption[]>([]);
   const [studentOptions, setStudentOptions] = useState<StudentOption[]>([]);
+  const [topics, setTopics] = useState<{ id: number; name: string }[]>([]);
+  // Chuyên đề đang chọn → lọc bài tập trong picker
+  const topicId = Form.useWatch('topicId', form) as number | undefined;
 
   // Khi load edit, subjectId thay đổi do fetch dữ liệu (không phải do user) → không xóa classIds đã load
   const skipClassClearRef = React.useRef(false);
@@ -90,6 +115,17 @@ const ExamEditor: React.FC = () => {
     );
   }, [subjectId]);
 
+  // Nạp chuyên đề theo môn học
+  useEffect(() => {
+    if (!subjectId) {
+      setTopics([]);
+      return;
+    }
+    request('/api/v1/topics', { params: { subjectId } }).then((res) =>
+      setTopics(res.data ?? []),
+    );
+  }, [subjectId]);
+
   useEffect(() => {
     if (examType !== 'SUPPLEMENTARY' || selectedClassIds.length === 0) {
       setStudentOptions([]);
@@ -110,6 +146,7 @@ const ExamEditor: React.FC = () => {
         form.setFieldsValue({
           name: d.name,
           subjectId: d.subjectId,
+          topicId: d.topicId,
           type: d.type,
           durationMinutes: d.durationMinutes,
           publishAt: d.publishAt ? dayjs(d.publishAt) : undefined,
@@ -120,15 +157,33 @@ const ExamEditor: React.FC = () => {
         setSubjectId(d.subjectId);
         setExamType(d.type);
         setExercises(d.exercises);
-        setSelectedClassIds(d.classes.map((c: ClassRef) => c.id));
+        const classIds = d.classes.map((c: ClassRef) => c.id);
+        setSelectedClassIds(classIds);
+        if (classIds.length) {
+          queryClassesByIds(classIds).then((r) =>
+            setSelectedClassInfo(
+              (r.data ?? []).map((c) => ({ ...c, id: Number(c.id) })),
+            ),
+          );
+        }
         setSelectedStudentIds(d.students.map((s: StudentOption) => s.id));
       })
       .finally(() => setLoading(false));
   }, [id]);
 
+  // Gộp khóa theo môn + khóa đã chọn (theo id) để options luôn đủ nhãn
+  const classOptions = useMemo(() => {
+    const map = new Map<number, ClassOption>();
+    for (const c of classes) map.set(c.id, c);
+    for (const c of selectedClassInfo) {
+      if (!map.has(c.id)) map.set(c.id, c);
+    }
+    return Array.from(map.values());
+  }, [classes, selectedClassInfo]);
+
   const selectedClasses = useMemo(
-    () => classes.filter((c) => selectedClassIds.includes(c.id)),
-    [classes, selectedClassIds],
+    () => classOptions.filter((c) => selectedClassIds.includes(c.id)),
+    [classOptions, selectedClassIds],
   );
 
   const alreadyIds = useMemo(
@@ -149,21 +204,46 @@ const ExamEditor: React.FC = () => {
     [exercises],
   );
 
+  // Kết thúc = Bắt đầu + Thời gian (tự tính, cập nhật tức thì khi đổi 1 trong 2)
+  const watchPublishAt = Form.useWatch('publishAt', form);
+  const watchDuration = Form.useWatch('durationMinutes', form);
+  useEffect(() => {
+    if (watchPublishAt && watchDuration) {
+      form.setFieldValue(
+        'endAt',
+        dayjs(watchPublishAt).add(Number(watchDuration), 'minute'),
+      );
+    } else {
+      form.setFieldValue('endAt', undefined);
+    }
+  }, [watchPublishAt, watchDuration]);
+
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
       setSubmitting(true);
 
+      // Chuẩn hóa về mốc phút (bỏ giây/mili) để chính xác đến từng phút
       const publishAtValue = values.publishAt
-        ? (values.publishAt as ReturnType<typeof dayjs>).toISOString()
+        ? (values.publishAt as ReturnType<typeof dayjs>)
+            .second(0)
+            .millisecond(0)
+            .toISOString()
         : undefined;
-      const endAtValue = values.endAt
-        ? (values.endAt as ReturnType<typeof dayjs>).toISOString()
-        : undefined;
+      // Kết thúc luôn = Bắt đầu + Thời gian (không lấy từ ô disabled)
+      const endAtValue =
+        values.publishAt && values.durationMinutes
+          ? (values.publishAt as ReturnType<typeof dayjs>)
+              .add(Number(values.durationMinutes), 'minute')
+              .second(0)
+              .millisecond(0)
+              .toISOString()
+          : undefined;
 
       const payload = {
         name: values.name,
         subjectId: values.subjectId,
+        topicId: values.topicId,
         type: values.type,
         durationMinutes: values.durationMinutes,
         publishAt: publishAtValue,
@@ -192,7 +272,7 @@ const ExamEditor: React.FC = () => {
         await createExam(payload);
         message.success('Tạo đề thi thành công');
       }
-      history.push('/exam');
+      finish();
     } catch (e: unknown) {
       if (e && typeof e === 'object' && 'errorFields' in e) return;
       message.error('Lưu thất bại');
@@ -201,101 +281,163 @@ const ExamEditor: React.FC = () => {
     }
   };
 
-  return (
-    <PageContainer
-      title={isEdit ? 'Sửa đề thi' : 'Tạo đề thi'}
-      extra={
-        <Space>
-          <Button onClick={() => history.push('/exam')}>Hủy</Button>
-          <Button type="primary" loading={submitting} onClick={handleSave}>
-            Lưu
-          </Button>
-        </Space>
-      }
-    >
+  const renderActions = () => (
+    <Space>
+      <Button onClick={cancel}>Hủy</Button>
+      <Button type="primary" loading={submitting} onClick={handleSave}>
+        Lưu
+      </Button>
+    </Space>
+  );
+
+  const body = (
+    <>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: 16,
+        }}
+      >
+        {renderActions()}
+      </div>
+
       <Spin spinning={loading}>
         {/* Thông tin đề */}
         <ProCard title="Thông tin đề" style={{ marginBottom: 16 }}>
           <Form form={form} layout="vertical">
-            <Form.Item
-              name="name"
-              label="Tên đề"
-              rules={[{ required: true, message: 'Nhập tên đề' }]}
-            >
-              <Input placeholder="Nhập tên đề thi" />
-            </Form.Item>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item
+                  name="name"
+                  label="Tên đề"
+                  rules={[{ required: true, message: 'Nhập tên đề' }]}
+                >
+                  <Input placeholder="Nhập tên đề thi" />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              name="subjectId"
-              label="Môn học"
-              rules={[{ required: true, message: 'Chọn môn học' }]}
-            >
-              <Select
-                showSearch
-                filterOption={(input: string, opt?: { label?: string }) =>
-                  String(opt?.label ?? '')
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                placeholder="Chọn môn học"
-                options={subjects.map((s) => ({
-                  label: `${s.name} — ${s.gradeLevel}`,
-                  value: s.id,
-                }))}
-                onChange={(v: number) => {
-                  setSubjectId(v);
-                  form.setFieldValue('subjectId', v);
-                }}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item
+                  name="subjectId"
+                  label="Môn học"
+                  rules={[{ required: true, message: 'Chọn môn học' }]}
+                >
+                  <Select
+                    showSearch
+                    filterOption={(input: string, opt?: { label?: string }) =>
+                      String(opt?.label ?? '')
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    placeholder="Chọn môn học"
+                    options={subjects.map((s) => ({
+                      label: `${s.name} — ${s.gradeLevel}`,
+                      value: s.id,
+                    }))}
+                    onChange={(v: number) => {
+                      setSubjectId(v);
+                      form.setFieldValue('subjectId', v);
+                      // Đổi môn → bỏ chuyên đề đã chọn
+                      form.setFieldValue('topicId', undefined);
+                    }}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              name="type"
-              label="Loại đề"
-              initialValue="BY_CLASS"
-              rules={[{ required: true }]}
-            >
-              <Select
-                options={[
-                  { label: 'Theo lớp (cả lớp làm)', value: 'BY_CLASS' },
-                  { label: 'Bổ sung (riêng học sinh)', value: 'SUPPLEMENTARY' },
-                ]}
-                onChange={(v: ExamType) => setExamType(v)}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item name="topicId" label="Chuyên đề">
+                  <Select
+                    allowClear
+                    showSearch
+                    disabled={!subjectId}
+                    placeholder={
+                      subjectId ? 'Chọn chuyên đề' : 'Chọn môn trước'
+                    }
+                    filterOption={(input: string, opt?: { label?: string }) =>
+                      String(opt?.label ?? '')
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    options={topics.map((t) => ({
+                      label: t.name,
+                      value: t.id,
+                    }))}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item name="durationMinutes" label="Thời gian làm (phút)">
-              <InputNumber
-                min={1}
-                placeholder="Nhập số phút"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item
+                  name="type"
+                  label="Loại đề"
+                  initialValue="BY_CLASS"
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    options={[
+                      { label: 'Theo khóa (cả khóa làm)', value: 'BY_CLASS' },
+                      {
+                        label: 'Bổ sung (riêng học sinh)',
+                        value: 'SUPPLEMENTARY',
+                      },
+                    ]}
+                    onChange={(v: ExamType) => setExamType(v)}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item name="publishAt" label="Thời điểm phát đề">
-              <DatePicker
-                showTime
-                format="DD/MM/YYYY HH:mm"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item
+                  name="status"
+                  label="Trạng thái"
+                  initialValue="ACTIVE"
+                >
+                  <Select
+                    options={[
+                      { label: 'Đã phát hành', value: 'ACTIVE' },
+                      { label: 'Chưa phát hành', value: 'INACTIVE' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item name="endAt" label="Thời điểm kết thúc">
-              <DatePicker
-                showTime
-                format="DD/MM/YYYY HH:mm"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item name="publishAt" label="Bắt đầu">
+                  <DatePicker
+                    showTime={{ format: 'HH:mm' }}
+                    format="DD/MM/YYYY HH:mm"
+                    minuteStep={1}
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Form.Item name="status" label="Trạng thái" initialValue="ACTIVE">
-              <Select
-                options={[
-                  { label: 'ACTIVE', value: 'ACTIVE' },
-                  { label: 'INACTIVE', value: 'INACTIVE' },
-                ]}
-              />
-            </Form.Item>
+              <Col xs={24} md={8}>
+                <Form.Item name="durationMinutes" label="Thời gian">
+                  <InputNumber
+                    min={1}
+                    step={1}
+                    precision={0}
+                    addonAfter="phút"
+                    placeholder="Nhập số phút"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={8}>
+                <Form.Item name="endAt" label="Kết thúc">
+                  <DatePicker
+                    disabled
+                    showTime={{ format: 'HH:mm' }}
+                    format="DD/MM/YYYY HH:mm"
+                    placeholder="Tự tính theo Bắt đầu + Thời gian"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
           </Form>
         </ProCard>
 
@@ -348,10 +490,10 @@ const ExamEditor: React.FC = () => {
         {/* Phạm vi áp dụng */}
         <ProCard title="Phạm vi áp dụng">
           <Form layout="vertical">
-            <Form.Item label="Lớp áp dụng">
+            <Form.Item label="Khóa áp dụng">
               <Select
                 mode="multiple"
-                placeholder={subjectId ? 'Chọn lớp' : 'Chọn môn học trước'}
+                placeholder={subjectId ? 'Chọn khóa' : 'Chọn môn học trước'}
                 disabled={!subjectId}
                 value={selectedClassIds}
                 onChange={(vals: number[]) =>
@@ -359,23 +501,15 @@ const ExamEditor: React.FC = () => {
                 }
                 style={{ width: '100%' }}
                 showSearch
-                filterOption={(input: string, opt?: { searchText?: string }) =>
-                  String(opt?.searchText ?? '')
+                filterOption={(input: string, opt?: { label?: string }) =>
+                  String(opt?.label ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={classes.map((c) => ({
-                  label: c.code,
+                options={classOptions.map((c) => ({
+                  label: `${c.code} — ${c.name} — ${c.gradeLevel}`,
                   value: c.id,
-                  searchText: `${c.code} ${c.name} ${c.gradeLevel} ${c.subjectName}`,
-                  gradeLevel: c.gradeLevel,
-                  subjectName: c.subjectName,
-                  name: c.name,
-                  code: c.code,
                 }))}
-                optionRender={(opt) =>
-                  `${opt.data.code} — ${opt.data.name} — ${opt.data.gradeLevel} — ${opt.data.subjectName}`
-                }
               />
               {selectedClasses.length > 0 && (
                 <div
@@ -411,14 +545,14 @@ const ExamEditor: React.FC = () => {
               <Form.Item
                 label="Học sinh nhận đề bổ sung"
                 help={
-                  selectedClassIds.length === 0 ? 'Chọn lớp trước' : undefined
+                  selectedClassIds.length === 0 ? 'Chọn khóa trước' : undefined
                 }
               >
                 <Select
                   mode="multiple"
                   placeholder={
                     selectedClassIds.length === 0
-                      ? 'Chọn lớp trước'
+                      ? 'Chọn khóa trước'
                       : 'Chọn học sinh'
                   }
                   disabled={selectedClassIds.length === 0}
@@ -442,6 +576,16 @@ const ExamEditor: React.FC = () => {
         </ProCard>
       </Spin>
 
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: 16,
+        }}
+      >
+        {renderActions()}
+      </div>
+
       <CreateExerciseForm
         open={createExerciseOpen}
         onOpenChange={(o) => {
@@ -454,6 +598,7 @@ const ExamEditor: React.FC = () => {
       <ExercisePickerModal
         open={pickerOpen}
         subjectId={subjectId}
+        topicId={topicId}
         alreadyIds={alreadyIds}
         onClose={() => setPickerOpen(false)}
         onAdd={(lines) =>
@@ -463,6 +608,18 @@ const ExamEditor: React.FC = () => {
           ])
         }
       />
+    </>
+  );
+
+  // Chế độ nhúng (mở trong Drawer): không bọc PageContainer.
+  // body đã có sẵn cụm nút Lưu/Hủy ở cả trên đầu và cuối.
+  if (embedded) {
+    return body;
+  }
+
+  return (
+    <PageContainer title={isEdit ? 'Sửa đề thi' : 'Tạo đề thi'}>
+      {body}
     </PageContainer>
   );
 };

@@ -12,6 +12,7 @@ export type ClassItem = {
   status: ClassStatus;
   studentCount: number;
   examCount: number;
+  teachers: { id: number; username: string; fullName: string }[];
   createdBy: string;
   createdAt: string;
 };
@@ -37,6 +38,7 @@ export type ClassDetail = {
   startDate?: string;
   endDate?: string;
   status: ClassStatus;
+  teacherIds?: number[];
 };
 
 export type ClassQuery = {

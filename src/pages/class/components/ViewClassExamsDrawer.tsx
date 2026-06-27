@@ -29,7 +29,7 @@ const ViewClassExamsDrawer: React.FC<Props> = ({
 
   return (
     <Drawer
-      title={`Đề thi của lớp — ${className ?? ''}`}
+      title={`Đề thi của khóa — ${className ?? ''}`}
       open={open}
       onClose={onClose}
       width={560}
@@ -41,7 +41,7 @@ const ViewClassExamsDrawer: React.FC<Props> = ({
         size="small"
         pagination={{ pageSize: 10, showSizeChanger: false }}
         locale={{
-          emptyText: <Empty description="Lớp chưa được gán đề thi nào" />,
+          emptyText: <Empty description="Khóa chưa được gán đề thi nào" />,
         }}
         columns={[
           { title: 'Mã đề', dataIndex: 'code', width: 150 },
@@ -52,7 +52,7 @@ const ViewClassExamsDrawer: React.FC<Props> = ({
             width: 100,
             render: (_, r) => (
               <Tag color={r.type === 'BY_CLASS' ? 'blue' : 'purple'}>
-                {r.type === 'BY_CLASS' ? 'Theo lớp' : 'Bổ sung'}
+                {r.type === 'BY_CLASS' ? 'Theo khóa' : 'Bổ sung'}
               </Tag>
             ),
           },

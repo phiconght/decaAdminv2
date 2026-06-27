@@ -141,7 +141,9 @@ const CreateExerciseForm: React.FC<Props> = ({
           formRef.current?.setFieldsValue({
             title: d.title,
             subjectId: d.subjectId,
+            topicId: d.topicId,
             type: d.type,
+            difficulty: d.difficulty,
             status: d.status,
             questionText: d.questionText,
             questionImage: d.questionImage,
@@ -286,9 +288,59 @@ const CreateExerciseForm: React.FC<Props> = ({
                       .includes(input.toLowerCase()),
                   // Lock subject in create-from-exam mode
                   disabled: !isEdit && lockedSubjectId != null,
+                  // Đổi môn → bỏ chuyên đề cũ (tránh lưu chuyên đề lệch môn)
+                  onChange: () =>
+                    formRef.current?.setFieldValue('topicId', undefined),
                 }}
                 rules={
                   readOnly ? [] : [{ required: true, message: 'Chọn môn học' }]
+                }
+              />
+              <ProFormSelect
+                name="topicId"
+                label="Chuyên đề"
+                placeholder="Chọn chuyên đề"
+                width="md"
+                dependencies={['subjectId']}
+                request={async (params) => {
+                  const subjectId = (params as { subjectId?: number })
+                    .subjectId;
+                  if (!subjectId) return [];
+                  const res = await request('/api/v1/topics', {
+                    params: { subjectId },
+                  });
+                  return (res.data ?? []).map(
+                    (t: { id: number; name: string }) => ({
+                      label: t.name,
+                      value: t.id,
+                    }),
+                  );
+                }}
+                fieldProps={{
+                  showSearch: true,
+                  filterOption: (input: string, option?: { label?: string }) =>
+                    String(option?.label ?? '')
+                      .toLowerCase()
+                      .includes(input.toLowerCase()),
+                }}
+                rules={
+                  readOnly
+                    ? []
+                    : [{ required: true, message: 'Chọn chuyên đề' }]
+                }
+              />
+              <ProFormSelect
+                name="difficulty"
+                label="Độ khó"
+                placeholder="Chọn độ khó"
+                width="sm"
+                options={[
+                  { label: 'Dễ', value: 'EASY' },
+                  { label: 'Trung bình', value: 'MEDIUM' },
+                  { label: 'Khó', value: 'HARD' },
+                ]}
+                rules={
+                  readOnly ? [] : [{ required: true, message: 'Chọn độ khó' }]
                 }
               />
               <ProFormSelect

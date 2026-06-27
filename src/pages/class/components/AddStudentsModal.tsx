@@ -70,7 +70,7 @@ const AddStudentsModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title="Thêm học sinh vào lớp"
+      title="Thêm học sinh vào khóa"
       open={open}
       onCancel={onClose}
       onOk={handleOk}

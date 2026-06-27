@@ -7,22 +7,14 @@ import {
   ProTable,
   QueryFilter,
 } from '@ant-design/pro-components';
-import { Dropdown, message, Popconfirm, Tag } from 'antd';
+import { request } from '@umijs/max';
+import { Button, Dropdown, message, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
-import ResetPasswordModal from './components/ResetPasswordModal';
-import UserForm from './components/UserForm';
-import ViewUserDrawer from './components/ViewUserDrawer';
-import type { UserDetail, UserItem, UserQuery, UserStatus } from './data';
-import { deleteUser, queryUsers, updateUserStatus } from './service';
-
-const ROLE_OPTIONS = [
-  { label: 'ADMIN', value: 'ADMIN' },
-  { label: 'EMPLOYEE', value: 'EMPLOYEE' },
-  { label: 'TEACHER', value: 'TEACHER' },
-  { label: 'ASSISTANT', value: 'ASSISTANT' },
-  { label: 'STUDENT', value: 'STUDENT' },
-  { label: 'PARENT', value: 'PARENT' },
-];
+import TeacherClassesDrawer from './components/TeacherClassesDrawer';
+import TeacherForm from './components/TeacherForm';
+import ViewTeacherDrawer from './components/ViewTeacherDrawer';
+import type { UserItem, UserQuery, UserStatus } from './data';
+import { deleteTeacher, queryTeachers, updateTeacherStatus } from './service';
 
 const STATUS_OPTIONS = [
   { label: 'ACTIVE', value: 'ACTIVE' },
@@ -30,39 +22,23 @@ const STATUS_OPTIONS = [
   { label: 'LOCKED', value: 'LOCKED' },
 ];
 
-const ROLE_COLOR: Record<string, string> = {
-  ADMIN: 'red',
-  EMPLOYEE: 'blue',
-  TEACHER: 'green',
-  ASSISTANT: 'cyan',
-  STUDENT: 'purple',
-  PARENT: 'orange',
-};
-
 const STATUS_COLOR: Record<string, string> = {
   ACTIVE: 'success',
   DISABLED: 'default',
   LOCKED: 'error',
 };
 
-// Màn Hệ thống > Tài khoản: quản lý toàn bộ người dùng (mọi vai trò).
-const UserPage: React.FC = () => {
+// Module Giáo Viên: người dùng có vai trò TEACHER.
+const TeacherPage: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const searchParamsRef = useRef<UserQuery>({});
 
   const [viewId, setViewId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<UserDetail | null>(null);
-  const [editOpen, setEditOpen] = useState(false);
-  const [resetUser, setResetUser] = useState<{
-    id: number;
-    username: string;
-  } | null>(null);
-
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleStatusChange = async (record: UserItem, status: UserStatus) => {
     try {
-      await updateUserStatus(record.id, status);
+      await updateTeacherStatus(record.id, status);
       actionRef.current?.reload();
     } catch {
       // Lỗi đã hiện ở global error handler
@@ -71,13 +47,17 @@ const UserPage: React.FC = () => {
 
   const handleSoftDelete = async (record: UserItem) => {
     try {
-      await deleteUser(record.id);
-      messageApi.success('Đã vô hiệu hóa người dùng');
+      await deleteTeacher(record.id);
+      messageApi.success('Đã vô hiệu hóa giáo viên');
       actionRef.current?.reload();
     } catch {
       // Lỗi đã hiện ở global error handler
     }
   };
+
+  // Các tính năng chưa có backend: hiển thị nút, tạm báo đang phát triển.
+  const comingSoon = (label: string) =>
+    messageApi.info(`${label}: tính năng đang phát triển`);
 
   const columns: ProColumns<UserItem>[] = [
     {
@@ -91,18 +71,6 @@ const UserPage: React.FC = () => {
     { title: 'Email', dataIndex: 'email', render: (val) => val || '—' },
     { title: 'Số điện thoại', dataIndex: 'phone', render: (val) => val || '—' },
     {
-      title: 'Vai trò',
-      dataIndex: 'roles',
-      render: (_, record) =>
-        record.roles.length > 0
-          ? record.roles.map((r) => (
-              <Tag key={r} color={ROLE_COLOR[r] ?? 'blue'}>
-                {r}
-              </Tag>
-            ))
-          : '—',
-    },
-    {
       title: 'Trạng thái',
       dataIndex: 'status',
       render: (_, record) => (
@@ -112,38 +80,52 @@ const UserPage: React.FC = () => {
       ),
     },
     {
-      title: 'Ngày tạo',
-      dataIndex: 'createdAt',
-      valueType: 'date',
-      sorter: true,
+      title: 'Báo cáo',
+      key: 'report',
+      width: 90,
+      render: () => (
+        <Button type="link" size="small" onClick={() => comingSoon('Báo cáo')}>
+          Xem
+        </Button>
+      ),
     },
     {
-      title: 'Thao tác',
+      title: 'Lịch dạy',
+      key: 'schedule',
+      width: 90,
+      render: () => (
+        <Button type="link" size="small" onClick={() => comingSoon('Lịch dạy')}>
+          Xem
+        </Button>
+      ),
+    },
+    {
+      title: 'Lương',
+      key: 'salary',
+      width: 90,
+      render: () => (
+        <Button type="link" size="small" onClick={() => comingSoon('Lương')}>
+          Xem
+        </Button>
+      ),
+    },
+    {
+      title: 'Khóa học',
+      key: 'classes',
+      width: 110,
+      render: (_, record) => (
+        <TeacherClassesDrawer
+          teacherId={record.id}
+          teacherName={record.fullName || record.username}
+        />
+      ),
+    },
+    {
+      title: 'Tác vụ khác',
       valueType: 'option',
       key: 'option',
-      width: 200,
+      width: 120,
       render: (_, record) => [
-        <a
-          key="edit"
-          onClick={async () => {
-            const { getUserDetail } = await import('./service');
-            const res = await getUserDetail(record.id);
-            if (res.success) {
-              setEditData(res.data);
-              setEditOpen(true);
-            }
-          }}
-        >
-          Sửa
-        </a>,
-        <a
-          key="reset"
-          onClick={() =>
-            setResetUser({ id: record.id, username: record.username })
-          }
-        >
-          Đặt lại MK
-        </a>,
         <Dropdown
           key="more"
           menu={{
@@ -192,7 +174,7 @@ const UserPage: React.FC = () => {
                 key: 'delete',
                 label: (
                   <Popconfirm
-                    title="Vô hiệu hóa và xóa người dùng này?"
+                    title="Vô hiệu hóa và xóa giáo viên này?"
                     description="Tài khoản sẽ bị vô hiệu hóa, dữ liệu được giữ lại."
                     okText="Xác nhận"
                     cancelText="Hủy"
@@ -216,35 +198,13 @@ const UserPage: React.FC = () => {
     <PageContainer>
       {contextHolder}
 
-      <ViewUserDrawer
+      <ViewTeacherDrawer
         id={viewId}
         open={viewId !== null}
         onClose={() => setViewId(null)}
       />
 
-      <UserForm
-        mode="edit"
-        editData={editData}
-        open={editOpen}
-        onOpenChange={(o) => {
-          setEditOpen(o);
-          if (!o) setEditData(null);
-        }}
-        onSuccess={() => {
-          setEditOpen(false);
-          setEditData(null);
-          actionRef.current?.reload();
-        }}
-      />
-
-      <ResetPasswordModal
-        userId={resetUser?.id ?? null}
-        username={resetUser?.username}
-        open={resetUser !== null}
-        onClose={() => setResetUser(null)}
-      />
-
-      <ProCard title="Tìm kiếm người dùng" style={{ marginBottom: 16 }}>
+      <ProCard title="Tìm kiếm giáo viên" style={{ marginBottom: 16 }}>
         <QueryFilter<UserQuery>
           defaultCollapsed={false}
           collapseRender={false}
@@ -277,11 +237,28 @@ const UserPage: React.FC = () => {
             placeholder="Nhập tên đăng nhập"
           />
           <ProFormSelect
-            name="role"
-            label="Vai trò"
-            options={ROLE_OPTIONS}
-            placeholder="Tất cả"
+            name="teachingClassId"
+            label="Khóa học"
+            placeholder="Tất cả khóa"
             allowClear
+            request={async () => {
+              const res = await request('/api/v1/classes', {
+                params: { pageSize: 100 },
+              });
+              return (res.data ?? []).map(
+                (c: { id: number; code: string; name: string }) => ({
+                  label: `${c.name} (${c.code})`,
+                  value: c.id,
+                }),
+              );
+            }}
+            fieldProps={{
+              showSearch: true,
+              filterOption: (input: string, option?: { label?: string }) =>
+                String(option?.label ?? '')
+                  .toLowerCase()
+                  .includes(input.toLowerCase()),
+            }}
           />
           <ProFormSelect
             name="status"
@@ -294,13 +271,13 @@ const UserPage: React.FC = () => {
       </ProCard>
 
       <ProTable<UserItem, UserQuery>
-        headerTitle="Danh sách người dùng"
+        headerTitle="Danh sách giáo viên"
         actionRef={actionRef}
         rowKey="id"
         search={false}
         options={false}
         toolBarRender={() => [
-          <UserForm
+          <TeacherForm
             key="create"
             mode="create"
             onSuccess={() => actionRef.current?.reload()}
@@ -311,8 +288,9 @@ const UserPage: React.FC = () => {
             (k) => sort[k] != null,
           );
           const sortOrder = sortField ? (sort[sortField] as string) : undefined;
-          return queryUsers({
+          return queryTeachers({
             ...searchParamsRef.current,
+            role: 'TEACHER',
             current,
             pageSize,
             sortField,
@@ -325,4 +303,4 @@ const UserPage: React.FC = () => {
   );
 };
 
-export default UserPage;
+export default TeacherPage;
