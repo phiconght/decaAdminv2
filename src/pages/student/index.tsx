@@ -7,9 +7,11 @@ import {
   ProTable,
   QueryFilter,
 } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
-import { Button, Dropdown, message, Popconfirm, Tag } from 'antd';
+import { history, request } from '@umijs/max';
+import { Button, Dropdown, List, Modal, message, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import type { StudentClassOption } from '@/pages/report/data';
+import { getStudentClasses } from '@/pages/report/service';
 import TimetableDrawer from '@/pages/timetable/components/TimetableDrawer';
 import StudentClassesDrawer from './components/StudentClassesDrawer';
 import StudentForm from './components/StudentForm';
@@ -65,6 +67,32 @@ const StudentPage: React.FC = () => {
   const comingSoon = (label: string) =>
     messageApi.info(`${label}: tính năng đang phát triển`);
 
+  // Báo cáo: HS học nhiều khóa → chọn khóa; 1 khóa → đi thẳng.
+  const [reportPicker, setReportPicker] = useState<{
+    studentId: number;
+    classes: StudentClassOption[];
+  } | null>(null);
+
+  const openReport = async (record: UserItem) => {
+    try {
+      const res = await getStudentClasses(record.id);
+      const classes = res.data ?? [];
+      if (classes.length === 0) {
+        messageApi.info('Học viên chưa tham gia khóa học nào');
+        return;
+      }
+      if (classes.length === 1) {
+        history.push(
+          `/report/student/${record.id}/class/${classes[0].classId}`,
+        );
+        return;
+      }
+      setReportPicker({ studentId: record.id, classes });
+    } catch {
+      // Lỗi đã hiện ở global error handler
+    }
+  };
+
   const columns: ProColumns<UserItem>[] = [
     {
       title: 'Tên đăng nhập',
@@ -89,8 +117,8 @@ const StudentPage: React.FC = () => {
       title: 'Báo cáo',
       key: 'report',
       width: 90,
-      render: () => (
-        <Button type="link" size="small" onClick={() => comingSoon('Báo cáo')}>
+      render: (_, record) => (
+        <Button type="link" size="small" onClick={() => openReport(record)}>
           Xem
         </Button>
       ),
@@ -225,6 +253,40 @@ const StudentPage: React.FC = () => {
         open={viewId !== null}
         onClose={() => setViewId(null)}
       />
+
+      <Modal
+        title="Chọn khóa học để xem báo cáo"
+        open={reportPicker !== null}
+        footer={null}
+        onCancel={() => setReportPicker(null)}
+      >
+        <List
+          dataSource={reportPicker?.classes ?? []}
+          renderItem={(c) => (
+            <List.Item
+              actions={[
+                <Button
+                  key="go"
+                  type="link"
+                  onClick={() => {
+                    history.push(
+                      `/report/student/${reportPicker?.studentId}/class/${c.classId}`,
+                    );
+                    setReportPicker(null);
+                  }}
+                >
+                  Xem báo cáo
+                </Button>,
+              ]}
+            >
+              <List.Item.Meta
+                title={`${c.name} (${c.code})`}
+                description={c.subjectName}
+              />
+            </List.Item>
+          )}
+        />
+      </Modal>
 
       <ProCard title="Tìm kiếm học viên" style={{ marginBottom: 16 }}>
         <QueryFilter<UserQuery>

@@ -54,6 +54,7 @@
   'menu.parent': 'Phụ Huynh',
   'menu.exercise': 'Bài Tập',
   'menu.class': 'Khóa Học',
+  'menu.report': 'Báo Cáo',
   'menu.exam': 'Đề Thi',
   'menu.exam.new': 'Tạo Đề Thi',
   'menu.exam.edit': 'Sửa Đề Thi',

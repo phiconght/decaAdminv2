@@ -24,5 +24,13 @@ export default function access(
     canApproveLeave: has('LEAVE:APPROVE'),
     canReadUser: has('USER:READ'),
     canWriteUser: has('USER:WRITE'),
+    // Báo cáo học tập
+    canReadReport: has('REPORT:READ'),
+    canCommentReport: has('REPORT:COMMENT'),
+    // Bài viết (content) / Thông báo do admin soạn
+    canReadPost: has('POST:READ'),
+    canWritePost: has('POST:WRITE'),
+    canReadAnnounce: has('ANNOUNCE:READ'),
+    canWriteAnnounce: has('ANNOUNCE:WRITE'),
   };
 }

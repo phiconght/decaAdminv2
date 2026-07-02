@@ -337,6 +337,32 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/report',
+    name: 'report',
+    icon: 'barChart',
+    access: 'canReadReport',
+    component: './report',
+  },
+  {
+    path: '/report/class/:classId',
+    component: './report/ClassReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
+    path: '/report/student/:studentId/class/:classId',
+    component: './report/StudentReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
+    path: '/report/print/:studentId/:classId',
+    component: './report/PrintReport',
+    layout: false,
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
     path: '/timetable',
     name: 'timetable',
     icon: 'calendar',
@@ -355,6 +381,29 @@ export default [
     icon: 'bank',
     access: 'canReadRoom',
     component: './room',
+  },
+  {
+    path: '/content',
+    name: 'content',
+    icon: 'read',
+    access: 'canReadPost',
+    routes: [
+      { path: '/content', redirect: '/content/posts' },
+      {
+        path: '/content/posts',
+        name: 'posts',
+        icon: 'fileText',
+        access: 'canReadPost',
+        component: './content/posts',
+      },
+      {
+        path: '/content/announcements',
+        name: 'announcements',
+        icon: 'notification',
+        access: 'canReadAnnounce',
+        component: './content/announcements',
+      },
+    ],
   },
   {
     path: '/system',
