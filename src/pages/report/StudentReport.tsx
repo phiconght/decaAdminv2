@@ -16,6 +16,7 @@ import AttendanceMonthChart from './components/AttendanceMonthChart';
 import BreakdownChart from './components/BreakdownChart';
 import CommentsPanel from './components/CommentsPanel';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from './components/colors';
+import ExamDetailBody from './components/ExamDetailBody';
 import RecentExamCards from './components/RecentExamCards';
 import ScoreTrendChart from './components/ScoreTrendChart';
 import TopicMasteryChart from './components/TopicMasteryChart';
@@ -186,51 +187,13 @@ const StudentReport = () => {
         {!detail ? (
           <Spin />
         ) : (
-          <>
-            <Row gutter={16} style={{ marginBottom: 16 }}>
-              <Col span={8}>
-                <Statistic
-                  title="Điểm"
-                  value={detail.score ?? 0}
-                  precision={2}
-                  suffix={detail.maxScore != null ? `/ ${detail.maxScore}` : ''}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="TB lớp"
-                  value={detail.classAverage ?? 0}
-                  precision={2}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="Xếp hạng"
-                  value={
-                    detail.rank != null
-                      ? `${detail.rank}/${detail.submittedCount ?? '—'}`
-                      : '—'
-                  }
-                />
-              </Col>
-            </Row>
-            <ProCard title="Đúng/sai theo độ khó" size="small">
-              <BreakdownChart
-                buckets={detail.breakdown.byDifficulty}
-                labelMap={DIFFICULTY_LABEL}
-              />
-            </ProCard>
-            <ProCard
-              title="Đúng/sai theo loại câu"
-              size="small"
-              style={{ marginTop: 12 }}
-            >
-              <BreakdownChart
-                buckets={detail.breakdown.byType}
-                labelMap={TYPE_LABEL}
-              />
-            </ProCard>
-          </>
+          <ExamDetailBody
+            studentId={studentId}
+            classId={classId}
+            detail={detail}
+            topics={data.topicMastery}
+            studentName={data.student.fullName}
+          />
         )}
       </Drawer>
     </PageContainer>

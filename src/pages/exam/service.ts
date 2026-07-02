@@ -51,6 +51,44 @@ export async function deleteExam(id: number): Promise<{ success: boolean }> {
   return request(`/api/v1/exams/${id}`, { method: 'DELETE' });
 }
 
+// GET /api/v1/exams/{id}/pdf?variant= → tải file PDF về máy.
+// BE trả application/pdf khi thành công; khi lỗi trả JSON ApiResponse.fail —
+// với responseType 'blob' lỗi cũng thành Blob nên PHẢI kiểm blob.type.
+export async function exportExamPdf(
+  id: number,
+  variant: 'DE' | 'DAP_AN',
+): Promise<void> {
+  const res = await request<Blob>(`/api/v1/exams/${id}/pdf`, {
+    params: { variant },
+    responseType: 'blob',
+    getResponse: true,
+  });
+  const blob = res.data;
+
+  if (blob.type.includes('json')) {
+    const body = JSON.parse(await blob.text()) as {
+      error?: { message?: string };
+    };
+    throw new Error(body.error?.message ?? 'Xuất PDF thất bại');
+  }
+
+  // Ưu tiên filename* (UTF-8) trong Content-Disposition; fallback tên mặc định.
+  const disposition: string = res.headers?.['content-disposition'] ?? '';
+  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+  const asciiMatch = disposition.match(/filename="([^"]+)"/i);
+  const filename = utf8Match
+    ? decodeURIComponent(utf8Match[1])
+    : (asciiMatch?.[1] ??
+      `${variant === 'DAP_AN' ? 'Dap-an' : 'De-thi'}_${id}.pdf`);
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export async function queryStudentOptions(
   classIds: number[],
 ): Promise<{ success: boolean; data: StudentOption[] }> {

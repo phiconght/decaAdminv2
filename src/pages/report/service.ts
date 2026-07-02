@@ -6,6 +6,8 @@ import type {
   ClassStudentAverageItem,
   CommentItem,
   ExamReportDetail,
+  ExamScoreDistribution,
+  PracticeAssignmentResponse,
   RecentExamItem,
   ScoreTrendPoint,
   StudentAttendanceReport,
@@ -44,11 +46,44 @@ export async function getScoreTrend(studentId: number, classId: number) {
 export async function getBreakdowns(
   studentId: number,
   classId: number,
-  examId?: number,
+  topicId?: number,
 ) {
   return request<{ success: boolean; data: BreakdownResponse }>(
     `${BASE}/students/${studentId}/classes/${classId}/breakdowns`,
-    { params: examId ? { examId } : {} },
+    { params: topicId ? { topicId } : {} },
+  );
+}
+
+// §12 — Phổ điểm 1 bài thi (có đánh dấu vị trí HV).
+export async function getScoreDistribution(
+  studentId: number,
+  examId: number,
+  classId: number,
+) {
+  return request<{ success: boolean; data: ExamScoreDistribution }>(
+    `${BASE}/students/${studentId}/exams/${examId}/score-distribution`,
+    { params: { classId } },
+  );
+}
+
+export async function getClassScoreDistribution(
+  classId: number,
+  examId: number,
+) {
+  return request<{ success: boolean; data: ExamScoreDistribution }>(
+    `${BASE}/classes/${classId}/exams/${examId}/score-distribution`,
+  );
+}
+
+// §10 — Giao bài cho con.
+export async function assignPractice(
+  studentId: number,
+  classId: number,
+  data: { examId: number; topicId?: number | null },
+) {
+  return request<{ success: boolean; data: PracticeAssignmentResponse }>(
+    `${BASE}/students/${studentId}/classes/${classId}/assign-practice`,
+    { method: 'POST', data },
   );
 }
 
@@ -89,9 +124,10 @@ export async function getClassExamAverages(classId: number) {
   );
 }
 
-export async function getClassBreakdowns(classId: number) {
+export async function getClassBreakdowns(classId: number, topicId?: number) {
   return request<{ success: boolean; data: BreakdownResponse }>(
     `${BASE}/classes/${classId}/breakdowns`,
+    { params: topicId ? { topicId } : {} },
   );
 }
 

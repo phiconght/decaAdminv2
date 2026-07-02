@@ -32,5 +32,10 @@ export default function access(
     canWritePost: has('POST:WRITE'),
     canReadAnnounce: has('ANNOUNCE:READ'),
     canWriteAnnounce: has('ANNOUNCE:WRITE'),
+    // Học phí (payment) / Xu (coin)
+    canReadFee: has('FEE:READ'),
+    canWriteFee: has('FEE:WRITE'),
+    canReadCoin: has('COIN:READ'),
+    canWriteCoin: has('COIN:WRITE'),
   };
 }

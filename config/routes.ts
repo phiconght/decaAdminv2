@@ -363,6 +363,42 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/fee',
+    name: 'fee',
+    icon: 'dollar',
+    access: 'canReadFee',
+    routes: [
+      { path: '/fee', redirect: '/fee/invoices' },
+      {
+        path: '/fee/invoices',
+        name: 'fee-invoices',
+        component: './fee/Invoices',
+      },
+      {
+        path: '/fee/pricing',
+        name: 'fee-pricing',
+        component: './fee/Pricing',
+      },
+      {
+        path: '/fee/reports',
+        name: 'fee-reports',
+        component: './fee/SessionReports',
+      },
+      {
+        path: '/fee/coins',
+        name: 'fee-coins',
+        access: 'canReadCoin',
+        component: './fee/Coins',
+      },
+      {
+        path: '/fee/settings',
+        name: 'fee-settings',
+        access: 'canAdmin',
+        component: './fee/Settings',
+      },
+    ],
+  },
+  {
     path: '/timetable',
     name: 'timetable',
     icon: 'calendar',

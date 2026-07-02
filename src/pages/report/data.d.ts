@@ -47,6 +47,32 @@ export type TopicMasteryItem = {
   masteryPct: number | null;
 };
 
+export type ScoreBand = {
+  index: number;
+  fromScore: number;
+  toScore: number;
+  count: number;
+  containsStudent: boolean;
+};
+
+export type ExamScoreDistribution = {
+  examId: number | null;
+  examName: string | null;
+  maxScore: number | null;
+  bandCount: number;
+  bands: ScoreBand[];
+  studentScore: number | null;
+  studentBandIndex: number | null;
+  percentile: number | null;
+  classAverage: number | null;
+  median: number | null;
+  highest: number | null;
+  lowest: number | null;
+  rank: number | null;
+  submittedCount: number | null;
+  classSize: number | null;
+};
+
 export type ExamReportDetail = {
   examId: number;
   examName: string;
@@ -58,7 +84,24 @@ export type ExamReportDetail = {
   rank: number | null;
   submittedCount: number | null;
   classSize: number | null;
+  topicId: number | null;
+  topicName: string | null;
   breakdown: BreakdownResponse;
+  distribution: ExamScoreDistribution | null;
+};
+
+export type PracticeAssignmentResponse = {
+  assignmentId: number;
+  examId: number;
+  examCode: string;
+  examName: string;
+  topicId: number | null;
+  topicName: string | null;
+  numQuestions: number;
+  byDifficulty: { easy: number; medium: number; hard: number };
+  byType: { multipleChoice: number; trueFalse: number };
+  deadline: string | null;
+  status: string;
 };
 
 export type AttendanceSummary = {
