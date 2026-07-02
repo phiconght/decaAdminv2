@@ -1,6 +1,7 @@
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Space, theme } from 'antd';
 import React from 'react';
+import { MathPreview } from '@/components';
 import type { TrueFalseItem } from '../data';
 import ImageUpload from './ImageUpload';
 
@@ -47,63 +48,75 @@ const TrueFalseInput: React.FC<TrueFalseInputProps> = ({ value, onChange }) => {
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {items.map((item, index) => (
-          <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: ý câu hỏi gắn theo vị trí
-            key={index}
-            style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
-          >
-            <span
-              style={{
-                width: 24,
-                lineHeight: '36px',
-                flexShrink: 0,
-                textAlign: 'center',
-              }}
+        {items.map((item, index) => {
+          const hasMath = item.text?.includes('$');
+          return (
+            <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: ý câu hỏi gắn theo vị trí
+              key={index}
+              style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
             >
-              {index + 1}
-            </span>
-            <Input
-              placeholder={`Nội dung ý ${index + 1}`}
-              value={item.text}
-              onChange={(e) => setField(index, 'text', e.target.value)}
-            />
-            <button
-              type="button"
-              title="Click để chuyển Đúng/Sai"
-              onClick={() => setField(index, 'answer', !item.answer)}
-              style={{
-                flexShrink: 0,
-                height: 32,
-                padding: '0 14px',
-                borderRadius: token.borderRadius,
-                fontWeight: 500,
-                cursor: 'pointer',
-                background: item.answer
-                  ? token.colorSuccessBg
-                  : token.colorErrorBg,
-                color: item.answer ? token.colorSuccess : token.colorError,
-                border: item.answer
-                  ? `1.5px solid ${token.colorSuccess}`
-                  : `1.5px solid ${token.colorError}`,
-              }}
-            >
-              {item.answer ? 'Đúng' : 'Sai'}
-            </button>
-            <ImageUpload
-              value={item.image}
-              onChange={(img) => setField(index, 'image', img)}
-              compact
-            />
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              disabled={items.length <= 1}
-              onClick={() => removeItem(index)}
-            />
-          </div>
-        ))}
+              <div
+                style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
+              >
+                <span
+                  style={{
+                    width: 24,
+                    lineHeight: '36px',
+                    flexShrink: 0,
+                    textAlign: 'center',
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <Input
+                  placeholder={`Nội dung ý ${index + 1} — hỗ trợ LaTeX $...$`}
+                  value={item.text}
+                  onChange={(e) => setField(index, 'text', e.target.value)}
+                />
+                <button
+                  type="button"
+                  title="Click để chuyển Đúng/Sai"
+                  onClick={() => setField(index, 'answer', !item.answer)}
+                  style={{
+                    flexShrink: 0,
+                    height: 32,
+                    padding: '0 14px',
+                    borderRadius: token.borderRadius,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    background: item.answer
+                      ? token.colorSuccessBg
+                      : token.colorErrorBg,
+                    color: item.answer ? token.colorSuccess : token.colorError,
+                    border: item.answer
+                      ? `1.5px solid ${token.colorSuccess}`
+                      : `1.5px solid ${token.colorError}`,
+                  }}
+                >
+                  {item.answer ? 'Đúng' : 'Sai'}
+                </button>
+                <ImageUpload
+                  value={item.image}
+                  onChange={(img) => setField(index, 'image', img)}
+                  compact
+                />
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={items.length <= 1}
+                  onClick={() => removeItem(index)}
+                />
+              </div>
+              {hasMath && (
+                <div style={{ marginLeft: 34, fontSize: 13 }}>
+                  <MathPreview content={item.text} emptyText="" />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <Space style={{ marginTop: 10 }}>
         <Button type="dashed" icon={<PlusOutlined />} onClick={addItem}>

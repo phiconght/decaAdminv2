@@ -1,8 +1,8 @@
-import { Card, Col, Empty, Row, Statistic } from 'antd';
+import { Card, Empty, Statistic } from 'antd';
 import type { RecentExamItem } from '../data';
 import { scoreColor } from './colors';
 
-// 3 card điểm gần nhất; click 1 card mở chi tiết bài.
+// Danh sách TẤT CẢ bài thi (cuộn ngang), click 1 thẻ mở chi tiết bài.
 const RecentExamCards = ({
   exams,
   onSelect,
@@ -20,38 +20,47 @@ const RecentExamCards = ({
   }
 
   return (
-    <Row gutter={16}>
-      {exams.slice(0, 3).map((e) => {
+    <div
+      style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8 }}
+    >
+      {exams.map((e) => {
         const ratio =
           e.score != null && e.maxScore != null && e.maxScore > 0
             ? e.score / e.maxScore
             : null;
         return (
-          <Col xs={24} sm={8} key={e.examStudentId}>
-            <Card
-              hoverable={!!onSelect}
-              onClick={() => onSelect?.(e)}
-              size="small"
-              style={{ borderTop: `3px solid ${scoreColor(ratio)}` }}
-            >
-              <Statistic
-                title={e.examName}
-                value={e.score ?? 0}
-                precision={2}
-                suffix={e.maxScore != null ? `/ ${e.maxScore}` : undefined}
-                valueStyle={{ color: scoreColor(ratio) }}
-              />
-              <div style={{ color: '#8c8c8c', fontSize: 12, marginTop: 4 }}>
-                {e.subjectName}
-                {e.submittedAt
-                  ? ` · ${new Date(e.submittedAt).toLocaleDateString('vi-VN')}`
-                  : ''}
-              </div>
-            </Card>
-          </Col>
+          <Card
+            key={e.examStudentId}
+            hoverable={!!onSelect}
+            onClick={() => onSelect?.(e)}
+            size="small"
+            style={{
+              flex: '0 0 auto',
+              width: 200,
+              borderTop: `3px solid ${scoreColor(ratio)}`,
+            }}
+          >
+            <Statistic
+              title={
+                <span style={{ display: 'block', whiteSpace: 'normal' }}>
+                  {e.examName}
+                </span>
+              }
+              value={e.score ?? 0}
+              precision={2}
+              suffix={e.maxScore != null ? `/ ${e.maxScore}` : undefined}
+              valueStyle={{ color: scoreColor(ratio) }}
+            />
+            <div style={{ color: '#8c8c8c', fontSize: 12, marginTop: 4 }}>
+              {e.subjectName}
+              {e.submittedAt
+                ? ` · ${new Date(e.submittedAt).toLocaleDateString('vi-VN')}`
+                : ''}
+            </div>
+          </Card>
         );
       })}
-    </Row>
+    </div>
   );
 };
 

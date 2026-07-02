@@ -8,9 +8,9 @@ import {
   Image,
   message,
   Tag,
-  Typography,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { MathPreview } from '@/components';
 import type { ChoiceOption, ExerciseDetailView, TrueFalseItem } from '../data';
 import { getExerciseDetail } from '../service';
 
@@ -75,14 +75,9 @@ const MultipleChoiceView: React.FC<{ options: ChoiceOption[] }> = ({
               color: opt.isCorrect
                 ? 'var(--ant-color-success-text)'
                 : undefined,
-              whiteSpace: 'pre-wrap',
             }}
           >
-            {opt.text || (
-              <span style={{ color: 'var(--ant-color-text-quaternary)' }}>
-                Trống
-              </span>
-            )}
+            <MathPreview content={opt.text} emptyText="Trống" />
           </span>
           {opt.isCorrect && (
             <Tag color="success" style={{ margin: 0 }}>
@@ -118,11 +113,9 @@ const EssayView: React.FC<{ answer?: string; answerImage?: string }> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {answer && (
-        <Typography.Text
-          style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.7 }}
-        >
-          {answer}
-        </Typography.Text>
+        <div style={{ fontSize: 14, lineHeight: 1.7 }}>
+          <MathPreview content={answer} />
+        </div>
       )}
       {answerImage && (
         <Image src={answerImage} style={{ maxWidth: 360, borderRadius: 8 }} />
@@ -156,12 +149,8 @@ const TrueFalseView: React.FC<{ items: TrueFalseItem[] }> = ({ items }) => (
           >
             {idx + 1}.
           </span>
-          <span style={{ flex: 1, fontSize: 14, whiteSpace: 'pre-wrap' }}>
-            {item.text || (
-              <span style={{ color: 'var(--ant-color-text-quaternary)' }}>
-                Trống
-              </span>
-            )}
+          <span style={{ flex: 1, fontSize: 14 }}>
+            <MathPreview content={item.text} emptyText="Trống" />
           </span>
           {item.image && (
             <Image
@@ -265,11 +254,9 @@ const ViewExerciseDrawer: React.FC<ViewExerciseDrawerProps> = ({
             <Divider titlePlacement="start" style={{ marginTop: 20 }}>
               Đề bài
             </Divider>
-            <Typography.Text
-              style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.7 }}
-            >
-              {detail.questionText}
-            </Typography.Text>
+            <div style={{ fontSize: 14, lineHeight: 1.7 }}>
+              <MathPreview content={detail.questionText} />
+            </div>
             {detail.questionImage && (
               <Image
                 src={detail.questionImage}

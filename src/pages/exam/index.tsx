@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import ExamClassesDrawer from './components/ExamClassesDrawer';
 import ExamEditorDrawer from './components/ExamEditorDrawer';
+import ExportPdfDropdown from './components/ExportPdfDropdown';
 import type { ExamItem, ExamQuery } from './data';
 import { deleteExam, queryExams } from './service';
 
@@ -152,6 +153,7 @@ const ExamPage: React.FC = () => {
         <a key="edit" onClick={() => setEditorId(record.id)}>
           Sửa
         </a>,
+        <ExportPdfDropdown key="pdf" examId={record.id} />,
         <Popconfirm
           key="delete"
           title="Xóa đề thi này?"

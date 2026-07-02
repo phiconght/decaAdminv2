@@ -15,16 +15,19 @@ import AttendanceDonut from './components/AttendanceDonut';
 import AttendanceMonthChart from './components/AttendanceMonthChart';
 import BreakdownChart from './components/BreakdownChart';
 import CommentsPanel from './components/CommentsPanel';
+import CourseScoreSpectrum from './components/CourseScoreSpectrum';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from './components/colors';
+import ExamDetailBody from './components/ExamDetailBody';
 import RecentExamCards from './components/RecentExamCards';
 import ScoreTrendChart from './components/ScoreTrendChart';
 import TopicMasteryChart from './components/TopicMasteryChart';
 import type {
   ExamReportDetail,
+  ExamScoreDistribution,
   RecentExamItem,
   StudentClassSummaryResponse,
 } from './data';
-import { getExamDetail, getStudentSummary } from './service';
+import { getCourseSpectrum, getExamDetail, getStudentSummary } from './service';
 
 const pct = (v: number | null) => (v == null ? '—' : `${Math.round(v * 100)}%`);
 
@@ -38,6 +41,7 @@ const StudentReport = () => {
   const [byType, setByType] = useState(false);
   const [detail, setDetail] = useState<ExamReportDetail | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [spectrum, setSpectrum] = useState<ExamScoreDistribution | null>(null);
 
   useEffect(() => {
     if (!studentId || !classId) return;
@@ -45,6 +49,7 @@ const StudentReport = () => {
     getStudentSummary(studentId, classId)
       .then((res) => setData(res.data))
       .finally(() => setLoading(false));
+    getCourseSpectrum(studentId, classId).then((r) => setSpectrum(r.data));
   }, [studentId, classId]);
 
   const openDetail = async (item: RecentExamItem) => {
@@ -100,11 +105,16 @@ const StudentReport = () => {
           </Descriptions>
         </ProCard>
 
-        <ProCard title="3 bài thi gần nhất">
+        <ProCard title={`Tất cả bài thi (${data.exams.length})`}>
           <RecentExamCards exams={data.exams} onSelect={openDetail} />
         </ProCard>
 
         <Row gutter={16}>
+          <Col xs={24} lg={10}>
+            <ProCard title="Phổ điểm toàn khóa" style={{ height: '100%' }}>
+              <CourseScoreSpectrum data={spectrum} />
+            </ProCard>
+          </Col>
           <Col xs={24} lg={14}>
             <ProCard
               title="Xu hướng điểm trong khóa"
@@ -113,7 +123,10 @@ const StudentReport = () => {
               <ScoreTrendChart points={data.trend} />
             </ProCard>
           </Col>
-          <Col xs={24} lg={10}>
+        </Row>
+
+        <Row gutter={16}>
+          <Col xs={24}>
             <ProCard
               title="Tỉ lệ đúng/sai"
               extra={
@@ -186,51 +199,13 @@ const StudentReport = () => {
         {!detail ? (
           <Spin />
         ) : (
-          <>
-            <Row gutter={16} style={{ marginBottom: 16 }}>
-              <Col span={8}>
-                <Statistic
-                  title="Điểm"
-                  value={detail.score ?? 0}
-                  precision={2}
-                  suffix={detail.maxScore != null ? `/ ${detail.maxScore}` : ''}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="TB lớp"
-                  value={detail.classAverage ?? 0}
-                  precision={2}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="Xếp hạng"
-                  value={
-                    detail.rank != null
-                      ? `${detail.rank}/${detail.submittedCount ?? '—'}`
-                      : '—'
-                  }
-                />
-              </Col>
-            </Row>
-            <ProCard title="Đúng/sai theo độ khó" size="small">
-              <BreakdownChart
-                buckets={detail.breakdown.byDifficulty}
-                labelMap={DIFFICULTY_LABEL}
-              />
-            </ProCard>
-            <ProCard
-              title="Đúng/sai theo loại câu"
-              size="small"
-              style={{ marginTop: 12 }}
-            >
-              <BreakdownChart
-                buckets={detail.breakdown.byType}
-                labelMap={TYPE_LABEL}
-              />
-            </ProCard>
-          </>
+          <ExamDetailBody
+            studentId={studentId}
+            classId={classId}
+            detail={detail}
+            topics={data.topicMastery}
+            studentName={data.student.fullName}
+          />
         )}
       </Drawer>
     </PageContainer>

@@ -1,14 +1,17 @@
 export default {
-  'app.network.offline': '当前处于离线状态，部分功能可能不可用',
-  'app.error.chunk.title': '页面加载失败',
+  'app.network.offline':
+    'Đang ở chế độ ngoại tuyến, một số chức năng có thể không khả dụng',
+  'app.error.chunk.title': 'Tải trang thất bại',
   'app.error.chunk.description.offline':
-    '网络连接已断开，请检查网络后重新加载。',
-  'app.error.chunk.description.online': '页面资源加载失败，请重新加载重试。',
-  'app.error.render.title': '页面出现错误',
+    'Mất kết nối mạng, vui lòng kiểm tra mạng và tải lại.',
+  'app.error.chunk.description.online':
+    'Tải tài nguyên trang thất bại, vui lòng tải lại.',
+  'app.error.render.title': 'Trang gặp lỗi',
   'app.error.render.description':
-    '抱歉，页面遇到了一些问题，请刷新页面或返回首页。',
-  'app.error.retry': '重试',
-  'app.error.reload': '刷新页面',
-  'app.error.home': '返回首页',
-  'app.request.offline': '网络不可用，请检查网络连接后重试。',
+    'Xin lỗi, trang gặp sự cố, vui lòng làm mới trang hoặc quay về trang chủ.',
+  'app.error.retry': 'Thử lại',
+  'app.error.reload': 'Làm mới trang',
+  'app.error.home': 'Về trang chủ',
+  'app.request.offline':
+    'Mạng không khả dụng, vui lòng kiểm tra kết nối và thử lại.',
 };

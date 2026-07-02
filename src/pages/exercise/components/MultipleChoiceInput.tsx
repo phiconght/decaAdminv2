@@ -1,6 +1,7 @@
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Space, theme } from 'antd';
 import React from 'react';
+import { MathPreview } from '@/components';
 import type { ChoiceOption } from '../data';
 import ImageUpload from './ImageUpload';
 
@@ -56,51 +57,61 @@ const MultipleChoiceInput: React.FC<MultipleChoiceInputProps> = ({
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {options.map((opt, index) => {
           const letter = String.fromCharCode(65 + index);
+          const hasMath = opt.text?.includes('$');
           return (
             <div
               // biome-ignore lint/suspicious/noArrayIndexKey: thứ tự A/B/C/D gắn theo vị trí
               key={index}
-              style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
             >
-              <button
-                type="button"
-                onClick={() => setCorrect(index)}
-                title="Click để đánh dấu đáp án đúng"
-                style={{
-                  width: 36,
-                  height: 36,
-                  flexShrink: 0,
-                  borderRadius: token.borderRadius,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: opt.isCorrect
-                    ? token.colorSuccessBg
-                    : token.colorFillTertiary,
-                  color: opt.isCorrect ? token.colorSuccess : token.colorText,
-                  border: opt.isCorrect
-                    ? `1.5px solid ${token.colorSuccess}`
-                    : `1px solid ${token.colorBorder}`,
-                }}
+              <div
+                style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
               >
-                {letter}
-              </button>
-              <Input
-                placeholder={`Nội dung đáp án ${letter}`}
-                value={opt.text}
-                onChange={(e) => setField(index, 'text', e.target.value)}
-              />
-              <ImageUpload
-                value={opt.image}
-                onChange={(img) => setField(index, 'image', img)}
-                compact
-              />
-              <Button
-                type="text"
-                danger
-                icon={<DeleteOutlined />}
-                disabled={options.length <= 1}
-                onClick={() => removeOption(index)}
-              />
+                <button
+                  type="button"
+                  onClick={() => setCorrect(index)}
+                  title="Click để đánh dấu đáp án đúng"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    flexShrink: 0,
+                    borderRadius: token.borderRadius,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: opt.isCorrect
+                      ? token.colorSuccessBg
+                      : token.colorFillTertiary,
+                    color: opt.isCorrect ? token.colorSuccess : token.colorText,
+                    border: opt.isCorrect
+                      ? `1.5px solid ${token.colorSuccess}`
+                      : `1px solid ${token.colorBorder}`,
+                  }}
+                >
+                  {letter}
+                </button>
+                <Input
+                  placeholder={`Nội dung đáp án ${letter} — hỗ trợ LaTeX $...$`}
+                  value={opt.text}
+                  onChange={(e) => setField(index, 'text', e.target.value)}
+                />
+                <ImageUpload
+                  value={opt.image}
+                  onChange={(img) => setField(index, 'image', img)}
+                  compact
+                />
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={options.length <= 1}
+                  onClick={() => removeOption(index)}
+                />
+              </div>
+              {hasMath && (
+                <div style={{ marginLeft: 46, fontSize: 13 }}>
+                  <MathPreview content={opt.text} emptyText="" />
+                </div>
+              )}
             </div>
           );
         })}

@@ -2,24 +2,29 @@ import { Line } from '@ant-design/plots';
 import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProCard, ProTable } from '@ant-design/pro-components';
 import { history, useParams } from '@umijs/max';
-import { Button, Col, Empty, Progress, Row, Spin } from 'antd';
+import { Button, Col, Empty, Progress, Row, Select, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import AttendanceDonut from './components/AttendanceDonut';
 import AttendanceMonthChart from './components/AttendanceMonthChart';
 import BreakdownChart from './components/BreakdownChart';
+import CourseScoreSpectrum from './components/CourseScoreSpectrum';
 import { DIFFICULTY_LABEL } from './components/colors';
+import ScoreDistributionChart from './components/ScoreDistributionChart';
 import TopicMasteryChart from './components/TopicMasteryChart';
 import type {
   BreakdownResponse,
   ClassAttendanceReport,
   ClassExamAverageItem,
   ClassStudentAverageItem,
+  ExamScoreDistribution,
   TopicMasteryItem,
 } from './data';
 import {
   getClassAttendance,
   getClassBreakdowns,
+  getClassCourseSpectrum,
   getClassExamAverages,
+  getClassScoreDistribution,
   getClassStudents,
   getClassTopicMastery,
 } from './service';
@@ -69,6 +74,11 @@ const ClassReport = () => {
     null,
   );
   const [students, setStudents] = useState<ClassStudentAverageItem[]>([]);
+  const [topicId, setTopicId] = useState<number | null>(null);
+  const [distExamId, setDistExamId] = useState<number | null>(null);
+  const [distribution, setDistribution] =
+    useState<ExamScoreDistribution | null>(null);
+  const [spectrum, setSpectrum] = useState<ExamScoreDistribution | null>(null);
 
   useEffect(() => {
     if (!classId) return;
@@ -86,9 +96,29 @@ const ClassReport = () => {
         setMastery(m.data ?? []);
         setAttendance(att.data ?? null);
         setStudents(st.data ?? []);
+        const first = (a.data ?? [])[0];
+        if (first) {
+          setDistExamId(first.examId);
+          getClassScoreDistribution(classId, first.examId).then((r) =>
+            setDistribution(r.data),
+          );
+        }
       })
       .finally(() => setLoading(false));
+    getClassCourseSpectrum(classId).then((r) => setSpectrum(r.data));
   }, [classId]);
+
+  const onTopicChange = async (value: number | null) => {
+    setTopicId(value);
+    const res = await getClassBreakdowns(classId, value ?? undefined);
+    setBreakdown(res.data);
+  };
+
+  const onDistExamChange = async (examId: number) => {
+    setDistExamId(examId);
+    const res = await getClassScoreDistribution(classId, examId);
+    setDistribution(res.data);
+  };
 
   const columns: ProColumns<ClassStudentAverageItem>[] = [
     {
@@ -170,6 +200,23 @@ const ClassReport = () => {
             <ProCard
               title="Đúng/sai cả lớp theo độ khó"
               style={{ height: '100%' }}
+              extra={
+                <Select
+                  size="small"
+                  style={{ width: 180 }}
+                  value={topicId ?? -1}
+                  onChange={(v) => onTopicChange(v === -1 ? null : v)}
+                  options={[
+                    { label: 'Toàn khóa', value: -1 },
+                    ...mastery
+                      .filter((t) => t.topicId != null)
+                      .map((t) => ({
+                        label: t.topicName,
+                        value: t.topicId as number,
+                      })),
+                  ]}
+                />
+              }
             >
               {breakdown ? (
                 <BreakdownChart
@@ -180,6 +227,29 @@ const ClassReport = () => {
             </ProCard>
           </Col>
         </Row>
+
+        <ProCard title="Phổ điểm toàn khóa (điểm TB học viên)">
+          <CourseScoreSpectrum data={spectrum} height={460} />
+        </ProCard>
+
+        <ProCard
+          title="Phổ điểm theo bài thi"
+          extra={
+            <Select
+              size="small"
+              style={{ width: 260 }}
+              placeholder="Chọn đề"
+              value={distExamId ?? undefined}
+              onChange={onDistExamChange}
+              options={averages.map((a) => ({
+                label: a.examName,
+                value: a.examId,
+              }))}
+            />
+          }
+        >
+          <ScoreDistributionChart data={distribution} />
+        </ProCard>
 
         <Row gutter={16}>
           <Col xs={24} lg={12}>

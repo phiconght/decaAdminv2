@@ -141,7 +141,7 @@ export const layout: RunTimeLayoutConfig = ({
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
-            <span>OpenAPI 文档</span>
+            <span>Tài liệu OpenAPI</span>
           </Link>,
         ]
       : [],

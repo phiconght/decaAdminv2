@@ -7,11 +7,11 @@ import {
   ProFormRadio,
   ProFormSelect,
   ProFormText,
-  ProFormTextArea,
 } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
 import { Button, Divider, Form, message, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import { MathMarkdownEditor } from '@/components';
 import { uploadFile } from '@/services/file';
 import type { ChoiceOption, ExerciseDetail, TrueFalseItem } from '../data';
 import { createExercise, getExerciseDetail, updateExercise } from '../service';
@@ -356,17 +356,21 @@ const CreateExerciseForm: React.FC<Props> = ({
             </ProForm.Group>
 
             <Divider titlePlacement="start">Đề bài</Divider>
-            <ProFormTextArea
+            <Form.Item
               name="questionText"
               label="Nội dung đề bài"
-              placeholder="Nhập nội dung đề bài..."
-              fieldProps={{ autoSize: { minRows: 6 } }}
+              extra="Gõ công thức toán dạng LaTeX: $x^2$ (trên dòng) hoặc $$\frac{a}{b}$$ (tách dòng riêng)."
               rules={
                 readOnly
                   ? []
                   : [{ required: true, message: 'Nhập nội dung đề bài' }]
               }
-            />
+            >
+              <MathMarkdownEditor
+                placeholder="Nhập nội dung đề bài... vd: Giải phương trình $x^2-5x+6=0$"
+                disabled={readOnly}
+              />
+            </Form.Item>
             <Form.Item name="questionImage" label="Ảnh đề bài">
               <ImageUpload text="Ảnh đề" />
             </Form.Item>
@@ -402,12 +406,16 @@ const CreateExerciseForm: React.FC<Props> = ({
                 if (type === 'ESSAY') {
                   return (
                     <>
-                      <ProFormTextArea
+                      <Form.Item
                         name="essayAnswer"
                         label="Đáp án"
-                        placeholder="Nhập đáp án..."
-                        fieldProps={{ autoSize: { minRows: 6 } }}
-                      />
+                        extra="Hỗ trợ công thức LaTeX $...$ / $$...$$ giống ô đề bài."
+                      >
+                        <MathMarkdownEditor
+                          placeholder="Nhập đáp án..."
+                          disabled={readOnly}
+                        />
+                      </Form.Item>
                       <Form.Item name="essayAnswerImage" label="Ảnh đáp án">
                         <ImageUpload text="Ảnh đáp án" />
                       </Form.Item>

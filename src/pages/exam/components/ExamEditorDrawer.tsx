@@ -1,6 +1,7 @@
 import { Drawer } from 'antd';
 import React from 'react';
 import ExamEditor from '../Editor';
+import ExportPdfDropdown from './ExportPdfDropdown';
 
 type Props = {
   examId: number | null; // null = tạo mới
@@ -21,6 +22,9 @@ const ExamEditorDrawer: React.FC<Props> = ({
     open={open}
     onClose={onClose}
     destroyOnClose
+    extra={
+      examId ? <ExportPdfDropdown examId={examId} mode="button" /> : undefined
+    }
   >
     {open && (
       <ExamEditor
