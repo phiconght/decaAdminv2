@@ -1,6 +1,7 @@
 import {
   DatePicker,
   Form,
+  Input,
   InputNumber,
   Modal,
   message,
@@ -37,6 +38,7 @@ type FormValues = {
   durationMinutes?: number;
   roomId?: number;
   teacherId?: number;
+  title?: string;
 };
 
 // Suy ra thời lượng (phút) từ start/end của buổi hiện tại (cùng ngày).
@@ -70,6 +72,7 @@ const SessionEditModal: React.FC<Props> = ({
         durationMinutes: durationOf(session),
         roomId: session.roomId ?? undefined,
         teacherId: session.teacherId ?? undefined,
+        title: session.title ?? undefined,
       });
     } else {
       form.resetFields();
@@ -108,12 +111,14 @@ const SessionEditModal: React.FC<Props> = ({
           durationMinutes: durationOf(session),
           roomId: session.roomId ?? undefined,
           teacherId: session.teacherId ?? undefined,
+          title: session.title ?? '',
         };
         const next = {
           startTime: v.startTime?.format('HH:mm'),
           durationMinutes: v.durationMinutes,
           roomId: v.roomId,
           teacherId: v.teacherId,
+          title: (v.title ?? '').trim(),
         };
         const payload: UpdateSessionPayload = {};
         if (next.startTime !== orig.startTime)
@@ -123,6 +128,7 @@ const SessionEditModal: React.FC<Props> = ({
         if (next.roomId !== orig.roomId) payload.roomId = next.roomId ?? null;
         if (next.teacherId !== orig.teacherId)
           payload.teacherId = next.teacherId ?? null;
+        if (next.title !== orig.title) payload.title = next.title;
 
         if (Object.keys(payload).length === 0) {
           messageApi.info('Không có thay đổi nào.');
@@ -250,6 +256,18 @@ const SessionEditModal: React.FC<Props> = ({
               }))}
             />
           </Form.Item>
+
+          {/* Tên buổi: metadata nội dung, không ảnh hưởng lịch.
+              Chuyên đề KHÔNG đặt ở đây — gán qua bảng buổi học (SPEC §3.4a). */}
+          {isEdit && (
+            <Form.Item name="title" label="Tên buổi">
+              <Input
+                maxLength={255}
+                allowClear
+                placeholder="VD: Tính đơn điệu của hàm số (P1)"
+              />
+            </Form.Item>
+          )}
 
           <div style={{ color: '#8c8c8c' }}>
             ⓘ Khi lưu hệ thống kiểm tra trùng phòng/GV lại.

@@ -73,13 +73,18 @@ export type SessionDetail = {
   status: SessionStatus;
   cancelReason?: string | null;
   isManual: boolean;
+  topicId?: number | null;
+  topicName?: string | null;
+  title?: string | null;
 };
 
+// Không có topicId ở đây: chuyên đề đổi qua bulkAssignTopic (SPEC §3.4a).
 export type UpdateSessionPayload = {
   startTime?: string;
   durationMinutes?: number;
   roomId?: number | null;
   teacherId?: number | null;
+  title?: string | null;
 };
 
 export type CreateManualSessionPayload = {
@@ -102,4 +107,11 @@ export type TeacherOption = {
   id: number;
   username: string;
   fullName: string;
+};
+
+export type TopicOption = {
+  id: number;
+  name: string;
+  subjectId?: number | null;
+  sortOrder?: number | null;
 };

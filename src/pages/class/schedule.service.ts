@@ -7,6 +7,7 @@ import type {
   ScheduleItem,
   SessionDetail,
   TeacherOption,
+  TopicOption,
   UpdateSessionPayload,
 } from './schedule.data';
 
@@ -56,10 +57,12 @@ export async function deleteSchedule(
 
 // ---------------------- Buổi học ----------------------
 
+// from/to là TÙY CHỌN: bỏ trống cả hai = lấy toàn bộ buổi của khóa
+// (chế độ "Toàn khóa" khi gán chuyên đề). Xem SPEC_KhoaHoc_NoiDung_Mobile §3.4e.
 export async function listSessions(
   classId: number,
-  from: string,
-  to: string,
+  from?: string,
+  to?: string,
 ): Promise<{ success: boolean; data: SessionDetail[] }> {
   return request(`/api/v1/classes/${classId}/sessions`, {
     params: { from, to },
@@ -99,6 +102,20 @@ export async function cancelSession(
   });
 }
 
+// Gán/gỡ chuyên đề cho nhiều buổi (topicId = null -> gỡ). Trả số buổi đã cập nhật.
+// Đây cũng là đường dùng khi chỉ đổi 1 buổi (truyền 1 phần tử) — SPEC §3.4a.
+export async function bulkAssignTopic(
+  classId: number,
+  sessionIds: number[],
+  topicId: number | null,
+): Promise<{ success: boolean; data: number }> {
+  return request(`/api/v1/classes/${classId}/sessions/bulk-topic`, {
+    method: 'PATCH',
+    data: { sessionIds, topicId },
+    skipErrorHandler: true,
+  });
+}
+
 // ---------------------- Dropdown (dùng chung 2 form) ----------------------
 
 // Phòng: /rooms phẳng {success, data, total}. Catch 403 êm -> trả [].
@@ -109,6 +126,19 @@ export async function queryRooms(keyword?: string): Promise<RoomOption[]> {
       skipErrorHandler: true,
     });
     return (res.data ?? []) as RoomOption[];
+  } catch {
+    return [];
+  }
+}
+
+// Chuyên đề theo môn: /topics gate TOPIC:READ (V14 cấp cho MỌI role). Catch lỗi êm.
+export async function queryTopics(subjectId: number): Promise<TopicOption[]> {
+  try {
+    const res = await request('/api/v1/topics', {
+      params: { subjectId },
+      skipErrorHandler: true,
+    });
+    return (res.data ?? []) as TopicOption[];
   } catch {
     return [];
   }

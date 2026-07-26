@@ -42,6 +42,7 @@ const ClassPage: React.FC = () => {
   const [scheduleFor, setScheduleFor] = useState<{
     classId: number;
     className: string;
+    subjectId: number;
   } | null>(null);
   const [editData, setEditData] = useState<ClassItem | null>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -104,6 +105,7 @@ const ClassPage: React.FC = () => {
             setScheduleFor({
               classId: Number(record.id),
               className: record.name,
+              subjectId: record.subjectId,
             })
           }
         >
@@ -215,6 +217,7 @@ const ClassPage: React.FC = () => {
       <ClassScheduleDrawer
         classId={scheduleFor?.classId ?? null}
         className={scheduleFor?.className}
+        subjectId={scheduleFor?.subjectId ?? null}
         open={scheduleFor !== null}
         onClose={() => setScheduleFor(null)}
       />
