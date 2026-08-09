@@ -86,6 +86,9 @@ export type ExamReportDetail = {
   classSize: number | null;
   topicId: number | null;
   topicName: string | null;
+  sessionId: number | null;
+  sessionTitle: string | null;
+  sessionDate: string | null;
   breakdown: BreakdownResponse;
   distribution: ExamScoreDistribution | null;
 };
@@ -172,6 +175,121 @@ export type CommentItem = {
   updatedAt: string | null;
 };
 
+// Cay noi dung khoa hoc (chuyen de -> buoi hoc + de thi) — mirror
+// ClassOutlineResponse ben BE, dung lai lam "danh muc" cho drill-down cap
+// chuong/buoi thay vi report module tu dung cay rieng.
+export type OutlineProgress = {
+  totalSessions: number;
+  doneSessions: number;
+  attendanceRate: number | null;
+  attendanceScope: 'STUDENT' | 'CLASS' | null;
+};
+
+export type OutlineSession = {
+  sessionId: number;
+  ordinal: number;
+  title: string | null;
+  date: string;
+  startTime: string | null;
+  endTime: string | null;
+  roomName: string | null;
+  teacherName: string | null;
+  status: string | null;
+  cancelReason: string | null;
+  attendanceStatus: string | null;
+  onLeave: boolean;
+  materialCount: number;
+};
+
+export type OutlineExam = {
+  examId: number;
+  code: string;
+  name: string;
+  type: string | null;
+  status: string | null;
+  publishAt: string | null;
+  endAt: string | null;
+  durationMinutes: number | null;
+  studentStatus: string | null;
+  score: number | null;
+  maxScore: number | null;
+};
+
+export type OutlineTopicGroup = {
+  topicId: number | null;
+  topicName: string | null;
+  sortOrder: number | null;
+  sessions: OutlineSession[];
+  exams: OutlineExam[];
+};
+
+export type ClassOutline = {
+  classId: number;
+  code: string;
+  name: string;
+  subjectName: string | null;
+  gradeLevel: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  status: string | null;
+  progress: OutlineProgress;
+  groups: OutlineTopicGroup[];
+};
+
+export type ChapterAnalysisItem = {
+  topicId: number | null;
+  chapterLabel: string;
+  avgScore: number | null;
+  rank: number | null;
+  classSize: number | null;
+};
+
+// Bang "Phan tich tu dong" o dau bao cao ca nhan — cau chu da ghep san o BE
+// (ReportNarrativeBuilder), ADMIN chi render, khong tu tinh toan.
+export type ReportAnalysisResponse = {
+  studentName: string;
+  className: string;
+  scoreSpectrumLabel: string | null;
+  courseAverage: number | null;
+  courseRank: number | null;
+  classSize: number | null;
+  chapters: ChapterAnalysisItem[];
+  abilityInsights: string[];
+  attendanceInsight: string | null;
+  teacherCommentAuthor: string | null;
+  teacherCommentContent: string | null;
+};
+
+// Bang "Phan tich tu dong" o 3 cap con lai (Chuong/Buoi/Bai thi) — §Phan C.
+// Doc lap voi ReportAnalysisResponse (cap toan khoa) o tren, vi noi dung
+// khac nhau nhieu (khong dung chung 1 shape).
+export type ChapterAnalysisResponse = {
+  chapterLabel: string | null;
+  avgScore: number | null;
+  rank: number | null;
+  classSize: number | null;
+  abilityInsights: string[];
+  attendanceInsight: string | null;
+};
+
+export type SessionAnalysisResponse = {
+  avgScore: number | null;
+  classAverage: number | null;
+  comparisonInsight: string | null;
+  abilityInsights: string[];
+  examCount: number;
+  submittedCount: number;
+};
+
+export type ExamAnalysisResponse = {
+  score: number | null;
+  classAverage: number | null;
+  rank: number | null;
+  classSize: number | null;
+  comparisonInsight: string | null;
+  abilityInsights: string[];
+};
+
 export type StudentClassSummaryResponse = {
   student: {
     id: number;
@@ -193,4 +311,5 @@ export type StudentClassSummaryResponse = {
   topicMastery: TopicMasteryItem[];
   attendance: StudentAttendanceReport;
   comments: CommentItem[];
+  analysis: ReportAnalysisResponse | null;
 };

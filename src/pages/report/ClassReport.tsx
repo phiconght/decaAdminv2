@@ -258,6 +258,44 @@ const ClassReport = () => {
               style={{ height: '100%' }}
             >
               <TopicMasteryChart items={mastery} />
+              <div style={{ marginTop: 12 }}>
+                {mastery
+                  .filter((t) => t.topicId != null)
+                  .map((t) => (
+                    <div
+                      key={t.topicId}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '6px 0',
+                        borderBottom: '1px solid #f0f0f0',
+                      }}
+                    >
+                      <span style={{ flex: 1 }}>{t.topicName}</span>
+                      <Progress
+                        percent={
+                          t.masteryPct != null
+                            ? Math.round(t.masteryPct * 100)
+                            : 0
+                        }
+                        size="small"
+                        style={{ width: 120 }}
+                      />
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() =>
+                          history.push(
+                            `/report/class/${classId}/topic/${t.topicId}`,
+                          )
+                        }
+                      >
+                        Xem chi tiết
+                      </Button>
+                    </div>
+                  ))}
+              </div>
             </ProCard>
           </Col>
           <Col xs={24} lg={12}>

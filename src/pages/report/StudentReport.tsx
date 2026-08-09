@@ -11,11 +11,12 @@ import {
   Statistic,
 } from 'antd';
 import { useEffect, useState } from 'react';
+import AnalysisCard from './components/AnalysisCard';
 import AttendanceDonut from './components/AttendanceDonut';
 import AttendanceMonthChart from './components/AttendanceMonthChart';
 import BreakdownChart from './components/BreakdownChart';
+import ChapterCards from './components/ChapterCards';
 import CommentsPanel from './components/CommentsPanel';
-import CourseScoreSpectrum from './components/CourseScoreSpectrum';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from './components/colors';
 import ExamDetailBody from './components/ExamDetailBody';
 import RecentExamCards from './components/RecentExamCards';
@@ -23,11 +24,10 @@ import ScoreTrendChart from './components/ScoreTrendChart';
 import TopicMasteryChart from './components/TopicMasteryChart';
 import type {
   ExamReportDetail,
-  ExamScoreDistribution,
   RecentExamItem,
   StudentClassSummaryResponse,
 } from './data';
-import { getCourseSpectrum, getExamDetail, getStudentSummary } from './service';
+import { getExamDetail, getStudentSummary } from './service';
 
 const pct = (v: number | null) => (v == null ? '—' : `${Math.round(v * 100)}%`);
 
@@ -41,7 +41,6 @@ const StudentReport = () => {
   const [byType, setByType] = useState(false);
   const [detail, setDetail] = useState<ExamReportDetail | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [spectrum, setSpectrum] = useState<ExamScoreDistribution | null>(null);
 
   useEffect(() => {
     if (!studentId || !classId) return;
@@ -49,7 +48,6 @@ const StudentReport = () => {
     getStudentSummary(studentId, classId)
       .then((res) => setData(res.data))
       .finally(() => setLoading(false));
-    getCourseSpectrum(studentId, classId).then((r) => setSpectrum(r.data));
   }, [studentId, classId]);
 
   const openDetail = async (item: RecentExamItem) => {
@@ -88,6 +86,8 @@ const StudentReport = () => {
       ]}
     >
       <ProCard direction="column" gutter={[0, 16]} ghost>
+        <AnalysisCard analysis={data.analysis} />
+
         <ProCard>
           <Descriptions column={2} size="small">
             <Descriptions.Item label="Học viên">
@@ -109,21 +109,20 @@ const StudentReport = () => {
           <RecentExamCards exams={data.exams} onSelect={openDetail} />
         </ProCard>
 
-        <Row gutter={16}>
-          <Col xs={24} lg={10}>
-            <ProCard title="Phổ điểm toàn khóa" style={{ height: '100%' }}>
-              <CourseScoreSpectrum data={spectrum} />
-            </ProCard>
-          </Col>
-          <Col xs={24} lg={14}>
-            <ProCard
-              title="Xu hướng điểm trong khóa"
-              style={{ height: '100%' }}
-            >
-              <ScoreTrendChart points={data.trend} />
-            </ProCard>
-          </Col>
-        </Row>
+        <ProCard title="Báo cáo theo chương học">
+          <ChapterCards
+            topics={data.topicMastery}
+            onSelect={(topicId) =>
+              history.push(
+                `/report/student/${studentId}/class/${classId}/topic/${topicId}`,
+              )
+            }
+          />
+        </ProCard>
+
+        <ProCard title="Xu hướng điểm trong khóa">
+          <ScoreTrendChart points={data.trend} />
+        </ProCard>
 
         <Row gutter={16}>
           <Col xs={24}>

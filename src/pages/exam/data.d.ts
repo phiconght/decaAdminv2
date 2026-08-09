@@ -78,6 +78,8 @@ export type ExamDetailView = {
   gradeLevel: string;
   topicId?: number;
   topicName?: string;
+  sessionId?: number;
+  sessionTitle?: string;
   type: ExamType;
   durationMinutes?: number;
   publishAt?: string;
@@ -106,6 +108,7 @@ export type ExamPayload = {
   name: string;
   subjectId: number;
   topicId?: number;
+  sessionId?: number;
   type: ExamType;
   durationMinutes?: number;
   publishAt?: string;

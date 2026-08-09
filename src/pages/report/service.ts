@@ -1,15 +1,19 @@
 import { request } from '@umijs/max';
 import type {
   BreakdownResponse,
+  ChapterAnalysisResponse,
   ClassAttendanceReport,
   ClassExamAverageItem,
+  ClassOutline,
   ClassStudentAverageItem,
   CommentItem,
+  ExamAnalysisResponse,
   ExamReportDetail,
   ExamScoreDistribution,
   PracticeAssignmentResponse,
   RecentExamItem,
   ScoreTrendPoint,
+  SessionAnalysisResponse,
   StudentAttendanceReport,
   StudentClassOption,
   StudentClassSummaryResponse,
@@ -37,9 +41,14 @@ export async function getExamDetail(
   );
 }
 
-export async function getScoreTrend(studentId: number, classId: number) {
+export async function getScoreTrend(
+  studentId: number,
+  classId: number,
+  topicId?: number,
+) {
   return request<{ success: boolean; data: ScoreTrendPoint[] }>(
     `${BASE}/students/${studentId}/classes/${classId}/score-trend`,
+    { params: topicId ? { topicId } : {} },
   );
 }
 
@@ -112,9 +121,90 @@ export async function getTopicMastery(studentId: number, classId: number) {
   );
 }
 
-export async function getStudentAttendance(studentId: number, classId: number) {
+export async function getStudentAttendance(
+  studentId: number,
+  classId: number,
+  topicId?: number,
+) {
   return request<{ success: boolean; data: StudentAttendanceReport }>(
     `${BASE}/students/${studentId}/classes/${classId}/attendance`,
+    { params: topicId ? { topicId } : {} },
+  );
+}
+
+// ---- Bao cao cap BUOI HOC (drill-down cap 3) ----
+export async function getSessionExams(
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) {
+  return request<{ success: boolean; data: RecentExamItem[] }>(
+    `${BASE}/students/${studentId}/classes/${classId}/sessions/${sessionId}/exams`,
+  );
+}
+
+export async function getSessionBreakdowns(
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) {
+  return request<{ success: boolean; data: BreakdownResponse }>(
+    `${BASE}/students/${studentId}/classes/${classId}/sessions/${sessionId}/breakdowns`,
+  );
+}
+
+export async function getClassSessionExams(classId: number, sessionId: number) {
+  return request<{ success: boolean; data: ClassExamAverageItem[] }>(
+    `${BASE}/classes/${classId}/sessions/${sessionId}/exams`,
+  );
+}
+
+export async function getClassSessionBreakdowns(
+  classId: number,
+  sessionId: number,
+) {
+  return request<{ success: boolean; data: BreakdownResponse }>(
+    `${BASE}/classes/${classId}/sessions/${sessionId}/breakdowns`,
+  );
+}
+
+// ---- Bang "Phan tich tu dong" o 3 cap Chuong/Buoi/Bai thi (§Phan C) ----
+export async function getChapterAnalysis(
+  studentId: number,
+  classId: number,
+  topicId: number,
+) {
+  return request<{ success: boolean; data: ChapterAnalysisResponse }>(
+    `${BASE}/students/${studentId}/classes/${classId}/topics/${topicId}/analysis`,
+  );
+}
+
+export async function getSessionAnalysis(
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) {
+  return request<{ success: boolean; data: SessionAnalysisResponse }>(
+    `${BASE}/students/${studentId}/classes/${classId}/sessions/${sessionId}/analysis`,
+  );
+}
+
+export async function getExamAnalysis(
+  studentId: number,
+  examId: number,
+  classId: number,
+) {
+  return request<{ success: boolean; data: ExamAnalysisResponse }>(
+    `${BASE}/students/${studentId}/exams/${examId}/analysis`,
+    { params: { classId } },
+  );
+}
+
+// ---- Danh muc noi dung khoa hoc (chuong -> buoi + de) — dung lai outline ----
+export async function getClassOutline(classId: number, studentId?: number) {
+  return request<{ success: boolean; data: ClassOutline }>(
+    `/api/v1/classes/${classId}/outline`,
+    { params: studentId ? { studentId } : {} },
   );
 }
 
@@ -137,9 +227,10 @@ export async function getMyReportClasses() {
 }
 
 // ---- Báo cáo lớp ----
-export async function getClassExamAverages(classId: number) {
+export async function getClassExamAverages(classId: number, topicId?: number) {
   return request<{ success: boolean; data: ClassExamAverageItem[] }>(
     `${BASE}/classes/${classId}/exam-averages`,
+    { params: topicId ? { topicId } : {} },
   );
 }
 
@@ -156,9 +247,10 @@ export async function getClassTopicMastery(classId: number) {
   );
 }
 
-export async function getClassAttendance(classId: number) {
+export async function getClassAttendance(classId: number, topicId?: number) {
   return request<{ success: boolean; data: ClassAttendanceReport }>(
     `${BASE}/classes/${classId}/attendance`,
+    { params: topicId ? { topicId } : {} },
   );
 }
 

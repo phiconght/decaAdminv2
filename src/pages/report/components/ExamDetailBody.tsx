@@ -10,21 +10,27 @@ import {
   Segmented,
   Select,
   Statistic,
+  Tag,
   Tooltip,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type {
-  BreakdownResponse,
+  ExamAnalysisResponse,
   ExamReportDetail,
   PracticeAssignmentResponse,
   TopicMasteryItem,
 } from '../data';
-import { assignPractice, getBreakdowns } from '../service';
+import { assignPractice, getExamAnalysis } from '../service';
 import BreakdownChart from './BreakdownChart';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from './colors';
+import ExamAnalysisCard from './ExamAnalysisCard';
 import ScoreDistributionChart from './ScoreDistributionChart';
 
-// Nội dung chi tiết 1 bài thi: ĐIỂM (theo bài) + phổ điểm + NĂNG LỰC (theo chương).
+// Noi dung chi tiet 1 bai thi: Analysis Card + DIEM (theo bai) + pho diem +
+// NANG LUC (CHI cua bai thi nay, khong gop cac de khac cung chuong — §Phan
+// C quyet dinh #3). Dropdown "Chuong giao bai" TACH RIENG khoi breakdown,
+// chi dung lam tham so cho "Giao bai luyen tap", khong con dieu khien
+// breakdown hien thi nua (tranh nham lan 2 muc dich khac nhau tren 1 dropdown).
 const ExamDetailBody = ({
   studentId,
   classId,
@@ -41,36 +47,32 @@ const ExamDetailBody = ({
   const access = useAccess();
   const canAssign = access.hasPerm('REPORT:ASSIGN');
 
-  // Chương đang chọn: mặc định = chương của bài thi.
-  const [topicId, setTopicId] = useState<number | null>(detail.topicId);
-  const [breakdown, setBreakdown] = useState<BreakdownResponse>(
-    detail.breakdown,
+  // Chuong dung rieng cho "Giao bai luyen tap" — mac dinh = chuong cua de.
+  const [assignTopicId, setAssignTopicId] = useState<number | null>(
+    detail.topicId,
   );
   const [byType, setByType] = useState(false);
   const [assigning, setAssigning] = useState(false);
+  const [analysis, setAnalysis] = useState<ExamAnalysisResponse | null>(null);
 
-  const topicName =
-    topicId == null
-      ? 'Toàn khóa'
-      : (topics.find((t) => t.topicId === topicId)?.topicName ??
+  useEffect(() => {
+    getExamAnalysis(studentId, detail.examId, classId).then((res) =>
+      setAnalysis(res.data),
+    );
+  }, [studentId, detail.examId, classId]);
+
+  const assignTopicName =
+    assignTopicId == null
+      ? null
+      : (topics.find((t) => t.topicId === assignTopicId)?.topicName ??
         detail.topicName ??
         'Chương');
 
-  const onTopicChange = async (value: number | null) => {
-    setTopicId(value);
-    if (value === detail.topicId) {
-      setBreakdown(detail.breakdown);
-      return;
-    }
-    const res = await getBreakdowns(studentId, classId, value ?? undefined);
-    setBreakdown(res.data);
-  };
-
   const doAssign = () => {
-    if (topicId == null) return;
+    if (assignTopicId == null) return;
     Modal.confirm({
       title: 'Giao bài luyện tập cho con',
-      content: `Hệ thống chọn 10 bài chương "${topicName}" — độ khó/dạng bài nghiêng về phần con đang yếu (số liệu đang hiển thị).`,
+      content: `Hệ thống chọn 10 bài chương "${assignTopicName}" — độ khó/dạng bài nghiêng về phần con đang yếu (số liệu đang hiển thị).`,
       okText: 'Giao bài',
       cancelText: 'Hủy',
       onOk: async () => {
@@ -78,7 +80,7 @@ const ExamDetailBody = ({
         try {
           const res = await assignPractice(studentId, classId, {
             examId: detail.examId,
-            topicId,
+            topicId: assignTopicId,
           });
           showResult(res.data);
         } catch {
@@ -125,6 +127,24 @@ const ExamDetailBody = ({
 
   return (
     <>
+      {(detail.topicName || detail.sessionTitle) && (
+        <div style={{ marginBottom: 12 }}>
+          {detail.topicName && (
+            <Tag color="blue">Chương: {detail.topicName}</Tag>
+          )}
+          {detail.sessionTitle && (
+            <Tag color="purple">
+              Buổi: {detail.sessionTitle}
+              {detail.sessionDate
+                ? ` (${new Date(detail.sessionDate).toLocaleDateString('vi-VN')})`
+                : ''}
+            </Tag>
+          )}
+        </div>
+      )}
+
+      <ExamAnalysisCard analysis={analysis} />
+
       {/* Tầng ĐIỂM — theo bài thi */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
@@ -161,17 +181,16 @@ const ExamDetailBody = ({
         />
       </ProCard>
 
-      {/* Chọn chương (mặc định chương của bài thi) + nút giao bài */}
-      <Descriptions style={{ marginTop: 16 }} column={1}>
-        <Descriptions.Item label="Năng lực chương">
-          <Select
-            style={{ width: 240 }}
-            value={topicId ?? -1}
-            options={topicOptions}
-            onChange={(v) => onTopicChange(v === -1 ? null : v)}
-          />
-          {canAssign &&
-            (topicId == null ? (
+      {canAssign && (
+        <Descriptions style={{ marginTop: 16 }} column={1}>
+          <Descriptions.Item label="Chương giao bài">
+            <Select
+              style={{ width: 240 }}
+              value={assignTopicId ?? -1}
+              options={topicOptions}
+              onChange={(v) => setAssignTopicId(v === -1 ? null : v)}
+            />
+            {assignTopicId == null ? (
               <Tooltip title="Chọn 1 chương để giao bài">
                 <Button style={{ marginLeft: 12 }} disabled>
                   Giao bài cho con
@@ -186,17 +205,15 @@ const ExamDetailBody = ({
               >
                 Giao bài cho con
               </Button>
-            ))}
-        </Descriptions.Item>
-      </Descriptions>
+            )}
+          </Descriptions.Item>
+        </Descriptions>
+      )}
 
       <ProCard
-        title={
-          topicId == null
-            ? 'Năng lực toàn khóa (tổng hợp mọi bài)'
-            : `Năng lực chương "${topicName}" (tổng hợp mọi bài)`
-        }
+        title="Năng lực bài thi (chỉ đề này)"
         size="small"
+        style={{ marginTop: 16 }}
         extra={
           <Segmented
             size="small"
@@ -210,7 +227,9 @@ const ExamDetailBody = ({
         }
       >
         <BreakdownChart
-          buckets={byType ? breakdown.byType : breakdown.byDifficulty}
+          buckets={
+            byType ? detail.breakdown.byType : detail.breakdown.byDifficulty
+          }
           labelMap={byType ? TYPE_LABEL : DIFFICULTY_LABEL}
         />
       </ProCard>

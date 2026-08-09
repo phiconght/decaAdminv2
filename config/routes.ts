@@ -356,6 +356,30 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/report/student/:studentId/class/:classId/topic/:topicId',
+    component: './report/ChapterReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
+    path: '/report/class/:classId/topic/:topicId',
+    component: './report/ChapterReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
+    path: '/report/student/:studentId/class/:classId/session/:sessionId',
+    component: './report/SessionReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
+    path: '/report/class/:classId/session/:sessionId',
+    component: './report/SessionReport',
+    access: 'canReadReport',
+    hideInMenu: true,
+  },
+  {
     path: '/report/print/:studentId/:classId',
     component: './report/PrintReport',
     layout: false,

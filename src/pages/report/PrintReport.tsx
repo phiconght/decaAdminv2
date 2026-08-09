@@ -1,6 +1,7 @@
 import { useParams } from '@umijs/max';
 import { Button, Spin } from 'antd';
 import { useEffect, useState } from 'react';
+import AnalysisCard from './components/AnalysisCard';
 import AttendanceDonut from './components/AttendanceDonut';
 import BreakdownChart from './components/BreakdownChart';
 import { DIFFICULTY_LABEL } from './components/colors';
@@ -102,6 +103,8 @@ const PrintReport = () => {
         </div>
         <div style={{ width: 120 }} />
       </div>
+
+      <AnalysisCard analysis={data.analysis} />
 
       <div className="info-grid">
         <div>

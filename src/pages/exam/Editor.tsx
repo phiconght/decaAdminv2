@@ -85,9 +85,23 @@ const ExamEditor: React.FC<EditorProps> = ({
   const [topics, setTopics] = useState<{ id: number; name: string }[]>([]);
   // Chuyên đề đang chọn → lọc bài tập trong picker
   const topicId = Form.useWatch('topicId', form) as number | undefined;
+  // Buổi học gắn với đề — chỉ chọn được khi đề áp dụng đúng 1 khóa (session
+  // thuộc 1 lớp duy nhất, xem ExamService.resolveSession).
+  const [sessions, setSessions] = useState<
+    {
+      id: number;
+      title: string | null;
+      sessionDate: string;
+      startTime: string;
+    }[]
+  >([]);
+  const [sessionId, setSessionId] = useState<number | undefined>();
 
   // Khi load edit, subjectId thay đổi do fetch dữ liệu (không phải do user) → không xóa classIds đã load
   const skipClassClearRef = React.useRef(false);
+  // Tương tự, khi load edit set selectedClassIds (đề có thể có >1 lớp) →
+  // KHÔNG được coi đó là "người dùng đổi lớp" và xóa mất sessionId vừa nạp.
+  const skipSessionClearRef = React.useRef(false);
 
   useEffect(() => {
     request('/api/v1/subjects', { params: { pageSize: 100 } }).then((res) =>
@@ -126,6 +140,25 @@ const ExamEditor: React.FC<EditorProps> = ({
     );
   }, [subjectId]);
 
+  // Nạp buổi học khi đề áp dụng đúng 1 khóa
+  useEffect(() => {
+    // Tieu thu flag NGAY, bat ke nhanh nao chay — de khong bi "stale" va
+    // vo tinh bo qua lan nguoi dung doi lop KE TIEP (sau khi load edit xong).
+    const skipThisRun = skipSessionClearRef.current;
+    skipSessionClearRef.current = false;
+
+    if (selectedClassIds.length !== 1) {
+      setSessions([]);
+      if (!skipThisRun) {
+        setSessionId(undefined);
+      }
+      return;
+    }
+    request(`/api/v1/classes/${selectedClassIds[0]}/sessions`).then((res) =>
+      setSessions(res.data ?? []),
+    );
+  }, [selectedClassIds]);
+
   useEffect(() => {
     if (examType !== 'SUPPLEMENTARY' || selectedClassIds.length === 0) {
       setStudentOptions([]);
@@ -154,6 +187,7 @@ const ExamEditor: React.FC<EditorProps> = ({
           status: d.status,
         });
         skipClassClearRef.current = true;
+        skipSessionClearRef.current = true;
         setSubjectId(d.subjectId);
         setExamType(d.type);
         setExercises(d.exercises);
@@ -167,6 +201,7 @@ const ExamEditor: React.FC<EditorProps> = ({
           );
         }
         setSelectedStudentIds(d.students.map((s: StudentOption) => s.id));
+        setSessionId(d.sessionId ?? undefined);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -263,6 +298,7 @@ const ExamEditor: React.FC<EditorProps> = ({
         })),
         classIds: selectedClassIds,
         studentIds: examType === 'SUPPLEMENTARY' ? selectedStudentIds : [],
+        sessionId: selectedClassIds.length === 1 ? sessionId : undefined,
       };
 
       if (isEdit) {
@@ -539,6 +575,38 @@ const ExamEditor: React.FC<EditorProps> = ({
                   ))}
                 </div>
               )}
+            </Form.Item>
+
+            <Form.Item
+              label="Buổi học"
+              help={
+                selectedClassIds.length !== 1
+                  ? 'Chỉ chọn được khi đề áp dụng đúng 1 khóa'
+                  : undefined
+              }
+            >
+              <Select
+                allowClear
+                showSearch
+                disabled={selectedClassIds.length !== 1}
+                placeholder={
+                  selectedClassIds.length === 1
+                    ? 'Chọn buổi học (không bắt buộc)'
+                    : 'Chọn đúng 1 khóa trước'
+                }
+                value={sessionId}
+                onChange={setSessionId}
+                filterOption={(input: string, opt?: { label?: string }) =>
+                  String(opt?.label ?? '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={sessions.map((s) => ({
+                  label: `${dayjs(s.sessionDate).format('DD/MM/YYYY')} ${s.startTime} — ${s.title ?? 'Buổi học'}`,
+                  value: s.id,
+                }))}
+                style={{ width: '100%' }}
+              />
             </Form.Item>
 
             {examType === 'SUPPLEMENTARY' && (
