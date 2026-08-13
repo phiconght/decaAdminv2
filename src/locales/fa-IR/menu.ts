@@ -68,6 +68,7 @@
   'menu.leave': 'Nghỉ Phép',
   'menu.room': 'Phòng Học',
   'menu.video': 'Kho Video Bài Giảng',
+  'menu.exam-confirmation': 'Xác Nhận Bài Thi',
   'menu.system': 'Hệ Thống',
   'menu.system.user': 'Tài khoản',
 };

@@ -21,18 +21,24 @@ type Props = {
   open: boolean;
   onClose: () => void;
   canApprove: boolean;
+  isAdmin: boolean;
   onApprove: (record: LeaveItem) => void;
   onReject: (record: LeaveItem) => void;
+  onAdminSetStatus: (record: LeaveItem, status: LeaveItem['status']) => void;
 };
 
 // Drawer chi tiết đơn nghỉ (read-only). Footer có Duyệt/Từ chối khi PENDING + có quyền.
+// Duyệt (GV/nhân viên) BAT BUOC PH da xac nhan truoc; ADMIN bo qua dieu kien
+// nay va co them nut "Dat trang thai" (yeu cau nguoi dung 13/08/2026).
 const LeaveDetailDrawer: React.FC<Props> = ({
   record,
   open,
   onClose,
   canApprove,
+  isAdmin,
   onApprove,
   onReject,
+  onAdminSetStatus,
 }) => {
   if (!record) {
     return <Drawer title="Chi tiết đơn nghỉ" open={open} onClose={onClose} />;
@@ -40,6 +46,7 @@ const LeaveDetailDrawer: React.FC<Props> = ({
 
   const meta = STATUS_META[record.status];
   const isPending = record.status === 'PENDING';
+  const needsParentConfirm = !record.parentConfirmedBy;
 
   const items = [
     { key: 'student', label: 'Học viên', children: record.studentName },
@@ -68,6 +75,17 @@ const LeaveDetailDrawer: React.FC<Props> = ({
       children: <Tag color={meta.color}>{meta.label}</Tag>,
     },
     {
+      key: 'parentConfirm',
+      label: 'Phụ huynh xác nhận',
+      children: record.parentConfirmedBy ? (
+        <Tag color="success">
+          {record.parentConfirmedBy} — {fmtDateTime(record.parentConfirmedAt)}
+        </Tag>
+      ) : (
+        <Tag>Chưa xác nhận</Tag>
+      ),
+    },
+    {
       key: 'reviewer',
       label: 'Người duyệt',
       children: record.reviewedBy
@@ -87,25 +105,50 @@ const LeaveDetailDrawer: React.FC<Props> = ({
       open={open}
       onClose={onClose}
       footer={
-        canApprove && isPending ? (
+        (canApprove && isPending) || isAdmin ? (
           <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Popconfirm
-              title={`Từ chối đơn nghỉ của ${record.studentName}?`}
-              okText="Từ chối"
-              cancelText="Hủy"
-              okButtonProps={{ danger: true }}
-              onConfirm={() => onReject(record)}
-            >
-              <Button danger>Từ chối</Button>
-            </Popconfirm>
-            <Popconfirm
-              title={`Duyệt đơn nghỉ của ${record.studentName}?`}
-              okText="Duyệt"
-              cancelText="Hủy"
-              onConfirm={() => onApprove(record)}
-            >
-              <Button type="primary">Duyệt</Button>
-            </Popconfirm>
+            {canApprove && isPending ? (
+              <>
+                <Popconfirm
+                  title={`Từ chối đơn nghỉ của ${record.studentName}?`}
+                  okText="Từ chối"
+                  cancelText="Hủy"
+                  okButtonProps={{ danger: true }}
+                  onConfirm={() => onReject(record)}
+                >
+                  <Button danger>Từ chối</Button>
+                </Popconfirm>
+                {!isAdmin && needsParentConfirm ? (
+                  <Button
+                    type="primary"
+                    disabled
+                    title="Cần phụ huynh xác nhận trước"
+                  >
+                    Duyệt
+                  </Button>
+                ) : (
+                  <Popconfirm
+                    title={`Duyệt đơn nghỉ của ${record.studentName}?`}
+                    okText="Duyệt"
+                    cancelText="Hủy"
+                    onConfirm={() => onApprove(record)}
+                  >
+                    <Button type="primary">Duyệt</Button>
+                  </Popconfirm>
+                )}
+              </>
+            ) : null}
+            {isAdmin ? (
+              <Popconfirm
+                title={`Đổi trạng thái đơn nghỉ của ${record.studentName}?`}
+                okText="Duyệt"
+                cancelText="Từ chối"
+                onConfirm={() => onAdminSetStatus(record, 'APPROVED')}
+                onCancel={() => onAdminSetStatus(record, 'REJECTED')}
+              >
+                <Button>Đặt trạng thái (Admin)</Button>
+              </Popconfirm>
+            ) : null}
           </Space>
         ) : null
       }

@@ -450,6 +450,13 @@ export default [
     component: './video',
   },
   {
+    path: '/exam-confirmation',
+    name: 'exam-confirmation',
+    icon: 'checkCircle',
+    access: 'canConfirmExam',
+    component: './examConfirmation',
+  },
+  {
     path: '/content',
     name: 'content',
     icon: 'read',

@@ -94,6 +94,17 @@ export async function setAttendance(
   });
 }
 
+// PATCH /api/v1/sessions/{id}/attendance/{userId}/confirm — GV/Admin/nhân
+// viên xác nhận điểm danh đúng (yêu cầu người dùng 13/08/2026).
+export async function confirmAttendance(
+  sessionId: number,
+  userId: number,
+): Promise<void> {
+  await request(`/api/v1/sessions/${sessionId}/attendance/${userId}/confirm`, {
+    method: 'PATCH',
+  });
+}
+
 // GET /api/v1/sessions/{id}/qr-token → ApiResponse<{token, ttlSeconds}>.
 export async function getQrToken(sessionId: number): Promise<QrToken> {
   const res = await request<ApiResponse<QrToken>>(

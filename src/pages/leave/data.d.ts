@@ -16,6 +16,10 @@ export type LeaveItem = {
   status: LeaveStatus;
   reviewedBy?: string; // tên người duyệt
   reviewedAt?: string; // ISO instant
+  // Phụ huynh xác nhận đơn — bắt buộc trước khi GV/nhân viên duyệt được
+  // (ADMIN duyệt bất kỳ lúc nào, bỏ qua điều kiện này — 13/08/2026).
+  parentConfirmedBy?: string;
+  parentConfirmedAt?: string; // ISO instant
   createdAt: string; // ISO instant
 };
 

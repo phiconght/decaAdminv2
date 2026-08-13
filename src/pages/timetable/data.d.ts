@@ -50,6 +50,10 @@ export type AttendanceItem = {
   status: AttendanceStatus;
   checkInAt?: string | null; // ISO instant
   checkOutAt?: string | null;
+  // GV/Admin/nhân viên xác nhận điểm danh — bắt buộc trước khi tính vào
+  // báo cáo (yêu cầu người dùng 13/08/2026).
+  confirmedByName?: string | null;
+  confirmedAt?: string | null;
 };
 
 export type QrToken = { token: string; ttlSeconds: number };

@@ -1,9 +1,10 @@
-import { message, Select, Table, Tag } from 'antd';
+import { useAccess } from '@umijs/max';
+import { Button, message, Select, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import type { AttendanceItem, AttendanceStatus } from '../data';
-import { queryAttendance, setAttendance } from '../service';
+import { confirmAttendance, queryAttendance, setAttendance } from '../service';
 
 type Props = {
   sessionId: number;
@@ -27,9 +28,11 @@ const STATUS_TAG: Record<AttendanceStatus, { label: string; color: string }> = {
 };
 
 const AttendanceTable: React.FC<Props> = ({ sessionId, canEdit }) => {
+  const access = useAccess();
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<AttendanceItem[]>([]);
   const [savingId, setSavingId] = useState<number | null>(null);
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
   const fetchRows = async () => {
     setLoading(true);
@@ -59,6 +62,25 @@ const AttendanceTable: React.FC<Props> = ({ sessionId, canEdit }) => {
       message.error('Cập nhật điểm danh thất bại');
     } finally {
       setSavingId(null);
+    }
+  };
+
+  const handleConfirm = async (userId: number) => {
+    setConfirmingId(userId);
+    try {
+      await confirmAttendance(sessionId, userId);
+      setRows((prev) =>
+        prev.map((r) =>
+          r.userId === userId
+            ? { ...r, confirmed: true, confirmedAt: new Date().toISOString() }
+            : r,
+        ),
+      );
+      message.success('Đã xác nhận điểm danh');
+    } catch {
+      message.error('Xác nhận điểm danh thất bại');
+    } finally {
+      setConfirmingId(null);
     }
   };
 
@@ -94,6 +116,34 @@ const AttendanceTable: React.FC<Props> = ({ sessionId, canEdit }) => {
       dataIndex: 'checkInAt',
       width: 140,
       render: (v) => (v ? dayjs(v).format('HH:mm DD/MM') : '—'),
+    },
+    {
+      // Bắt buộc trước khi tính vào báo cáo (yêu cầu người dùng 13/08/2026).
+      title: 'Xác nhận',
+      dataIndex: 'confirmed',
+      width: 170,
+      render: (_, record) =>
+        record.confirmedAt ? (
+          <Tooltip
+            title={
+              record.confirmedByName
+                ? `${record.confirmedByName} lúc ${dayjs(record.confirmedAt).format('HH:mm DD/MM')}`
+                : undefined
+            }
+          >
+            <Tag color="success">Đã xác nhận</Tag>
+          </Tooltip>
+        ) : access.canConfirmAttendance ? (
+          <Button
+            size="small"
+            loading={confirmingId === record.userId}
+            onClick={() => handleConfirm(record.userId)}
+          >
+            Xác nhận
+          </Button>
+        ) : (
+          <Tag>Chưa xác nhận</Tag>
+        ),
     },
   ];
 

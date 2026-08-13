@@ -40,6 +40,18 @@ export async function rejectLeave(
   return request(`${BASE}/${id}/reject`, { method: 'PATCH' });
 }
 
+// ADMIN đặt trực tiếp trạng thái bất kỳ, bỏ qua điều kiện PH xác nhận
+// và "đã xử lý" (yêu cầu người dùng 13/08/2026).
+export async function adminSetLeaveStatus(
+  id: number,
+  status: LeaveItem['status'],
+): Promise<{ success: boolean; data: LeaveItem }> {
+  return request(`${BASE}/${id}/admin-status`, {
+    method: 'PATCH',
+    data: { status },
+  });
+}
+
 // Dropdown học viên — UserPageResponse phẳng. BE KHÔNG có param 'keyword' -> dùng 'fullName'.
 export async function queryStudentOptionsForLeave(fullName?: string): Promise<{
   success: boolean;

@@ -25,6 +25,9 @@ export default function access(
     // Video bai giang / Link Zoom cua buoi hoc (SPEC_VideoBaiGiang_Zoom.md)
     canReadSessionContent: has('SESSION_CONTENT:READ'),
     canWriteSessionContent: has('SESSION_CONTENT:WRITE'),
+    // Xac nhan diem danh / bai thi truoc khi tinh vao bao cao (13/08/2026)
+    canConfirmAttendance: has('ATTENDANCE:CONFIRM'),
+    canConfirmExam: has('EXAM:CONFIRM'),
     canReadUser: has('USER:READ'),
     canWriteUser: has('USER:WRITE'),
     // Báo cáo học tập

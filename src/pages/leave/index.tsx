@@ -7,13 +7,14 @@ import {
   QueryFilter,
 } from '@ant-design/pro-components';
 import { useAccess } from '@umijs/max';
-import { message, Popconfirm, Tag, Tooltip } from 'antd';
+import { message, Popconfirm, Space, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import LeaveDetailDrawer from './components/LeaveDetailDrawer';
 import LeaveForm from './components/LeaveForm';
 import type { LeaveItem, LeaveQuery, LeaveStatus } from './data';
 import {
+  adminSetLeaveStatus,
   approveLeave,
   queryLeaves,
   queryStudentOptionsForLeave,
@@ -38,6 +39,7 @@ const LeavePage: React.FC = () => {
   const access = useAccess();
   const canApprove = access.canApproveLeave;
   const canWrite = access.canWriteLeave;
+  const isAdmin = !!access.canAdmin;
 
   const actionRef = useRef<ActionType | null>(null);
   const [searchParams, setSearchParams] = useState<LeaveQuery>({
@@ -71,6 +73,23 @@ const LeavePage: React.FC = () => {
       actionRef.current?.reload();
     } catch {
       message.error('Từ chối đơn nghỉ thất bại');
+      actionRef.current?.reload();
+    }
+  };
+
+  // ADMIN đặt trực tiếp bất kỳ trạng thái nào, bỏ qua điều kiện PH xác nhận
+  // và "đã xử lý" (yêu cầu người dùng 13/08/2026).
+  const handleAdminSetStatus = async (
+    record: LeaveItem,
+    status: LeaveStatus,
+  ) => {
+    try {
+      await adminSetLeaveStatus(record.id, status);
+      message.success('Đã cập nhật trạng thái đơn nghỉ');
+      setDetailOpen(false);
+      actionRef.current?.reload();
+    } catch {
+      message.error('Cập nhật trạng thái thất bại');
       actionRef.current?.reload();
     }
   };
@@ -138,6 +157,26 @@ const LeavePage: React.FC = () => {
       },
     },
     {
+      // Bắt buộc trước khi GV/nhân viên duyệt được (ADMIN bỏ qua — 13/08/2026).
+      title: 'PH xác nhận',
+      dataIndex: 'parentConfirmedBy',
+      width: 160,
+      render: (_, record) =>
+        record.parentConfirmedBy ? (
+          <Tooltip
+            title={
+              record.parentConfirmedAt
+                ? dayjs(record.parentConfirmedAt).format('DD/MM HH:mm')
+                : undefined
+            }
+          >
+            <Tag color="success">{record.parentConfirmedBy}</Tag>
+          </Tooltip>
+        ) : (
+          <Tag>Chưa xác nhận</Tag>
+        ),
+    },
+    {
       title: 'Người duyệt',
       dataIndex: 'reviewedBy',
       width: 170,
@@ -168,19 +207,37 @@ const LeavePage: React.FC = () => {
     {
       title: 'Thao tác',
       valueType: 'option',
-      width: 160,
+      width: 220,
       render: (_, record) => {
+        const needsParentConfirm = !record.parentConfirmedBy;
+        const actions: React.ReactNode[] = [];
+
         if (canApprove && record.status === 'PENDING') {
-          return [
-            <Popconfirm
-              key="approve"
-              title={`Duyệt đơn nghỉ của ${record.studentName}?`}
-              okText="Duyệt"
-              cancelText="Hủy"
-              onConfirm={() => handleApprove(record)}
-            >
-              <a>Duyệt</a>
-            </Popconfirm>,
+          if (!isAdmin && needsParentConfirm) {
+            actions.push(
+              <Tooltip
+                key="approve-disabled"
+                title="Cần phụ huynh xác nhận trước khi duyệt"
+              >
+                <a style={{ color: '#00000040', cursor: 'not-allowed' }}>
+                  Duyệt
+                </a>
+              </Tooltip>,
+            );
+          } else {
+            actions.push(
+              <Popconfirm
+                key="approve"
+                title={`Duyệt đơn nghỉ của ${record.studentName}?`}
+                okText="Duyệt"
+                cancelText="Hủy"
+                onConfirm={() => handleApprove(record)}
+              >
+                <a>Duyệt</a>
+              </Popconfirm>,
+            );
+          }
+          actions.push(
             <Popconfirm
               key="reject"
               title={`Từ chối đơn nghỉ của ${record.studentName}?`}
@@ -191,13 +248,35 @@ const LeavePage: React.FC = () => {
             >
               <a style={{ color: '#ff4d4f' }}>Từ chối</a>
             </Popconfirm>,
-          ];
+          );
         }
-        return [
-          <a key="view" onClick={() => openDetail(record)}>
-            Xem
-          </a>,
-        ];
+
+        if (actions.length === 0) {
+          actions.push(
+            <a key="view" onClick={() => openDetail(record)}>
+              Xem
+            </a>,
+          );
+        }
+
+        // ADMIN: đặt trực tiếp bất kỳ trạng thái nào, kể cả đơn đã xử lý
+        // hoặc chưa PH xác nhận (bỏ qua mọi điều kiện — 13/08/2026).
+        if (isAdmin) {
+          actions.push(
+            <Popconfirm
+              key="admin-status"
+              title={`Đổi trạng thái đơn nghỉ của ${record.studentName}?`}
+              okText="Duyệt"
+              cancelText="Từ chối"
+              onConfirm={() => handleAdminSetStatus(record, 'APPROVED')}
+              onCancel={() => handleAdminSetStatus(record, 'REJECTED')}
+            >
+              <a>Đặt trạng thái</a>
+            </Popconfirm>,
+          );
+        }
+
+        return <Space size="small">{actions}</Space>;
       },
     },
   ];
@@ -209,8 +288,10 @@ const LeavePage: React.FC = () => {
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
         canApprove={canApprove}
+        isAdmin={isAdmin}
         onApprove={handleApprove}
         onReject={handleReject}
+        onAdminSetStatus={handleAdminSetStatus}
       />
       <ProCard title="Tìm kiếm đơn nghỉ" style={{ marginBottom: 16 }}>
         <QueryFilter<LeaveQuery>
