@@ -69,6 +69,7 @@
   'menu.timetable': 'Thời Khóa Biểu',
   'menu.leave': 'Nghỉ Phép',
   'menu.room': 'Phòng Học',
+  'menu.video': 'Kho Video Bài Giảng',
   'menu.system': 'Hệ Thống',
   'menu.system.user': 'Tài khoản',
 };

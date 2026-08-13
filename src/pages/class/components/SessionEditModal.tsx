@@ -1,5 +1,6 @@
 import {
   DatePicker,
+  Divider,
   Form,
   Input,
   InputNumber,
@@ -19,6 +20,8 @@ import type {
 } from '../schedule.data';
 import { sessionDayLabel } from '../schedule.helper';
 import { createManualSession, updateSession } from '../schedule.service';
+import SessionVideosBlock from './SessionVideosBlock';
+import SessionZoomLinksBlock from './SessionZoomLinksBlock';
 
 type Props = {
   open: boolean;
@@ -273,6 +276,23 @@ const SessionEditModal: React.FC<Props> = ({
             ⓘ Khi lưu hệ thống kiểm tra trùng phòng/GV lại.
           </div>
         </Form>
+
+        {/* Video/Zoom là nội dung của buổi, không phải lịch — chỉ có ý nghĩa
+            khi buổi đã tồn tại (có id), lưu độc lập với nút "Lưu" phía trên.
+            Xem SPEC_VideoBaiGiang_Zoom.md §4.2. */}
+        {isEdit && session && (
+          <>
+            <Divider titlePlacement="left" plain>
+              Video bài giảng
+            </Divider>
+            <SessionVideosBlock sessionId={session.id} />
+
+            <Divider titlePlacement="left" plain>
+              Link Zoom
+            </Divider>
+            <SessionZoomLinksBlock sessionId={session.id} />
+          </>
+        )}
       </Modal>
     </>
   );

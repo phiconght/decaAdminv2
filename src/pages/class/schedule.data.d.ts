@@ -18,6 +18,8 @@ export type ScheduleItem = {
   teacherId?: number | null;
   teacherName?: string | null;
   active: boolean;
+  /** Link Zoom mặc định — copy sang buổi SINH MỚI, không ảnh hưởng buổi đã có sẵn. */
+  defaultZoomUrl?: string | null;
 };
 
 export type CreateSchedulePayload = {
@@ -30,6 +32,7 @@ export type CreateSchedulePayload = {
   roomId?: number | null;
   teacherId?: number | null;
   active?: boolean | null;
+  defaultZoomUrl?: string | null;
 };
 
 // --- Preview sinh buổi ---
@@ -114,4 +117,31 @@ export type TopicOption = {
   name: string;
   subjectId?: number | null;
   sortOrder?: number | null;
+};
+
+// --- Video bài giảng của buổi (SPEC_VideoBaiGiang_Zoom.md) ---
+export type SessionVideoItem = {
+  videoId: number;
+  title: string;
+  youtubeUrl: string;
+  thumbnailUrl?: string | null;
+  durationSeconds?: number | null;
+  sortOrder: number;
+};
+
+// --- Link Zoom của buổi ---
+export type ZoomLinkItem = {
+  id: number;
+  label: string;
+  zoomUrl: string;
+  meetingId?: string | null;
+  passcode?: string | null;
+  sortOrder: number;
+};
+
+export type UpsertZoomLinkPayload = {
+  label?: string;
+  zoomUrl: string;
+  meetingId?: string;
+  passcode?: string;
 };

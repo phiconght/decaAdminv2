@@ -2,6 +2,7 @@ import {
   Button,
   DatePicker,
   Form,
+  Input,
   InputNumber,
   Modal,
   message,
@@ -49,6 +50,7 @@ type FormValues = {
   roomId?: number;
   teacherId?: number;
   active: boolean;
+  defaultZoomUrl?: string;
 };
 
 const RECURRENCE_SEG = [
@@ -93,6 +95,7 @@ const ScheduleRuleModal: React.FC<Props> = ({
         roomId: editItem.roomId ?? undefined,
         teacherId: editItem.teacherId ?? undefined,
         active: editItem.active,
+        defaultZoomUrl: editItem.defaultZoomUrl ?? undefined,
       });
     } else {
       form.resetFields();
@@ -125,6 +128,7 @@ const ScheduleRuleModal: React.FC<Props> = ({
       roomId: v.roomId ?? null,
       teacherId: v.teacherId ?? null,
       active: v.active,
+      defaultZoomUrl: v.defaultZoomUrl?.trim() || null,
     };
   };
 
@@ -316,6 +320,15 @@ const ScheduleRuleModal: React.FC<Props> = ({
                 value: t.id,
               }))}
             />
+          </Form.Item>
+
+          <Form.Item
+            name="defaultZoomUrl"
+            label="Link Zoom mặc định"
+            extra="Áp dụng cho các buổi SINH MỚI từ quy tắc này, không ảnh hưởng buổi đã có sẵn."
+            rules={[{ type: 'url', message: 'Link không hợp lệ' }]}
+          >
+            <Input placeholder="https://zoom.us/j/..." allowClear />
           </Form.Item>
 
           <Form.Item name="active" label="Kích hoạt" valuePropName="checked">

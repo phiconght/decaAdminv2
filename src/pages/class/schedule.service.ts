@@ -6,9 +6,12 @@ import type {
   RoomOption,
   ScheduleItem,
   SessionDetail,
+  SessionVideoItem,
   TeacherOption,
   TopicOption,
   UpdateSessionPayload,
+  UpsertZoomLinkPayload,
+  ZoomLinkItem,
 } from './schedule.data';
 
 // ---------------------- Quy tắc lịch ----------------------
@@ -112,6 +115,71 @@ export async function bulkAssignTopic(
   return request(`/api/v1/classes/${classId}/sessions/bulk-topic`, {
     method: 'PATCH',
     data: { sessionIds, topicId },
+    skipErrorHandler: true,
+  });
+}
+
+// ---------------------- Video bài giảng của buổi ----------------------
+
+export async function listSessionVideos(
+  sessionId: number,
+): Promise<{ success: boolean; data: SessionVideoItem[] }> {
+  return request(`/api/v1/sessions/${sessionId}/videos`, {
+    skipErrorHandler: true,
+  });
+}
+
+// Ghi đè toàn bộ danh sách video của buổi, thứ tự = thứ tự videoIds.
+export async function assignSessionVideos(
+  sessionId: number,
+  videoIds: number[],
+): Promise<{ success: boolean; data: SessionVideoItem[] }> {
+  return request(`/api/v1/sessions/${sessionId}/videos`, {
+    method: 'PUT',
+    data: { videoIds },
+    skipErrorHandler: true,
+  });
+}
+
+// ---------------------- Link Zoom của buổi ----------------------
+
+export async function listZoomLinks(
+  sessionId: number,
+): Promise<{ success: boolean; data: ZoomLinkItem[] }> {
+  return request(`/api/v1/sessions/${sessionId}/zoom-links`, {
+    skipErrorHandler: true,
+  });
+}
+
+export async function addZoomLink(
+  sessionId: number,
+  data: UpsertZoomLinkPayload,
+): Promise<{ success: boolean; data: ZoomLinkItem }> {
+  return request(`/api/v1/sessions/${sessionId}/zoom-links`, {
+    method: 'POST',
+    data,
+    skipErrorHandler: true,
+  });
+}
+
+export async function updateZoomLink(
+  sessionId: number,
+  linkId: number,
+  data: UpsertZoomLinkPayload,
+): Promise<{ success: boolean; data: ZoomLinkItem }> {
+  return request(`/api/v1/sessions/${sessionId}/zoom-links/${linkId}`, {
+    method: 'PUT',
+    data,
+    skipErrorHandler: true,
+  });
+}
+
+export async function deleteZoomLink(
+  sessionId: number,
+  linkId: number,
+): Promise<{ success: boolean }> {
+  return request(`/api/v1/sessions/${sessionId}/zoom-links/${linkId}`, {
+    method: 'DELETE',
     skipErrorHandler: true,
   });
 }

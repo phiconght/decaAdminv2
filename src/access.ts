@@ -22,6 +22,9 @@ export default function access(
     canReadLeave: has('LEAVE:READ'),
     canWriteLeave: has('LEAVE:WRITE'),
     canApproveLeave: has('LEAVE:APPROVE'),
+    // Video bai giang / Link Zoom cua buoi hoc (SPEC_VideoBaiGiang_Zoom.md)
+    canReadSessionContent: has('SESSION_CONTENT:READ'),
+    canWriteSessionContent: has('SESSION_CONTENT:WRITE'),
     canReadUser: has('USER:READ'),
     canWriteUser: has('USER:WRITE'),
     // Báo cáo học tập

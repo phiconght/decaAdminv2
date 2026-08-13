@@ -68,6 +68,7 @@
   'menu.timetable': 'Thời Khóa Biểu',
   'menu.leave': 'Nghỉ Phép',
   'menu.room': 'Phòng Học',
+  'menu.video': 'Kho Video Bài Giảng',
   'menu.content': 'Nội Dung',
   'menu.content.posts': 'Bài Viết',
   'menu.content.announcements': 'Thông Báo',

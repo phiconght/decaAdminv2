@@ -443,6 +443,13 @@ export default [
     component: './room',
   },
   {
+    path: '/video',
+    name: 'video',
+    icon: 'playSquare',
+    access: 'canReadSessionContent',
+    component: './video',
+  },
+  {
     path: '/content',
     name: 'content',
     icon: 'read',
