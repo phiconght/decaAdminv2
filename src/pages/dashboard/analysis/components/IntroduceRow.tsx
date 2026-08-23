@@ -31,15 +31,20 @@ const IntroduceRow = ({
       <Col {...topColResponsiveProps}>
         <ChartCard
           variant="borderless"
-          title="总销售额"
+          title="Tổng doanh số bán hàng"
           action={
-            <Tooltip title="指标说明">
+            <Tooltip title="Hướng dẫn chỉ số">
               <InfoCircleOutlined />
             </Tooltip>
           }
           loading={loading}
           total={() => <Yuan>126560</Yuan>}
-          footer={<Field label="日销售额" value={`￥${formatNumber(12423)}`} />}
+          footer={
+            <Field
+              label="Doanh số bán hàng hàng ngày"
+              value={`￥${formatNumber(12423)}`}
+            />
+          }
           contentHeight={46}
         >
           <Trend
@@ -48,11 +53,11 @@ const IntroduceRow = ({
               marginRight: 16,
             }}
           >
-            周同比
+            So với tuần trước
             <span className={styles.trendText}>12%</span>
           </Trend>
           <Trend flag="down">
-            日同比
+            So với ngày trước
             <span className={styles.trendText}>11%</span>
           </Trend>
         </ChartCard>
@@ -62,14 +67,16 @@ const IntroduceRow = ({
         <ChartCard
           variant="borderless"
           loading={loading}
-          title="访问量"
+          title="Lượt truy cập"
           action={
-            <Tooltip title="指标说明">
+            <Tooltip title="Hướng dẫn chỉ số">
               <InfoCircleOutlined />
             </Tooltip>
           }
           total={formatNumber(8846)}
-          footer={<Field label="日访问量" value={formatNumber(1234)} />}
+          footer={
+            <Field label="Lượt truy cập hàng ngày" value={formatNumber(1234)} />
+          }
           contentHeight={46}
         >
           <Area
@@ -92,14 +99,14 @@ const IntroduceRow = ({
         <ChartCard
           variant="borderless"
           loading={loading}
-          title="支付笔数"
+          title="Số lần thanh toán"
           action={
-            <Tooltip title="指标说明">
+            <Tooltip title="Hướng dẫn chỉ số">
               <InfoCircleOutlined />
             </Tooltip>
           }
           total={formatNumber(6560)}
-          footer={<Field label="转化率" value="60%" />}
+          footer={<Field label="Tỷ lệ chuyển đổi" value="60%" />}
           contentHeight={46}
         >
           <Column
@@ -117,9 +124,9 @@ const IntroduceRow = ({
         <ChartCard
           loading={loading}
           variant="borderless"
-          title="运营活动效果"
+          title="Hiệu quả hoạt động vận hành"
           action={
-            <Tooltip title="指标说明">
+            <Tooltip title="Hướng dẫn chỉ số">
               <InfoCircleOutlined />
             </Tooltip>
           }
@@ -137,11 +144,11 @@ const IntroduceRow = ({
                   marginRight: 16,
                 }}
               >
-                周同比
+                So với tuần trước
                 <span className={styles.trendText}>12%</span>
               </Trend>
               <Trend flag="down">
-                日同比
+                So với ngày trước
                 <span className={styles.trendText}>11%</span>
               </Trend>
             </div>

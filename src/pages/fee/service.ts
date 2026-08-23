@@ -2,6 +2,8 @@ import { request } from '@umijs/max';
 import type {
   ClassOption,
   CoinBalance,
+  CoinTopupItem,
+  CoinTopupQuery,
   CoinTransactionItem,
   InvoiceDetail,
   InvoiceItem,
@@ -135,6 +137,18 @@ export async function confirmInvoiceBatch(
   });
 }
 
+/** Cong/tru truc tiep so tien hoc phi — doc lap voi buoc xac nhan, dung duoc bat cu luc nao (tru dot thu da hủy). */
+export async function adjustInvoice(
+  id: number,
+  adjustmentAmount: number,
+  adjustmentNote?: string,
+): Promise<{ success: boolean; data: InvoiceItem }> {
+  return request(`${BASE}/invoices/${id}/adjust`, {
+    method: 'POST',
+    data: { adjustmentAmount, adjustmentNote },
+  });
+}
+
 export async function markInvoicePaid(
   id: number,
   note?: string,
@@ -232,4 +246,37 @@ export async function adjustCoin(
     method: 'POST',
     data,
   });
+}
+
+// ================= Nạp Xu bằng chuyển khoản (CoinTopupController) =================
+export async function queryCoinTopups(params: CoinTopupQuery): Promise<{
+  data: CoinTopupItem[];
+  total: number;
+  success: boolean;
+}> {
+  return request(`${BASE}/coin-topups`, { params });
+}
+
+export async function confirmCoinTopup(
+  id: number,
+): Promise<{ success: boolean }> {
+  return request(`${BASE}/coin-topups/${id}/confirm`, { method: 'POST' });
+}
+
+/** Cong/tru truc tiep so Xu cua 1 yeu cau nap — doc lap voi buoc xac nhan, dung duoc bat cu luc nao (tru yeu cau da hủy). */
+export async function adjustCoinTopup(
+  id: number,
+  adjustmentCoinAmount: number,
+  adjustmentNote?: string,
+): Promise<{ success: boolean; data: CoinTopupItem }> {
+  return request(`${BASE}/coin-topups/${id}/adjust`, {
+    method: 'POST',
+    data: { adjustmentCoinAmount, adjustmentNote },
+  });
+}
+
+export async function cancelCoinTopup(
+  id: number,
+): Promise<{ success: boolean }> {
+  return request(`${BASE}/coin-topups/${id}/cancel`, { method: 'POST' });
 }

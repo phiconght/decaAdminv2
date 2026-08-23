@@ -12,27 +12,27 @@ import useStyles from './style.style';
 
 const links = [
   {
-    title: '操作一',
+    title: 'Thao tác 1',
     href: '',
   },
   {
-    title: '操作二',
+    title: 'Thao tác 2',
     href: '',
   },
   {
-    title: '操作三',
+    title: 'Thao tác 3',
     href: '',
   },
   {
-    title: '操作四',
+    title: 'Thao tác 4',
     href: '',
   },
   {
-    title: '操作五',
+    title: 'Thao tác 5',
     href: '',
   },
   {
-    title: '操作六',
+    title: 'Thao tác 6',
     href: '',
   },
 ];
@@ -59,9 +59,8 @@ const PageHeaderContent: FC<{
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>
-          早安，
-          {currentUser.name}
-          ，祝你开心每一天！
+          Chào buổi sáng,
+          {currentUser.name}, chúc bạn có một ngày vui vẻ!
         </div>
         <div>
           {currentUser.title} | {currentUser.group}
@@ -75,13 +74,13 @@ const ExtraContent: FC<Record<string, any>> = () => {
   return (
     <div className={styles.extraContent}>
       <div className={styles.statItem}>
-        <Statistic title="项目数" value={56} />
+        <Statistic title="Số dự án" value={56} />
       </div>
       <div className={styles.statItem}>
-        <Statistic title="团队内排名" value={8} suffix="/ 24" />
+        <Statistic title="Xếp hạng trong nhóm" value={8} suffix="/ 24" />
       </div>
       <div className={styles.statItem}>
-        <Statistic title="项目访问" value={2223} />
+        <Statistic title="Lượt truy cập dự án" value={2223} />
       </div>
     </div>
   );
@@ -142,12 +141,13 @@ const Workplace: FC = () => {
           currentUser={{
             avatar:
               'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-            name: '吴彦祖',
+            name: 'Vũ Diễn Tổ',
             userid: '00000001',
             email: 'antdesign@alipay.com',
-            signature: '海纳百川，有容乃大',
-            title: '交互专家',
-            group: '蚂蚁集团－某某某事业群－某某平台部－某某技术部－UED',
+            signature: 'Hòa nhập đa dạng, bao dung là lớn',
+            title: 'Chuyên gia tương tác',
+            group:
+              'Ant Group - Business Group - Platform Department - Technical Department - UED',
           }}
         />
       }
@@ -160,11 +160,11 @@ const Workplace: FC = () => {
             style={{
               marginBottom: 24,
             }}
-            title="进行中的项目"
+            title="Dự án đang tiến hành"
             variant="borderless"
             extra={
               <Link to="/" prefetch>
-                全部项目
+                Tất cả dự án
               </Link>
             }
             loading={projectLoading}
@@ -206,7 +206,7 @@ const Workplace: FC = () => {
             }}
             variant="borderless"
             className={styles.activeCard}
-            title="动态"
+            title="Hoạt động"
             loading={activitiesLoading}
           >
             <List<ActivitiesType>
@@ -223,7 +223,7 @@ const Workplace: FC = () => {
             style={{
               marginBottom: 24,
             }}
-            title="快速开始 / 便捷导航"
+            title="Bắt đầu nhanh / Điều hướng tiện lợi"
             variant="borderless"
           >
             <EditableLinkGroup
@@ -237,7 +237,7 @@ const Workplace: FC = () => {
               marginBottom: 24,
             }}
             variant="borderless"
-            title="XX 指数"
+            title="Chỉ số XX"
             loading={data?.radarData?.length === 0}
           >
             <Radar
@@ -273,7 +273,7 @@ const Workplace: FC = () => {
               },
             }}
             variant="borderless"
-            title="团队"
+            title="Nhóm"
             loading={projectLoading}
           >
             <div className={styles.members}>

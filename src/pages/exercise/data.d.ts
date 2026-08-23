@@ -1,4 +1,4 @@
-export type ExerciseStatus = 'ACTIVE' | 'INACTIVE';
+export type ExerciseStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'DELETED';
 
 export type ExerciseType = 'MULTIPLE_CHOICE' | 'ESSAY' | 'TRUE_FALSE';
 
@@ -75,6 +75,38 @@ export type ExerciseDetailView = {
   createdBy: string;
   createdAt: string;
   updatedAt?: string;
+  importBatchId?: number;
+  orderIndex?: number;
+};
+
+/** Metadata 1 lô nhập bài tập/đề thi (GET /admin/import-batches). */
+export type ImportBatchListItem = {
+  id: number;
+  sourceFileName: string;
+  subjectName: string;
+  gradeLevel: string;
+  examName?: string;
+  totalCount: number;
+  status: 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED';
+  createdAt: string;
+};
+
+/** Chi tiết 1 lô + toàn bộ bài tập trong lô (GET /admin/import-batches/{id}). */
+export type ImportBatchDetail = {
+  id: number;
+  sourceFileName: string;
+  subjectId: number;
+  subjectName: string;
+  gradeLevel: string;
+  topicId?: number;
+  topicName?: string;
+  examName?: string;
+  examId?: number;
+  totalCount: number;
+  confirmedCount: number;
+  status: 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED';
+  createdAt: string;
+  exercises: ExerciseDetailView[];
 };
 
 export type ExerciseQuery = {

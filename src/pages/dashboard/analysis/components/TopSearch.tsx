@@ -20,18 +20,18 @@ const TopSearch = ({
 }) => {
   const columns = [
     {
-      title: '排名',
+      title: 'Xếp hạng',
       dataIndex: 'index',
       key: 'index',
     },
     {
-      title: '搜索关键词',
+      title: 'Từ khóa tìm kiếm',
       dataIndex: 'keyword',
       key: 'keyword',
       render: (text: React.ReactNode) => <a href="/">{text}</a>,
     },
     {
-      title: '用户数',
+      title: 'Số lượng người dùng',
       dataIndex: 'count',
       key: 'count',
       sorter: (
@@ -44,7 +44,7 @@ const TopSearch = ({
       ) => a.count - b.count,
     },
     {
-      title: '周涨幅',
+      title: 'Mức tăng tuần',
       dataIndex: 'range',
       key: 'range',
       sorter: (
@@ -77,7 +77,7 @@ const TopSearch = ({
     <Card
       loading={loading}
       variant="borderless"
-      title="线上热门搜索"
+      title="Tìm kiếm phổ biến trực tuyến"
       extra={dropdownGroup}
       style={{
         height: '100%',
@@ -94,8 +94,8 @@ const TopSearch = ({
           <NumberInfo
             subTitle={
               <span>
-                搜索用户数
-                <Tooltip title="指标说明">
+                Số lượng người dùng tìm kiếm
+                <Tooltip title="Hướng dẫn chỉ số">
                   <InfoCircleOutlined
                     style={{
                       marginLeft: 8,
@@ -133,8 +133,8 @@ const TopSearch = ({
           <NumberInfo
             subTitle={
               <span>
-                人均搜索次数
-                <Tooltip title="指标说明">
+                Trung bình tìm kiếm trên đầu người
+                <Tooltip title="Hướng dẫn chỉ số">
                   <InfoCircleOutlined
                     style={{
                       marginLeft: 8,

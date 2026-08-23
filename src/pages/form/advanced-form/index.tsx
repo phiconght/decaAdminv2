@@ -26,18 +26,18 @@ interface TableFormDateType {
 }
 type InternalNamePath = (string | number)[];
 const fieldLabels = {
-  name: '仓库名',
-  url: '仓库域名',
-  owner: '仓库管理员',
-  approver: '审批人',
-  dateRange: '生效日期',
-  type: '仓库类型',
-  name2: '任务名',
-  url2: '任务描述',
-  owner2: '执行人',
-  approver2: '责任人',
-  dateRange2: '生效日期',
-  type2: '任务类型',
+  name: 'Tên kho lưu trữ',
+  url: 'Tên miền kho lưu trữ',
+  owner: 'Quản trị viên kho lưu trữ',
+  approver: 'Người phê duyệt',
+  dateRange: 'Ngày có hiệu lực',
+  type: 'Loại kho lưu trữ',
+  name2: 'Tên nhiệm vụ',
+  url2: 'Mô tả nhiệm vụ',
+  owner2: 'Người thực thi',
+  approver2: 'Người chịu trách nhiệm',
+  dateRange2: 'Ngày có hiệu lực',
+  type2: 'Loại nhiệm vụ',
 };
 const tableData = [
   {
@@ -105,7 +105,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
     return (
       <span className={styles.errorIcon}>
         <Popover
-          title="表单校验信息"
+          title="Thông tin xác thực biểu mẫu"
           content={errorList}
           classNames={{
             root: styles.errorPopover,
@@ -128,7 +128,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
     setError([]);
     try {
       await fakeSubmitForm(values);
-      message.success('提交成功');
+      message.success('Nộp thành công');
     } catch {
       // console.log
     }
@@ -138,25 +138,25 @@ const AdvancedForm: FC<Record<string, any>> = () => {
   };
   const columns: ProColumnType<TableFormDateType>[] = [
     {
-      title: '成员姓名',
+      title: 'Tên thành viên',
       dataIndex: 'name',
       key: 'name',
       width: '20%',
     },
     {
-      title: '工号',
+      title: 'Mã nhân viên',
       dataIndex: 'workId',
       key: 'workId',
       width: '20%',
     },
     {
-      title: '所属部门',
+      title: 'Bộ phận',
       dataIndex: 'department',
       key: 'department',
       width: '40%',
     },
     {
-      title: '操作',
+      title: 'Thao tác',
       key: 'action',
       valueType: 'option',
       render: (_, record: TableFormDateType, _index, action) => {
@@ -169,7 +169,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
               action?.startEditable(record.key);
             }}
           >
-            编辑
+            Chỉnh sửa
           </a>,
         ];
       },
@@ -195,8 +195,12 @@ const AdvancedForm: FC<Record<string, any>> = () => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <PageContainer content="高级表单常见于一次性输入和提交大批量数据的场景。">
-        <Card title="仓库管理" className={styles.card} variant="borderless">
+      <PageContainer content="Biểu mẫu nâng cao thường được sử dụng cho các kịch bản nhập một lần và gửi dữ liệu hàng loạt.">
+        <Card
+          title="Quản lý kho lưu trữ"
+          className={styles.card}
+          variant="borderless"
+        >
           <Row gutter={16}>
             <Col lg={6} md={12} sm={24}>
               <ProFormText
@@ -205,10 +209,10 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入仓库名称',
+                    message: 'Vui lòng nhập tên kho lưu trữ',
                   },
                 ]}
-                placeholder="请输入仓库名称"
+                placeholder="Vui lòng nhập tên kho lưu trữ"
               />
             </Col>
             <Col
@@ -262,20 +266,20 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择管理员',
+                    message: 'Vui lòng chọn quản trị viên',
                   },
                 ]}
                 options={[
                   {
-                    label: '付晓晓',
+                    label: 'Fu Xiaoxiao',
                     value: 'xiao',
                   },
                   {
-                    label: '周毛毛',
+                    label: 'Zhou Maomao',
                     value: 'mao',
                   },
                 ]}
-                placeholder="请选择管理员"
+                placeholder="Vui lòng chọn quản trị viên"
               />
             </Col>
           </Row>
@@ -287,20 +291,20 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择审批员',
+                    message: 'Vui lòng chọn người phê duyệt',
                   },
                 ]}
                 options={[
                   {
-                    label: '付晓晓',
+                    label: 'Fu Xiaoxiao',
                     value: 'xiao',
                   },
                   {
-                    label: '周毛毛',
+                    label: 'Zhou Maomao',
                     value: 'mao',
                   },
                 ]}
-                placeholder="请选择审批员"
+                placeholder="Vui lòng chọn người phê duyệt"
               />
             </Col>
             <Col
@@ -327,7 +331,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择生效日期',
+                    message: 'Vui lòng chọn ngày có hiệu lực',
                   },
                 ]}
               />
@@ -351,25 +355,29 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择仓库类型',
+                    message: 'Vui lòng chọn loại kho lưu trữ',
                   },
                 ]}
                 options={[
                   {
-                    label: '私密',
+                    label: 'Riêng tư',
                     value: 'private',
                   },
                   {
-                    label: '公开',
+                    label: 'Công khai',
                     value: 'public',
                   },
                 ]}
-                placeholder="请选择仓库类型"
+                placeholder="Vui lòng chọn loại kho lưu trữ"
               />
             </Col>
           </Row>
         </Card>
-        <Card title="任务管理" className={styles.card} variant="borderless">
+        <Card
+          title="Quản lý nhiệm vụ"
+          className={styles.card}
+          variant="borderless"
+        >
           <Row gutter={16}>
             <Col lg={6} md={12} sm={24}>
               <ProFormText
@@ -378,7 +386,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入',
+                    message: 'Vui lòng nhập',
                   },
                 ]}
               />
@@ -402,7 +410,7 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择',
+                    message: 'Vui lòng chọn',
                   },
                 ]}
               />
@@ -426,16 +434,16 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择管理员',
+                    message: 'Vui lòng chọn quản trị viên',
                   },
                 ]}
                 options={[
                   {
-                    label: '付晓晓',
+                    label: 'Fu Xiaoxiao',
                     value: 'xiao',
                   },
                   {
-                    label: '周毛毛',
+                    label: 'Zhou Maomao',
                     value: 'mao',
                   },
                 ]}
@@ -450,20 +458,20 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择审批员',
+                    message: 'Vui lòng chọn người phê duyệt',
                   },
                 ]}
                 options={[
                   {
-                    label: '付晓晓',
+                    label: 'Fu Xiaoxiao',
                     value: 'xiao',
                   },
                   {
-                    label: '周毛毛',
+                    label: 'Zhou Maomao',
                     value: 'mao',
                   },
                 ]}
-                placeholder="请选择审批员"
+                placeholder="Vui lòng chọn người phê duyệt"
               />
             </Col>
             <Col
@@ -485,10 +493,10 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入',
+                    message: 'Vui lòng nhập',
                   },
                 ]}
-                placeholder="提醒时间"
+                placeholder="Thời gian nhắc nhở"
                 fieldProps={{
                   style: {
                     width: '100%',
@@ -515,25 +523,25 @@ const AdvancedForm: FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请选择仓库类型',
+                    message: 'Vui lòng chọn loại kho lưu trữ',
                   },
                 ]}
                 options={[
                   {
-                    label: '私密',
+                    label: 'Riêng tư',
                     value: 'private',
                   },
                   {
-                    label: '公开',
+                    label: 'Công khai',
                     value: 'public',
                   },
                 ]}
-                placeholder="请选择仓库类型"
+                placeholder="Vui lòng chọn loại kho lưu trữ"
               />
             </Col>
           </Row>
         </Card>
-        <Card title="成员管理" variant="borderless">
+        <Card title="Quản lý thành viên" variant="borderless">
           <ProForm.Item name="members">
             <EditableProTable<TableFormDateType>
               recordCreatorProps={{

@@ -102,7 +102,7 @@ const Projects: FC = () => {
           }}
         >
           <StandardFormRow
-            title="所属类目"
+            title="Danh mục thuộc"
             block
             style={{
               paddingBottom: 11,
@@ -125,19 +125,19 @@ const Projects: FC = () => {
               </TagSelect>
             </FormItem>
           </StandardFormRow>
-          <StandardFormRow title="其它选项" grid last>
+          <StandardFormRow title="Tùy chọn khác" grid last>
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <FormItem {...formItemLayout} label="作者" name="author">
+                <FormItem {...formItemLayout} label="Tác giả" name="author">
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '王昭君',
+                        label: 'Vương Chiêu Quân',
                         value: 'lisa',
                       },
                     ]}
@@ -145,20 +145,24 @@ const Projects: FC = () => {
                 </FormItem>
               </Col>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <FormItem {...formItemLayout} label="好评度" name="rate">
+                <FormItem
+                  {...formItemLayout}
+                  label="Mức độ đánh giá cao"
+                  name="rate"
+                >
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '优秀',
+                        label: 'Xuất sắc',
                         value: 'good',
                       },
                       {
-                        label: '普通',
+                        label: 'Bình thường',
                         value: 'normal',
                       },
                     ]}

@@ -5,16 +5,20 @@ import React from 'react';
 import useStyles from './index.style';
 
 const descriptionItems = [
-  { key: 'id', label: '项目 ID', children: '23421' },
-  { key: 'owner', label: '负责人', children: '曲丽丽' },
-  { key: 'time', label: '生效时间', children: '2016-12-12 ~ 2017-12-12' },
+  { key: 'id', label: 'ID Dự án', children: '23421' },
+  { key: 'owner', label: 'Người chịu trách nhiệm', children: 'Qu Lili' },
+  {
+    key: 'time',
+    label: 'Thời gian có hiệu lực',
+    children: '2016-12-12 ~ 2017-12-12',
+  },
 ];
 
 const extra = (
   <>
-    <Button type="primary">返回列表</Button>
-    <Button>查看项目</Button>
-    <Button>打印</Button>
+    <Button type="primary">Quay lại danh sách</Button>
+    <Button>Xem dự án</Button>
+    <Button>In</Button>
   </>
 );
 
@@ -27,7 +31,7 @@ const Success: React.FC = () => {
           margin: '8px 0 4px',
         }}
       >
-        <span>曲丽丽</span>
+        <span>Qu Lili</span>
         <DingdingOutlined
           style={{
             marginLeft: 8,
@@ -50,7 +54,7 @@ const Success: React.FC = () => {
           margin: '8px 0 4px',
         }}
       >
-        <span>周毛毛</span>
+        <span>Zhou Maomao</span>
         <a href="#">
           <DingdingOutlined
             style={{
@@ -58,14 +62,14 @@ const Success: React.FC = () => {
               marginLeft: 8,
             }}
           />
-          <span>催一下</span>
+          <span>Nhắc nhở</span>
         </a>
       </div>
     </div>
   );
   const content = (
     <>
-      <Descriptions title="项目名称" items={descriptionItems} />
+      <Descriptions title="Tên dự án" items={descriptionItems} />
       <br />
       <Steps
         type="dot"
@@ -78,7 +82,7 @@ const Success: React.FC = () => {
                   fontSize: 14,
                 }}
               >
-                创建项目
+                Tạo dự án
               </span>
             ),
             content: desc1,
@@ -90,7 +94,7 @@ const Success: React.FC = () => {
                   fontSize: 14,
                 }}
               >
-                部门初审
+                Xem xét sơ bộ bộ phận
               </span>
             ),
             content: desc2,
@@ -102,7 +106,7 @@ const Success: React.FC = () => {
                   fontSize: 14,
                 }}
               >
-                财务复核
+                Xem xét tài chính
               </span>
             ),
           },
@@ -113,7 +117,7 @@ const Success: React.FC = () => {
                   fontSize: 14,
                 }}
               >
-                完成
+                Hoàn thành
               </span>
             ),
           },
@@ -126,8 +130,8 @@ const Success: React.FC = () => {
       <Card variant="borderless">
         <Result
           status="success"
-          title="提交成功"
-          subTitle='提交结果页用于反馈一系列操作任务的处理结果， 如果仅是简单操作，使用 Message 全局提示反馈即可。 本文字区域可以展示简单的补充说明，如果有类似展示 "单据"的需求，下面这个灰色区域可以呈现比较复杂的内容。'
+          title="Nộp thành công"
+          subTitle='Trang kết quả nộp được sử dụng để phản hồi kết quả xử lý một loạt tác vụ hoạt động. Nếu chỉ là hoạt động đơn giản, bạn có thể sử dụng Thông báo toàn cục để phản hồi. Khu vực văn bản này có thể hiển thị các giải thích bổ sung đơn giản, nếu có yêu cầu tương tự như hiển thị "Chứng từ", khu vực màu xám dưới đây có thể trình bày nội dung phức tạp hơn.'
           extra={extra}
           style={{
             marginBottom: 16,

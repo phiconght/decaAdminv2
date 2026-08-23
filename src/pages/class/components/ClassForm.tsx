@@ -2,6 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import {
   DrawerForm,
   ProFormDatePicker,
+  ProFormDigit,
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
@@ -46,8 +47,16 @@ const ClassForm: React.FC<Props> = ({
             ? (dayjs(editData.endDate) as unknown as string)
             : undefined,
           status: editData.status,
+          pricePerSession: editData.pricePerSession,
+          coinPrice: editData.coinPrice,
+          paymentType: editData.paymentType ?? 'PREPAID_COIN',
+          deliveryMode: editData.deliveryMode ?? 'OFFLINE',
         }
-      : { status: 'ACTIVE' };
+      : {
+          status: 'ACTIVE',
+          paymentType: 'PREPAID_COIN',
+          deliveryMode: 'OFFLINE',
+        };
 
   const handleFinish = async (values: ClassDetail) => {
     if (isEdit && editData) {
@@ -157,6 +166,45 @@ const ClassForm: React.FC<Props> = ({
             { label: 'Tạm dừng', value: 'INACTIVE' },
           ]}
           allowClear={false}
+        />
+        <ProFormSelect
+          name="deliveryMode"
+          label="Hình thức học"
+          tooltip="Quyết định cách điểm danh: ONLINE = học sinh tự bấm nút Điểm danh; OFFLINE = quét QR xoay vòng hoặc GV/Admin điểm danh thủ công."
+          options={[
+            { label: 'Trực tuyến (Online)', value: 'ONLINE' },
+            { label: 'Trực tiếp tại lớp (Offline)', value: 'OFFLINE' },
+          ]}
+          allowClear={false}
+        />
+        <ProFormDigit
+          name="pricePerSession"
+          label="Đơn giá mỗi buổi (VND)"
+          tooltip="Dùng tính lương/công giáo viên — KHÔNG phải giá bán cho học viên."
+          min={0}
+          fieldProps={{ precision: 0, step: 10000 }}
+          placeholder="0"
+        />
+        <ProFormSelect
+          name="paymentType"
+          label="Hình thức thanh toán"
+          tooltip="Thanh toán trước = học sinh tự đăng ký, trừ Xu trọn khóa ngay. Thanh toán sau = Admin chốt đợt thu hàng tháng, phụ huynh/học sinh chuyển khoản theo mã (QR)."
+          options={[
+            { label: 'Thanh toán trước (Xu trọn khóa)', value: 'PREPAID_COIN' },
+            {
+              label: 'Thanh toán sau (chuyển khoản, chốt hàng tháng)',
+              value: 'POSTPAID_TRANSFER',
+            },
+          ]}
+          allowClear={false}
+        />
+        <ProFormDigit
+          name="coinPrice"
+          label="Giá Xu trọn khóa (khi Thanh toán trước)"
+          tooltip="Chỉ áp dụng khi Hình thức thanh toán = Thanh toán trước. Bỏ trống hoặc 0 = không mở bán qua Xu ở Mobile/Web."
+          min={0}
+          fieldProps={{ precision: 0, step: 1000 }}
+          placeholder="Bỏ trống nếu không mở bán qua Xu"
         />
       </DrawerForm>
     </>

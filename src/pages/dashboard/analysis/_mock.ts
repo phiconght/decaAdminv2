@@ -26,7 +26,7 @@ for (let i = 0; i < fakeY2.length; i += 1) {
 const salesData = [];
 for (let i = 0; i < 12; i += 1) {
   salesData.push({
-    x: `${i + 1}月`,
+    x: `${i + 1}Tháng`,
     y: Math.floor(Math.random() * 1000) + 200,
   });
 }
@@ -34,7 +34,7 @@ const searchData = [];
 for (let i = 0; i < 50; i += 1) {
   searchData.push({
     index: i + 1,
-    keyword: `搜索关键词-${i}`,
+    keyword: `Từ khóa tìm kiếm-${i}`,
     count: Math.floor(Math.random() * 1000),
     range: Math.floor(Math.random() * 100),
     status: Math.floor((Math.random() * 10) % 2),
@@ -42,77 +42,77 @@ for (let i = 0; i < 50; i += 1) {
 }
 const salesTypeData = [
   {
-    x: '家用电器',
+    x: 'Điện tử gia dụng',
     y: 4544,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống',
     y: 3321,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân',
     y: 3113,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 2341,
   },
   {
-    x: '母婴产品',
+    x: 'Sản phẩm mẹ và bé',
     y: 1231,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 1231,
   },
 ];
 
 const salesTypeDataOnline = [
   {
-    x: '家用电器',
+    x: 'Điện tử gia dụng',
     y: 244,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống',
     y: 321,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân',
     y: 311,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 41,
   },
   {
-    x: '母婴产品',
+    x: 'Sản phẩm mẹ và bé',
     y: 121,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 111,
   },
 ];
 
 const salesTypeDataOffline = [
   {
-    x: '家用电器',
+    x: 'Điện tử gia dụng',
     y: 99,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống',
     y: 188,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân',
     y: 344,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 255,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 65,
   },
 ];
@@ -129,19 +129,19 @@ for (let i = 0; i < 20; i += 1) {
   const date = dayjs(Date.now() + 1000 * 60 * 30 * i).format('HH:mm');
   offlineChartData.push({
     date,
-    type: '客流量',
+    type: 'Lượng khách',
     value: Math.floor(Math.random() * 100) + 10,
   });
   offlineChartData.push({
     date,
-    type: '支付笔数',
+    type: 'Số lần thanh toán',
     value: Math.floor(Math.random() * 100) + 10,
   });
 }
 
 const radarOriginData = [
   {
-    name: '个人',
+    name: 'Cá nhân',
     ref: 10,
     koubei: 8,
     output: 4,
@@ -149,7 +149,7 @@ const radarOriginData = [
     hot: 7,
   },
   {
-    name: '团队',
+    name: 'Nhóm',
     ref: 3,
     koubei: 9,
     output: 6,
@@ -157,7 +157,7 @@ const radarOriginData = [
     hot: 1,
   },
   {
-    name: '部门',
+    name: 'Bộ phận',
     ref: 4,
     koubei: 1,
     output: 6,
@@ -168,11 +168,11 @@ const radarOriginData = [
 
 const radarData: RadarData[] = [];
 const radarTitleMap = {
-  ref: '引用',
-  koubei: '口碑',
-  output: '产量',
-  contribute: '贡献',
-  hot: '热度',
+  ref: 'Trích dẫn',
+  koubei: 'Danh tiếng',
+  output: 'Sản lượng',
+  contribute: 'Đóng góp',
+  hot: 'Độ phổ biến',
 };
 radarOriginData.forEach((item) => {
   Object.keys(item).forEach((key) => {

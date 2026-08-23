@@ -9,31 +9,31 @@ import React from 'react';
 const BindingView: React.FC = () => {
   const getData = () => [
     {
-      title: '绑定淘宝',
-      description: '当前未绑定淘宝账号',
+      title: 'Liên kết Taobao',
+      description: 'Hiện tại chưa liên kết tài khoản Taobao',
       actions: [
         <a key="Bind" href="#">
-          绑定
+          Liên kết
         </a>,
       ],
       avatar: <TaobaoOutlined className="taobao" />,
     },
     {
-      title: '绑定支付宝',
-      description: '当前未绑定支付宝账号',
+      title: 'Liên kết Alipay',
+      description: 'Hiện tại chưa liên kết tài khoản Alipay',
       actions: [
         <a key="Bind" href="#">
-          绑定
+          Liên kết
         </a>,
       ],
       avatar: <AlipayOutlined className="alipay" />,
     },
     {
-      title: '绑定钉钉',
-      description: '当前未绑定钉钉账号',
+      title: 'Liên kết DingTalk',
+      description: 'Hiện tại chưa liên kết tài khoản DingTalk',
       actions: [
         <a key="Bind" href="#">
-          绑定
+          Liên kết
         </a>,
       ],
       avatar: <DingdingOutlined className="dingding" />,

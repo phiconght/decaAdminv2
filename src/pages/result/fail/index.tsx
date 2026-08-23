@@ -8,7 +8,7 @@ export default () => {
   const Content = (
     <>
       <div className={styles.title}>
-        <span>您提交的内容有如下错误：</span>
+        <span>Nội dung bạn gửi có các lỗi sau:</span>
       </div>
       <div
         style={{
@@ -21,14 +21,14 @@ export default () => {
           }}
           className={styles.error_icon}
         />
-        <span>您的账户已被冻结</span>
+        <span>Tài khoản của bạn đã bị đóng băng</span>
         <a
           href="#"
           style={{
             marginLeft: 16,
           }}
         >
-          <span>立即解冻</span>
+          <span>Mở khóa ngay</span>
           <RightOutlined />
         </a>
       </div>
@@ -39,14 +39,14 @@ export default () => {
           }}
           className={styles.error_icon}
         />
-        <span>您的账户还不具备申请资格</span>
+        <span>Tài khoản của bạn chưa đủ điều kiện để đăng ký</span>
         <a
           href="#"
           style={{
             marginLeft: 16,
           }}
         >
-          <span>立即升级</span>
+          <span>Nâng cấp ngay</span>
           <RightOutlined />
         </a>
       </div>
@@ -57,11 +57,11 @@ export default () => {
       <Card variant="borderless">
         <Result
           status="error"
-          title="提交失败"
-          subTitle="请核对并修改以下信息后，再重新提交。"
+          title="Nộp thất bại"
+          subTitle="Vui lòng kiểm tra và sửa đổi thông tin dưới đây, sau đó gửi lại."
           extra={
             <Button type="primary">
-              <span>返回修改</span>
+              <span>Quay lại sửa đổi</span>
             </Button>
           }
           style={{

@@ -126,10 +126,10 @@ const BasicList: FC = () => {
     if (key === 'edit') showEditModal(currentItem);
     else if (key === 'delete') {
       Modal.confirm({
-        title: '删除任务',
-        content: '确定删除该任务吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: 'Xóa tác vụ',
+        content: 'Bạn có chắc chắn muốn xóa tác vụ này không?',
+        okText: 'Xác nhận',
+        cancelText: 'Hủy',
         onOk: () => deleteItem(currentItem.id),
       });
     }
@@ -139,15 +139,15 @@ const BasicList: FC = () => {
       <Segmented
         defaultValue="all"
         options={[
-          { label: '全部', value: 'all' },
-          { label: '进行中', value: 'progress' },
-          { label: '等待中', value: 'waiting' },
+          { label: 'Tất cả', value: 'all' },
+          { label: 'Đang xử lý', value: 'progress' },
+          { label: 'Đang chờ', value: 'waiting' },
         ]}
-        // 如有需要可添加 onChange 事件
+        // Nếu cần thiết, có thể thêm sự kiện onChange
       />
       <Search
         className={styles.extraContentSearch}
-        placeholder="请输入"
+        placeholder="Vui lòng nhập"
         onSearch={() => ({})}
         variant="filled"
       />
@@ -162,17 +162,17 @@ const BasicList: FC = () => {
           items: [
             {
               key: 'edit',
-              label: '编辑',
+              label: 'Chỉnh sửa',
             },
             {
               key: 'delete',
-              label: '删除',
+              label: 'Xóa',
             },
           ],
         }}
       >
         <a href="#">
-          更多 <DownOutlined />
+          Thêm <DownOutlined />
         </a>
       </Dropdown>
     );
@@ -195,13 +195,20 @@ const BasicList: FC = () => {
           <Card variant="borderless">
             <Row>
               <Col sm={8} xs={24}>
-                <Info title="我的待办" value="8个任务" bordered />
+                <Info title="Việc của tôi" value="8 tác vụ" bordered />
               </Col>
               <Col sm={8} xs={24}>
-                <Info title="本周任务平均处理时间" value="32分钟" bordered />
+                <Info
+                  title="Thời gian xử lý tác vụ trung bình trong tuần này"
+                  value="32 phút"
+                  bordered
+                />
               </Col>
               <Col sm={8} xs={24}>
-                <Info title="本周完成任务数" value="24个任务" />
+                <Info
+                  title="Số tác vụ hoàn thành trong tuần này"
+                  value="24 tác vụ"
+                />
               </Col>
             </Row>
           </Card>
@@ -209,7 +216,7 @@ const BasicList: FC = () => {
           <Card
             className={styles.listCard}
             variant="borderless"
-            title="基本列表"
+            title="Danh sách cơ bản"
             style={{
               marginTop: 24,
             }}
@@ -237,7 +244,7 @@ const BasicList: FC = () => {
                         showEditModal(item);
                       }}
                     >
-                      编辑
+                      Chỉnh sửa
                     </a>,
                     renderMoreBtn(item),
                   ]}
@@ -267,7 +274,7 @@ const BasicList: FC = () => {
         }}
       >
         <PlusOutlined />
-        添加
+        Thêm
       </Button>
       <OperationModal
         done={done}

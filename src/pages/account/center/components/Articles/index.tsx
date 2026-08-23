@@ -56,8 +56,8 @@ const Articles: React.FC = () => {
             description={
               <Flex wrap gap="small">
                 <Tag>Ant Design</Tag>
-                <Tag>设计语言</Tag>
-                <Tag>蚂蚁集团</Tag>
+                <Tag>Ngôn ngữ thiết kế</Tag>
+                <Tag>Tập đoàn Ant</Tag>
               </Flex>
             }
           />

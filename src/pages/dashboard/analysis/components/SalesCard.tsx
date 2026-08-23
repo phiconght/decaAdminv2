@@ -15,7 +15,7 @@ const rankingListData: {
 
 for (let i = 0; i < 7; i += 1) {
   rankingListData.push({
-    title: `工专路 ${i} 号店`,
+    title: `Cửa hàng ${i} đường Gongzhuan`,
     total: 323234,
   });
 }
@@ -56,28 +56,28 @@ const SalesCard = ({
                 className={isActive('today')}
                 onClick={() => selectDate('today')}
               >
-                今日
+                Hôm nay
               </Button>
               <Button
                 type="text"
                 className={isActive('week')}
                 onClick={() => selectDate('week')}
               >
-                本周
+                Tuần này
               </Button>
               <Button
                 type="text"
                 className={isActive('month')}
                 onClick={() => selectDate('month')}
               >
-                本月
+                Tháng này
               </Button>
               <Button
                 type="text"
                 className={isActive('year')}
                 onClick={() => selectDate('year')}
               >
-                本年
+                Năm này
               </Button>
             </div>
             <RangePicker
@@ -97,7 +97,7 @@ const SalesCard = ({
         items={[
           {
             key: 'sales',
-            label: '销售额',
+            label: 'Doanh số bán hàng',
             children: (
               <Row>
                 <Col xl={16} lg={12} md={12} sm={24} xs={24}>
@@ -122,7 +122,7 @@ const SalesCard = ({
                         x: { paddingInner: 0.4 },
                       }}
                       tooltip={{
-                        name: '销售量',
+                        name: 'Lượng bán hàng',
                         channel: 'y',
                       }}
                     />
@@ -130,7 +130,9 @@ const SalesCard = ({
                 </Col>
                 <Col xl={8} lg={12} md={12} sm={24} xs={24}>
                   <div className={styles.salesRank}>
-                    <h4 className={styles.rankingTitle}>门店销售额排名</h4>
+                    <h4 className={styles.rankingTitle}>
+                      Xếp hạng doanh số bán hàng cửa hàng
+                    </h4>
                     <ul className={styles.rankingList}>
                       {rankingListData.map((item, i) => (
                         <li key={item.title}>
@@ -158,7 +160,7 @@ const SalesCard = ({
           },
           {
             key: 'views',
-            label: '访问量',
+            label: 'Lượng truy cập',
             children: (
               <Row>
                 <Col xl={16} lg={12} md={12} sm={24} xs={24}>
@@ -181,7 +183,7 @@ const SalesCard = ({
                         x: { paddingInner: 0.4 },
                       }}
                       tooltip={{
-                        name: '访问量',
+                        name: 'Lượng truy cập',
                         channel: 'y',
                       }}
                     />
@@ -189,7 +191,9 @@ const SalesCard = ({
                 </Col>
                 <Col xl={8} lg={12} md={12} sm={24} xs={24}>
                   <div className={styles.salesRank}>
-                    <h4 className={styles.rankingTitle}>门店访问量排名</h4>
+                    <h4 className={styles.rankingTitle}>
+                      Xếp hạng lượng truy cập cửa hàng
+                    </h4>
                     <ul className={styles.rankingList}>
                       {rankingListData.map((item, i) => (
                         <li key={item.title}>

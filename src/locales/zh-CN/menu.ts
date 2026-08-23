@@ -64,6 +64,7 @@ export default {
   'menu.fee-pricing': 'Định Giá',
   'menu.fee-reports': 'Báo Cáo Buổi',
   'menu.fee-coins': 'Xu Học Viên',
+  'menu.fee-coin-topups': 'Yêu Cầu Nạp Xu',
   'menu.fee-settings': 'Cấu Hình TK',
   'menu.timetable': 'Thời Khóa Biểu',
   'menu.leave': 'Nghỉ Phép',

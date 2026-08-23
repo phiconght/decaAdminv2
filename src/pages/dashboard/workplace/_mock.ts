@@ -26,7 +26,7 @@ for (let i = 0; i < fakeY2.length; i += 1) {
 const salesData: DataItem[] = [];
 for (let i = 0; i < 12; i += 1) {
   salesData.push({
-    x: `${i + 1}月`,
+    x: `Tháng ${i + 1}`,
     y: Math.floor(Math.random() * 1000) + 200,
   });
 }
@@ -34,7 +34,7 @@ const searchData: SearchDataType[] = [];
 for (let i = 0; i < 50; i += 1) {
   searchData.push({
     index: i + 1,
-    keyword: `搜索关键词-${i}`,
+    keyword: `Từ khóa tìm kiếm-${i}`,
     count: Math.floor(Math.random() * 1000),
     range: Math.floor(Math.random() * 100),
     status: Math.floor((Math.random() * 10) % 2),
@@ -42,77 +42,77 @@ for (let i = 0; i < 50; i += 1) {
 }
 const salesTypeData = [
   {
-    x: '家用电器',
+    x: 'Thiết bị gia dụng',
     y: 4544,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống rượu',
     y: 3321,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân và sức khỏe',
     y: 3113,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 2341,
   },
   {
-    x: '母婴产品',
+    x: 'Sản phẩm mẹ và bé',
     y: 1231,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 1231,
   },
 ];
 
 const salesTypeDataOnline = [
   {
-    x: '家用电器',
+    x: 'Thiết bị gia dụng',
     y: 244,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống rượu',
     y: 321,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân và sức khỏe',
     y: 311,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 41,
   },
   {
-    x: '母婴产品',
+    x: 'Sản phẩm mẹ và bé',
     y: 121,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 111,
   },
 ];
 
 const salesTypeDataOffline = [
   {
-    x: '家用电器',
+    x: 'Thiết bị gia dụng',
     y: 99,
   },
   {
-    x: '食用酒水',
+    x: 'Đồ uống rượu',
     y: 188,
   },
   {
-    x: '个护健康',
+    x: 'Chăm sóc cá nhân và sức khỏe',
     y: 344,
   },
   {
-    x: '服饰箱包',
+    x: 'Quần áo và túi xách',
     y: 255,
   },
   {
-    x: '其他',
+    x: 'Khác',
     y: 65,
   },
 ];
@@ -174,9 +174,9 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx1',
         title: titles[0],
         logo: avatars[0],
-        description: '那是一种内在的东西，他们到达不了，也无法触及的',
+        description: 'Đó là điều gì đó bên trong, họ không thể đạt tới nó',
         updatedAt: new Date(),
-        member: '科学搬砖组',
+        member: 'Nhóm di chuyển khoa học',
         href: '',
         memberLink: '',
       },
@@ -184,9 +184,10 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx2',
         title: titles[1],
         logo: avatars[1],
-        description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
+        description:
+          'Hy vọng là điều tốt, có thể là tốt nhất, những điều tốt không bao giờ chết',
         updatedAt: new Date('2017-07-24'),
-        member: '全组都是吴彦祖',
+        member: 'Toàn bộ nhóm đều là Daniel Wu',
         href: '',
         memberLink: '',
       },
@@ -194,9 +195,10 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx3',
         title: titles[2],
         logo: avatars[2],
-        description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
+        description:
+          'Có rất nhiều quán rượu trong thị trấn, nhưng cô ấy lại bước vào quán của tôi',
         updatedAt: new Date(),
-        member: '中二少女团',
+        member: 'Nhóm cô gái cấp hai',
         href: '',
         memberLink: '',
       },
@@ -204,9 +206,10 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx4',
         title: titles[3],
         logo: avatars[3],
-        description: '那时候我只会想自己想要什么，从不想自己拥有什么',
+        description:
+          'Lúc đó, tôi chỉ nghĩ về những gì tôi muốn, không bao giờ nghĩ về những gì tôi sở hữu',
         updatedAt: new Date('2017-07-23'),
-        member: '程序员日常',
+        member: 'Lập trình viên hàng ngày',
         href: '',
         memberLink: '',
       },
@@ -214,9 +217,9 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx5',
         title: titles[4],
         logo: avatars[4],
-        description: '凛冬将至',
+        description: 'Mùa đông chính sẽ tới',
         updatedAt: new Date('2017-07-23'),
-        member: '高逼格设计天团',
+        member: 'Nhóm thiết kế sang trọng',
         href: '',
         memberLink: '',
       },
@@ -224,9 +227,9 @@ const getNotice = (_: Request, res: Response) => {
         id: 'xxx6',
         title: titles[5],
         logo: avatars[5],
-        description: '生命就像一盒巧克力，结果往往出人意料',
+        description: 'Cuộc sống như một hộp sô cô la, kết quả luôn bất ngờ',
         updatedAt: new Date('2017-07-23'),
-        member: '骗你来学计算机',
+        member: 'Lừa bạn học Khoa học Máy tính',
         href: '',
         memberLink: '',
       },
@@ -241,99 +244,99 @@ const getActivities = (_: Request, res: Response) => {
         id: 'trend-1',
         updatedAt: new Date(),
         user: {
-          name: '曲丽丽',
+          name: 'Qu Lili',
           avatar: avatars2[0],
         },
         group: {
-          name: '高逼格设计天团',
+          name: 'Nhóm thiết kế sang trọng',
           link: 'https://github.com/',
         },
         project: {
-          name: '六月迭代',
+          name: 'Lần lặp tháng 6',
           link: 'https://github.com/',
         },
-        template: '在 @{group} 新建项目 @{project}',
+        template: 'Tạo dự án mới @{project} trong @{group}',
       },
       {
         id: 'trend-2',
         updatedAt: new Date(),
         user: {
-          name: '付小小',
+          name: 'Fu Xiaoxiao',
           avatar: avatars2[1],
         },
         group: {
-          name: '高逼格设计天团',
+          name: 'Nhóm thiết kế sang trọng',
           link: 'https://github.com/',
         },
         project: {
-          name: '六月迭代',
+          name: 'Lần lặp tháng 6',
           link: 'https://github.com/',
         },
-        template: '在 @{group} 新建项目 @{project}',
+        template: 'Tạo dự án mới @{project} trong @{group}',
       },
       {
         id: 'trend-3',
         updatedAt: new Date(),
         user: {
-          name: '林东东',
+          name: 'Lin Dongdong',
           avatar: avatars2[2],
         },
         group: {
-          name: '中二少女团',
+          name: 'Nhóm cô gái cấp hai',
           link: 'https://github.com/',
         },
         project: {
-          name: '六月迭代',
+          name: 'Lần lặp tháng 6',
           link: 'https://github.com/',
         },
-        template: '在 @{group} 新建项目 @{project}',
+        template: 'Tạo dự án mới @{project} trong @{group}',
       },
       {
         id: 'trend-4',
         updatedAt: new Date(),
         user: {
-          name: '周星星',
+          name: 'Zhou Xingxing',
           avatar: avatars2[4],
         },
         project: {
-          name: '5 月日常迭代',
+          name: 'Lần lặp hàng ngày tháng 5',
           link: 'https://github.com/',
         },
-        template: '将 @{project} 更新至已发布状态',
+        template: 'Cập nhật @{project} thành trạng thái đã phát hành',
       },
       {
         id: 'trend-5',
         updatedAt: new Date(),
         user: {
-          name: '朱偏右',
+          name: 'Zhu Pianyou',
           avatar: avatars2[3],
         },
         project: {
-          name: '工程效能',
+          name: 'Hiệu quả kỹ thuật',
           link: 'https://github.com/',
         },
         comment: {
-          name: '留言',
+          name: 'Bình luận',
           link: 'https://github.com/',
         },
-        template: '在 @{project} 发布了 @{comment}',
+        template: 'Đã phát hành @{comment} trong @{project}',
       },
       {
         id: 'trend-6',
         updatedAt: new Date(),
         user: {
-          name: '乐哥',
+          name: 'Le Ge',
           avatar: avatars2[5],
         },
         group: {
-          name: '程序员日常',
+          name: 'Lập trình viên hàng ngày',
           link: 'https://github.com/',
         },
         project: {
-          name: '品牌迭代',
+          name: 'Lần lặp thương hiệu',
           link: 'https://github.com/',
         },
-        template: '在 @{group} 新建项目 @{project}',
+        template: 'Tạo dự án mới @{project} trong @{group}',
       },
     ],
   });
@@ -341,7 +344,7 @@ const getActivities = (_: Request, res: Response) => {
 
 const radarOriginData = [
   {
-    name: '个人',
+    name: 'Cá nhân',
     ref: 10,
     koubei: 8,
     output: 4,
@@ -349,7 +352,7 @@ const radarOriginData = [
     hot: 7,
   },
   {
-    name: '团队',
+    name: 'Đội',
     ref: 3,
     koubei: 9,
     output: 6,
@@ -357,7 +360,7 @@ const radarOriginData = [
     hot: 1,
   },
   {
-    name: '部门',
+    name: 'Phòng ban',
     ref: 4,
     koubei: 1,
     output: 6,
@@ -368,11 +371,11 @@ const radarOriginData = [
 
 const radarData: any[] = [];
 const radarTitleMap = {
-  ref: '引用',
-  koubei: '口碑',
-  output: '产量',
-  contribute: '贡献',
-  hot: '热度',
+  ref: 'Trích dẫn',
+  koubei: 'Danh tiếng',
+  output: 'Sản lượng',
+  contribute: 'Đóng góp',
+  hot: 'Độ nóng',
 };
 radarOriginData.forEach((item) => {
   Object.keys(item).forEach((key) => {

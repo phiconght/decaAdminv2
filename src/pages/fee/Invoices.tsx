@@ -10,6 +10,7 @@ import { useAccess } from '@umijs/max';
 import { Button, message, Popconfirm, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
+import AdjustInvoiceModal from './components/AdjustInvoiceModal';
 import InvoiceDetailDrawer from './components/InvoiceDetailDrawer';
 import InvoicePreviewModal from './components/InvoicePreviewModal';
 import type { InvoiceItem, InvoiceQuery, InvoiceStatus } from './data';
@@ -34,6 +35,7 @@ const Invoices: React.FC = () => {
   const [createOpen, setCreateOpen] = useState(false);
   const [detailId, setDetailId] = useState<number | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [adjustTarget, setAdjustTarget] = useState<InvoiceItem | null>(null);
 
   const reload = () => {
     setSelectedRows([]);
@@ -126,7 +128,7 @@ const Invoices: React.FC = () => {
     {
       title: 'Thao tác',
       valueType: 'option',
-      width: 220,
+      width: 280,
       render: (_, r) => {
         if (!access.canWriteFee) {
           return [
@@ -140,6 +142,13 @@ const Invoices: React.FC = () => {
           actions.push(
             <a key="confirm" onClick={() => handleConfirm(r.id)}>
               Xác nhận
+            </a>,
+          );
+        }
+        if (r.status !== 'CANCELLED') {
+          actions.push(
+            <a key="adjust" onClick={() => setAdjustTarget(r)}>
+              Cộng/Trừ
             </a>,
           );
         }
@@ -188,6 +197,15 @@ const Invoices: React.FC = () => {
         invoiceId={detailId}
         open={detailId !== null}
         onClose={() => setDetailId(null)}
+      />
+      <AdjustInvoiceModal
+        open={adjustTarget !== null}
+        invoice={adjustTarget}
+        onClose={() => setAdjustTarget(null)}
+        onDone={() => {
+          setAdjustTarget(null);
+          reload();
+        }}
       />
 
       <ProCard title="Bộ lọc" style={{ marginBottom: 16 }}>

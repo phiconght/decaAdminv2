@@ -1,7 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { Modal, message, Tag } from 'antd';
+import { Modal, message, Tabs, Tag } from 'antd';
 import React, { useState } from 'react';
 import CreateExerciseForm from '@/pages/exercise/components/CreateExerciseForm';
 import type { ExamExerciseLine } from '../data';
@@ -120,6 +120,47 @@ const ExercisePickerModal: React.FC<Props> = ({
     }
   };
 
+  const renderTable = (status: 'ACTIVE' | 'PENDING') => (
+    <ProTable<ExerciseRow>
+      rowKey="id"
+      search={false}
+      options={{ reload: true, density: false, setting: false }}
+      size="small"
+      pagination={{ pageSize: 8, showSizeChanger: false }}
+      params={{ subjectId, topicId, status }}
+      toolbar={{
+        search: {
+          placeholder: 'Tìm mã / tên bài tập',
+          onSearch: () => {},
+        },
+      }}
+      request={async (params) => {
+        const keyword = String(
+          (params as Record<string, unknown>).keyword ?? '',
+        );
+        const res = await request('/api/v1/exercises', {
+          params: {
+            subjectId,
+            topicId,
+            status,
+            current: params.current,
+            pageSize: params.pageSize,
+            ...(keyword ? { code: keyword, title: keyword } : {}),
+          },
+        });
+        const filtered = (res.data ?? []).filter(
+          (r: ExerciseRow) => !alreadyIds.has(Number(r.id)),
+        );
+        return { data: filtered, total: filtered.length, success: true };
+      }}
+      rowSelection={{
+        selectedRowKeys: selectedRows.map((r) => r.id),
+        onChange: (_, rows) => setSelectedRows(rows as ExerciseRow[]),
+      }}
+      columns={columns}
+    />
+  );
+
   return (
     <>
       <Modal
@@ -137,43 +178,19 @@ const ExercisePickerModal: React.FC<Props> = ({
         okText={`Thêm${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
         width={800}
       >
-        <ProTable<ExerciseRow>
-          rowKey="id"
-          search={false}
-          options={{ reload: true, density: false, setting: false }}
-          size="small"
-          pagination={{ pageSize: 8, showSizeChanger: false }}
-          params={{ subjectId, topicId }}
-          toolbar={{
-            search: {
-              placeholder: 'Tìm mã / tên bài tập',
-              onSearch: () => {},
+        <Tabs
+          items={[
+            {
+              key: 'existing',
+              label: 'Tìm bài có sẵn',
+              children: renderTable('ACTIVE'),
             },
-          }}
-          request={async (params) => {
-            const keyword = String(
-              (params as Record<string, unknown>).keyword ?? '',
-            );
-            const res = await request('/api/v1/exercises', {
-              params: {
-                subjectId,
-                topicId,
-                status: 'ACTIVE',
-                current: params.current,
-                pageSize: params.pageSize,
-                ...(keyword ? { code: keyword, title: keyword } : {}),
-              },
-            });
-            const filtered = (res.data ?? []).filter(
-              (r: ExerciseRow) => !alreadyIds.has(Number(r.id)),
-            );
-            return { data: filtered, total: filtered.length, success: true };
-          }}
-          rowSelection={{
-            selectedRowKeys: selectedRows.map((r) => r.id),
-            onChange: (_, rows) => setSelectedRows(rows as ExerciseRow[]),
-          }}
-          columns={columns}
+            {
+              key: 'batch',
+              label: 'Từ lô vừa nhập',
+              children: renderTable('PENDING'),
+            },
+          ]}
         />
       </Modal>
 

@@ -17,9 +17,9 @@ const CardList = () => {
   const content = (
     <div className={styles.pageHeaderContent}>
       <p>
-        段落示意：蚂蚁集团设计平台
-        ant.design，用最小的工作量，无缝接入蚂蚁集团生态，
-        提供跨越设计与开发的体验解决方案。
+        Hướng dẫn: Nền tảng thiết kế Ant Group ant.design, với công việc tối
+        thiểu, tích hợp liền mạch vào hệ sinh thái Ant Group, cung cấp giải pháp
+        trải nghiệm vượt qua thiết kế và phát triển.
       </p>
       <div className={styles.contentLink}>
         <a href="#">
@@ -27,21 +27,21 @@ const CardList = () => {
             alt=""
             src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg"
           />{' '}
-          快速开始
+          Bắt đầu nhanh
         </a>
         <a href="#">
           <img
             alt=""
             src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg"
           />{' '}
-          产品简介
+          Giới thiệu sản phẩm
         </a>
         <a href="#">
           <img
             alt=""
             src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg"
           />{' '}
-          产品文档
+          Tài liệu sản phẩm
         </a>
       </div>
     </div>
@@ -49,7 +49,7 @@ const CardList = () => {
   const extraContent = (
     <div className={styles.extraImg}>
       <img
-        alt="这是一个标题"
+        alt="Đây là một tiêu đề"
         src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
       />
     </div>
@@ -80,10 +80,10 @@ const CardList = () => {
                     className={styles.card}
                     actions={[
                       <a key="option1" href="#">
-                        操作一
+                        Thao tác 1
                       </a>,
                       <a key="option2" href="#">
-                        操作二
+                        Thao tác 2
                       </a>,
                     ]}
                   >
@@ -114,7 +114,7 @@ const CardList = () => {
             return (
               <List.Item>
                 <Button type="dashed" className={styles.newButton}>
-                  <PlusOutlined /> 新增产品
+                  <PlusOutlined /> Thêm sản phẩm mới
                 </Button>
               </List.Item>
             );

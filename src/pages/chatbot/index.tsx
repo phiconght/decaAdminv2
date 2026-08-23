@@ -20,7 +20,7 @@ import type { ConversationItem, ParsedMessage } from './data';
 import { createChatProvider } from './service';
 import { useStyles } from './style';
 
-const WELCOME_TEXT = '🤖 你好，有什么可以帮你？';
+const WELCOME_TEXT = '🤖 Xin chào, tôi có thể giúp bạn với điều gì?';
 
 const TypewriterTitle: React.FC = () => {
   const { styles } = useStyles();
@@ -119,46 +119,53 @@ const ChatbotPage: React.FC = () => {
   const generateId = useCallback(() => `conv-${++idCounter.current}`, []);
 
   const [conversations, setConversations] = useState<ConversationItem[]>([
-    { key: 'default', label: '💬 新对话', group: '今天', isDraft: true },
+    {
+      key: 'default',
+      label: '💬 Cuộc hội thoại mới',
+      group: 'Hôm nay',
+      isDraft: true,
+    },
     {
       key: 'preset-1',
-      label: '🧩 Ant Design 的 Form 表单如何做联动校验？',
-      group: '今天',
+      label: '🧩 Làm cách nào để xác thực liên kết Form trong Ant Design?',
+      group: 'Hôm nay',
     },
     {
       key: 'preset-2',
-      label: '📋 ProTable 如何自定义工具栏按钮？',
-      group: '今天',
+      label: '📋 Làm cách nào để tùy chỉnh nút thanh công cụ ProTable?',
+      group: 'Hôm nay',
     },
     {
       key: 'preset-3',
-      label: '🎨 如何用 antd-style 实现暗色主题切换？',
-      group: '昨天',
+      label: '🎨 Làm cách nào để chuyển đổi chủ đề tối với antd-style?',
+      group: 'Hôm qua',
     },
     {
       key: 'preset-4',
-      label: '🗂️ ProLayout 侧边菜单如何动态生成？',
-      group: '昨天',
+      label: '🗂️ Làm cách nào để tạo menu bên ProLayout động?',
+      group: 'Hôm qua',
     },
     {
       key: 'preset-5',
-      label: '📊 Ant Design Charts 折线图数据格式',
-      group: '昨天',
+      label: '📊 Định dạng dữ liệu biểu đồ đường Ant Design Charts',
+      group: 'Hôm qua',
     },
     {
       key: 'preset-6',
-      label: '🚀 Ant Design Pro 如何接入后端权限系统？',
-      group: '更早',
+      label:
+        '🚀 Làm cách nào để tích hợp hệ thống phân quyền backend Ant Design Pro?',
+      group: 'Sớm hơn',
     },
     {
       key: 'preset-7',
-      label: '🔍 ProForm 中 Select 远程搜索怎么实现？',
-      group: '更早',
+      label:
+        '🔍 Làm cách nào để triển khai tìm kiếm từ xa trong ProForm Select?',
+      group: 'Sớm hơn',
     },
     {
       key: 'preset-8',
-      label: '⚙️ Ant Design Token 定制主题最佳实践',
-      group: '更早',
+      label: '⚙️ Best practices cho việc tùy chỉnh chủ đề Ant Design Token',
+      group: 'Sớm hơn',
     },
   ]);
   const [activeKey, setActiveKey] = useState<string>('default');
@@ -190,7 +197,7 @@ const ChatbotPage: React.FC = () => {
   const newChat = () => {
     const key = generateId();
     setConversations((prev) => [
-      { key, label: '新对话', group: '今天', isDraft: true },
+      { key, label: 'Cuộc hội thoại mới', group: 'Hôm nay', isDraft: true },
       ...prev,
     ]);
     setActiveKey(key);
@@ -261,7 +268,7 @@ const ChatbotPage: React.FC = () => {
                 onActiveChange={setActiveKey}
                 groupable
                 menu={(conversation) => ({
-                  items: [{ key: 'delete', label: '删除', danger: true }],
+                  items: [{ key: 'delete', label: 'Xóa', danger: true }],
                   onClick: ({ key }) => {
                     if (key === 'delete') {
                       setConversations((prev) => {
@@ -272,8 +279,8 @@ const ChatbotPage: React.FC = () => {
                           const key = generateId();
                           next.push({
                             key,
-                            label: '💬 新对话',
-                            group: '今天',
+                            label: '💬 Cuộc hội thoại mới',
+                            group: 'Hôm nay',
                             isDraft: true,
                           });
                           setActiveKey(key);
@@ -285,7 +292,7 @@ const ChatbotPage: React.FC = () => {
                     }
                   },
                 })}
-                creation={{ onClick: newChat, label: '新建对话' }}
+                creation={{ onClick: newChat, label: 'Tạo cuộc hội thoại mới' }}
               />
             </div>
 
@@ -315,7 +322,7 @@ const ChatbotPage: React.FC = () => {
                   loading={isRequesting}
                   onSubmit={sendMessage}
                   onCancel={abort}
-                  placeholder="输入消息，按 Enter 发送..."
+                  placeholder="Nhập tin nhắn, nhấn Enter để gửi..."
                   autoSize={{ minRows: 4, maxRows: 8 }}
                   style={{ maxWidth: 940, width: '100%' }}
                   styles={{ input: { paddingBlock: 0 } }}

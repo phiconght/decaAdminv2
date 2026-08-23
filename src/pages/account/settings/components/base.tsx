@@ -46,7 +46,7 @@ const BaseView: React.FC = () => {
     return '';
   };
   const handleFinish = async () => {
-    message.success('更新基本信息成功');
+    message.success('Cập nhật thông tin cơ bản thành công');
   };
   return (
     <div className={styles.baseView}>
@@ -58,7 +58,7 @@ const BaseView: React.FC = () => {
               onFinish={handleFinish}
               submitter={{
                 searchConfig: {
-                  submitText: '更新基本信息',
+                  submitText: 'Cập nhật thông tin cơ bản',
                 },
                 render: (_, dom) => dom[1],
               }}
@@ -71,60 +71,60 @@ const BaseView: React.FC = () => {
               <ProFormText
                 width="md"
                 name="email"
-                label="邮箱"
+                label="Email"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的邮箱!',
+                    message: 'Vui lòng nhập email của bạn!',
                   },
                 ]}
               />
               <ProFormText
                 width="md"
                 name="name"
-                label="昵称"
+                label="Biệt danh"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的昵称!',
+                    message: 'Vui lòng nhập biệt danh của bạn!',
                   },
                 ]}
               />
               <ProFormTextArea
                 name="profile"
-                label="个人简介"
+                label="Tiểu sử cá nhân"
                 rules={[
                   {
                     required: true,
-                    message: '请输入个人简介!',
+                    message: 'Vui lòng nhập tiểu sử cá nhân!',
                   },
                 ]}
-                placeholder="个人简介"
+                placeholder="Tiểu sử cá nhân"
               />
               <ProFormSelect
                 width="sm"
                 name="country"
-                label="国家/地区"
+                label="Quốc gia/Khu vực"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的国家或地区!',
+                    message: 'Vui lòng nhập quốc gia hoặc khu vực của bạn!',
                   },
                 ]}
                 options={[
                   {
-                    label: '中国',
+                    label: 'Trung Quốc',
                     value: 'China',
                   },
                 ]}
               />
 
-              <ProForm.Group title="所在省市" size={8}>
+              <ProForm.Group title="Tỉnh/Thành phố" size={8}>
                 <ProFormSelect
                   rules={[
                     {
                       required: true,
-                      message: '请输入您的所在省!',
+                      message: 'Vui lòng nhập tỉnh của bạn!',
                     },
                   ]}
                   width="sm"
@@ -155,7 +155,7 @@ const BaseView: React.FC = () => {
                         rules={[
                           {
                             required: true,
-                            message: '请输入您的所在城市!',
+                            message: 'Vui lòng nhập thành phố của bạn!',
                           },
                         ]}
                         disabled={!province}
@@ -182,21 +182,21 @@ const BaseView: React.FC = () => {
               <ProFormText
                 width="md"
                 name="address"
-                label="街道地址"
+                label="Địa chỉ đường phố"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的街道地址!',
+                    message: 'Vui lòng nhập địa chỉ đường phố của bạn!',
                   },
                 ]}
               />
               <ProFormFieldSet
                 name="phone"
-                label="联系电话"
+                label="Số điện thoại liên hệ"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的联系电话!',
+                    message: 'Vui lòng nhập số điện thoại liên hệ của bạn!',
                   },
                   {
                     validator: validatorPhone,
@@ -223,7 +223,7 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
 
   return (
     <>
-      <div className={styles.avatar_title}>头像</div>
+      <div className={styles.avatar_title}>Ảnh đại diện</div>
       <div className={styles.avatar}>
         <img src={avatar} alt="avatar" />
       </div>
@@ -231,7 +231,7 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
         <div className={styles.button_view}>
           <Button>
             <UploadOutlined />
-            更换头像
+            Thay đổi ảnh đại diện
           </Button>
         </div>
       </Upload>

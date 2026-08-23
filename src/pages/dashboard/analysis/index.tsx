@@ -78,11 +78,11 @@ const Analysis: FC<AnalysisProps> = () => {
           items: [
             {
               key: '1',
-              label: '操作一',
+              label: 'Thao tác 1',
             },
             {
               key: '2',
-              label: '操作二',
+              label: 'Thao tác 2',
             },
           ],
         }}

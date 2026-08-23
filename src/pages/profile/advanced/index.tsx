@@ -45,43 +45,43 @@ const action = (
               items: [
                 {
                   key: '1',
-                  label: '操作一',
+                  label: 'Thao tác 1',
                 },
                 {
                   key: '2',
-                  label: '操作二',
+                  label: 'Thao tác 2',
                 },
                 {
                   key: '3',
-                  label: '操作三',
+                  label: 'Thao tác 3',
                 },
               ],
             }}
             placement="bottomRight"
           >
-            主操作
+            Thao tác chính
           </Dropdown.Button>
         );
       }
       return (
         <Space>
           <Space.Compact>
-            <Button>操作一</Button>
-            <Button>操作二</Button>
+            <Button>Thao tác 1</Button>
+            <Button>Thao tác 2</Button>
             <Dropdown
               menu={{
                 items: [
                   {
                     key: '1',
-                    label: '选项一',
+                    label: 'Tùy chọn 1',
                   },
                   {
                     key: '2',
-                    label: '选项二',
+                    label: 'Tùy chọn 2',
                   },
                   {
                     key: '3',
-                    label: '选项三',
+                    label: 'Tùy chọn 3',
                   },
                 ],
               }}
@@ -92,7 +92,7 @@ const action = (
               </Button>
             </Dropdown>
           </Space.Compact>
-          <Button type="primary">主操作</Button>
+          <Button type="primary">Thao tác chính</Button>
         </Space>
       );
     }}
@@ -102,78 +102,83 @@ const action = (
 const operationTabList = [
   {
     key: 'tab1',
-    tab: '操作日志一',
+    tab: 'Nhật ký thao tác 1',
   },
   {
     key: 'tab2',
-    tab: '操作日志二',
+    tab: 'Nhật ký thao tác 2',
   },
   {
     key: 'tab3',
-    tab: '操作日志三',
+    tab: 'Nhật ký thao tác 3',
   },
 ];
 const columns = [
   {
-    title: '操作类型',
+    title: 'Loại thao tác',
     dataIndex: 'type',
     key: 'type',
   },
   {
-    title: '操作人',
+    title: 'Người thao tác',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: '执行结果',
+    title: 'Kết quả thực hiện',
     dataIndex: 'status',
     key: 'status',
     render: (text: string) => {
       if (text === 'agree') {
-        return <Badge status="success" text="成功" />;
+        return <Badge status="success" text="Thành công" />;
       }
-      return <Badge status="error" text="驳回" />;
+      return <Badge status="error" text="Từ chối" />;
     },
   },
   {
-    title: '操作时间',
+    title: 'Thời gian thao tác',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
   },
   {
-    title: '备注',
+    title: 'Ghi chú',
     dataIndex: 'memo',
     key: 'memo',
   },
 ];
 const descriptionItems: DescriptionsProps['items'] = [
-  { key: '1', label: '创建人', children: '曲丽丽' },
-  { key: '2', label: '订购产品', children: 'XX 服务' },
-  { key: '3', label: '创建时间', children: '2017-07-07' },
-  { key: '4', label: '关联单据', children: <a href="#">12421</a> },
-  { key: '5', label: '生效日期', children: '2017-07-07 ~ 2017-08-08' },
-  { key: '6', label: '备注', children: '请于两个工作日内确认' },
+  { key: '1', label: 'Người tạo', children: 'Khúc Lệ Lệ' },
+  { key: '2', label: 'Sản phẩm đặt hàng', children: 'Dịch vụ XX' },
+  { key: '3', label: 'Thời gian tạo', children: '2017-07-07' },
+  { key: '4', label: 'Tài liệu liên kết', children: <a href="#">12421</a> },
+  { key: '5', label: 'Ngày có hiệu lực', children: '2017-07-07 ~ 2017-08-08' },
+  {
+    key: '6',
+    label: 'Ghi chú',
+    children: 'Vui lòng xác nhận trong hai ngày làm việc',
+  },
 ];
 const userInfoItems: DescriptionsProps['items'] = [
-  { key: '1', label: '用户姓名', children: '付小小' },
-  { key: '2', label: '会员卡号', children: '32943898021309809423' },
-  { key: '3', label: '身份证', children: '3321944288191034921' },
-  { key: '4', label: '联系方式', children: '18112345678' },
+  { key: '1', label: 'Tên người dùng', children: 'Phụ Tiểu Tiểu' },
+  { key: '2', label: 'Số thẻ thành viên', children: '32943898021309809423' },
+  { key: '3', label: 'Chứng minh thư', children: '3321944288191034921' },
+  { key: '4', label: 'Phương thức liên hệ', children: '18112345678' },
   {
     key: '5',
-    label: '联系地址',
-    children: '曲丽丽 18100000000 浙江省杭州市西湖区黄姑山路工专路交叉路口',
+    label: 'Địa chỉ liên hệ',
+    children:
+      'Khúc Lệ Lệ 18100000000 Giao lộ Đường Huáng Gū Shān, Quận Tây Hồ, Hàng Châu, Tỉnh Chiết Giang',
   },
 ];
 const infoGroupItems: DescriptionsProps['items'] = [
-  { key: '1', label: '某某数据', children: '725' },
-  { key: '2', label: '该数据更新时间', children: '2017-08-08' },
+  { key: '1', label: 'Dữ liệu nào đó', children: '725' },
+  { key: '2', label: 'Thời gian cập nhật dữ liệu này', children: '2017-08-08' },
   {
     key: '3',
     label: (
       <span>
-        某某数据
-        <Tooltip title="数据说明">
+        Dữ liệu nào đó
+        <Tooltip title="Giải thích dữ liệu">
           <InfoCircleOutlined
             style={{ color: 'rgba(0, 0, 0, 0.43)', marginLeft: 4 }}
           />
@@ -182,31 +187,31 @@ const infoGroupItems: DescriptionsProps['items'] = [
     ),
     children: '725',
   },
-  { key: '4', label: '该数据更新时间', children: '2017-08-08' },
+  { key: '4', label: 'Thời gian cập nhật dữ liệu này', children: '2017-08-08' },
 ];
 const groupItems1: DescriptionsProps['items'] = [
-  { key: '1', label: '负责人', children: '林东东' },
-  { key: '2', label: '角色码', children: '1234567' },
-  { key: '3', label: '所属部门', children: 'XX公司 - YY部' },
-  { key: '4', label: '过期时间', children: '2017-08-08' },
+  { key: '1', label: 'Người chịu trách nhiệm', children: 'Lâm Đông Đông' },
+  { key: '2', label: 'Mã vai trò', children: '1234567' },
+  { key: '3', label: 'Bộ phận', children: 'Công ty XX - Bộ phận YY' },
+  { key: '4', label: 'Thời gian hết hạn', children: '2017-08-08' },
   {
     key: '5',
-    label: '描述',
+    label: 'Mô tả',
     children:
-      '这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...',
+      'Mô tả này rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài rất dài...',
   },
 ];
 const groupItems2: DescriptionsProps['items'] = [
   {
     key: '1',
-    label: '学名',
+    label: 'Tên khoa học',
     children:
-      'Citrullus lanatus (Thunb.) Matsum. et Nakai一年生蔓生藤本；茎、枝粗壮，具明显的棱。卷须较粗..',
+      'Citrullus lanatus (Thunb.) Matsum. et Nakai một năm cây dây leo; thân, chi khỏe, có gờ rõ ràng. Cuộn tròn tương đối dày..',
   },
 ];
 const groupItems3: DescriptionsProps['items'] = [
-  { key: '1', label: '负责人', children: '付小小' },
-  { key: '2', label: '角色码', children: '1234568' },
+  { key: '1', label: 'Người chịu trách nhiệm', children: 'Phụ Tiểu Tiểu' },
+  { key: '2', label: 'Mã vai trò', children: '1234568' },
 ];
 const customDot: IconRenderType = (dot: React.ReactNode, { active }) => {
   if (active) {
@@ -216,7 +221,7 @@ const customDot: IconRenderType = (dot: React.ReactNode, { active }) => {
           width: 160,
         }}
       >
-        吴加号
+        Vũ Gia Hào
         <span
           style={{
             float: 'right',
@@ -230,7 +235,7 @@ const customDot: IconRenderType = (dot: React.ReactNode, { active }) => {
                   color: 'rgba(0, 0, 0, 0.45)',
                 }}
               >
-                未响应
+                Chưa phản hồi
               </span>
             }
           />
@@ -240,7 +245,7 @@ const customDot: IconRenderType = (dot: React.ReactNode, { active }) => {
             marginTop: 4,
           }}
         >
-          耗时：2小时25分钟
+          Thời gian tiêu tốn: 2 giờ 25 phút
         </div>
       </div>
     );

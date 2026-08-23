@@ -4,60 +4,62 @@ import React from 'react';
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const passwordStrength = {
-  strong: <span className="strong">强</span>,
-  medium: <span className="medium">中</span>,
-  weak: <span className="weak">弱 Weak</span>,
+  strong: <span className="strong">Mạnh</span>,
+  medium: <span className="medium">Trung bình</span>,
+  weak: <span className="weak">Yếu</span>,
 };
 
 const SecurityView: React.FC = () => {
   const getData = () => [
     {
-      title: '账户密码',
+      title: 'Mật khẩu tài khoản',
       description: (
         <>
-          当前密码强度：
+          Độ mạnh mật khẩu hiện tại:
           {passwordStrength.strong}
         </>
       ),
       actions: [
         <a key="Modify" href="#">
-          修改
+          Sửa đổi
         </a>,
       ],
     },
     {
-      title: '密保手机',
-      description: `已绑定手机：138****8293`,
+      title: 'Điện thoại bảo mật',
+      description: `Điện thoại đã liên kết: 138****8293`,
       actions: [
         <a key="Modify" href="#">
-          修改
+          Sửa đổi
         </a>,
       ],
     },
     {
-      title: '密保问题',
-      description: '未设置密保问题，密保问题可有效保护账户安全',
+      title: 'Câu hỏi bảo mật',
+      description:
+        'Chưa đặt câu hỏi bảo mật, câu hỏi bảo mật có thể bảo vệ an toàn tài khoản của bạn một cách hiệu quả',
       actions: [
         <a key="Set" href="#">
-          设置
+          Đặt
         </a>,
       ],
     },
     {
-      title: '备用邮箱',
-      description: `已绑定邮箱：ant***sign.com`,
+      title: 'Email dự phòng',
+      description: `Email đã liên kết: ant***sign.com`,
       actions: [
         <a key="Modify" href="#">
-          修改
+          Sửa đổi
         </a>,
       ],
     },
     {
-      title: 'MFA 设备',
-      description: '未绑定 MFA 设备，绑定后，可以进行二次确认',
+      title: 'Thiết bị MFA',
+      description:
+        'Chưa liên kết thiết bị MFA, sau khi liên kết có thể thực hiện xác nhận lần thứ hai',
       actions: [
         <a key="bind" href="#">
-          绑定
+          Liên kết
         </a>,
       ],
     },

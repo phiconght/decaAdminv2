@@ -29,7 +29,7 @@ function formatWan(val: number) {
             marginLeft: 2,
           }}
         >
-          万
+          Vạn
         </span>
       </span>
     );
@@ -45,11 +45,11 @@ const CardInfo: React.FC<{
   return (
     <div className={stylesApplications.cardInfo}>
       <div>
-        <p>活跃用户</p>
+        <p>Người dùng hoạt động</p>
         <p>{activeUser}</p>
       </div>
       <div>
-        <p>新增用户</p>
+        <p>Người dùng mới</p>
         <p>{newUser}</p>
       </div>
     </div>
@@ -88,13 +88,13 @@ const Applications: React.FC = () => {
               },
             }}
             actions={[
-              <Tooltip key="download" title="下载">
+              <Tooltip key="download" title="Tải xuống">
                 <DownloadOutlined />
               </Tooltip>,
-              <Tooltip title="编辑" key="edit">
+              <Tooltip title="Chỉnh sửa" key="edit">
                 <EditOutlined />
               </Tooltip>,
-              <Tooltip title="分享" key="share">
+              <Tooltip title="Chia sẻ" key="share">
                 <ShareAltOutlined />
               </Tooltip>,
               <Dropdown

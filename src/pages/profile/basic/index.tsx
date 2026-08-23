@@ -10,56 +10,56 @@ import { queryBasicProfile } from './service';
 
 const progressColumns: ProColumns<BasicProgress>[] = [
   {
-    title: '时间',
+    title: 'Thời gian',
     dataIndex: 'time',
   },
   {
-    title: '当前进度',
+    title: 'Tiến độ hiện tại',
     dataIndex: 'rate',
   },
   {
-    title: '状态',
+    title: 'Trạng thái',
     dataIndex: 'status',
     render: (text: React.ReactNode) => {
       if (text === 'success') {
-        return <Badge status="success" text="成功" />;
+        return <Badge status="success" text="Thành công" />;
       }
-      return <Badge status="processing" text="进行中" />;
+      return <Badge status="processing" text="Đang tiến hành" />;
     },
   },
   {
-    title: '操作员ID',
+    title: 'ID Người vận hành',
     dataIndex: 'operator',
   },
   {
-    title: '耗时',
+    title: 'Thời gian tiêu tốn',
     dataIndex: 'cost',
   },
 ];
 const goodsColumns: ProColumns<BasicGood>[] = [
   {
-    title: '商品编号',
+    title: 'Mã sản phẩm',
     dataIndex: 'id',
   },
   {
-    title: '商品名称',
+    title: 'Tên sản phẩm',
     dataIndex: 'name',
   },
   {
-    title: '商品条码',
+    title: 'Mã vạch sản phẩm',
     dataIndex: 'barcode',
   },
   {
-    title: '单价',
+    title: 'Đơn giá',
     dataIndex: 'price',
   },
   {
-    title: '数量（件）',
+    title: 'Số lượng (cái)',
     dataIndex: 'num',
     align: 'right',
   },
   {
-    title: '金额',
+    title: 'Số tiền',
     dataIndex: 'amount',
     align: 'right',
   },
@@ -68,50 +68,50 @@ const goodsColumns: ProColumns<BasicGood>[] = [
 const Descriptions1: DescriptionsProps['items'] = [
   {
     key: '1',
-    label: '取货单号',
+    label: 'Số phiếu lấy hàng',
     children: '1000000000',
   },
   {
     key: '2',
-    label: '状态',
-    children: '已取货',
+    label: 'Trạng thái',
+    children: 'Đã lấy hàng',
   },
   {
     key: '3',
-    label: '销售单号',
+    label: 'Số đơn bán hàng',
     children: '1234123421',
   },
   {
     key: '4',
-    label: '子订单',
+    label: 'Đơn hàng con',
     children: '3214321432',
   },
 ];
 const Descriptions2: DescriptionsProps['items'] = [
   {
     key: '1',
-    label: '用户姓名',
-    children: '付小小',
+    label: 'Tên người dùng',
+    children: 'Phụ Tiểu Tiểu',
   },
   {
     key: '2',
-    label: '联系电话',
+    label: 'Số điện thoại liên hệ',
     children: '18100000000',
   },
   {
     key: '3',
-    label: '常用快递',
-    children: '菜鸟仓储',
+    label: 'Dịch vụ giao hàng thường dùng',
+    children: 'Kho lưu trữ Cai Niao',
   },
   {
     key: '4',
-    label: '取货地址',
-    children: '浙江省杭州市西湖区万塘路18号',
+    label: 'Địa chỉ lấy hàng',
+    children: '18 Wantang Road, Xihu District, Hangzhou, Zhejiang Province',
   },
   {
     key: '5',
-    label: '备注',
-    children: '无',
+    label: 'Ghi chú',
+    children: 'Không',
   },
 ];
 

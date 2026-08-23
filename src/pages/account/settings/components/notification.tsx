@@ -4,25 +4,26 @@ import React from 'react';
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const Action = (
-  <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked />
+  <Switch checkedChildren="Bật" unCheckedChildren="Tắt" defaultChecked />
 );
 
 const NotificationView: React.FC = () => {
   const getData = () => {
     return [
       {
-        title: '用户消息',
-        description: '其他用户的消息将以站内信的形式通知',
+        title: 'Thông báo của người dùng',
+        description:
+          'Thông báo từ những người dùng khác sẽ được gửi dưới dạng tin nhắn nội bộ',
         actions: [Action],
       },
       {
-        title: '系统消息',
-        description: '系统消息将以站内信的形式通知',
+        title: 'Thông báo hệ thống',
+        description: 'Thông báo hệ thống sẽ được gửi dưới dạng tin nhắn nội bộ',
         actions: [Action],
       },
       {
-        title: '待办任务',
-        description: '待办任务将以站内信的形式通知',
+        title: 'Tác vụ cần làm',
+        description: 'Các tác vụ cần làm sẽ được gửi dưới dạng tin nhắn nội bộ',
         actions: [Action],
       },
     ];

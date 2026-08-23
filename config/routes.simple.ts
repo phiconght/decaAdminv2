@@ -4,7 +4,7 @@ export default [
     layout: false,
     routes: [
       {
-        name: '登录',
+        name: 'Đăng nhập',
         path: '/user/login',
         component: './user/login',
       },
@@ -12,13 +12,13 @@ export default [
   },
   {
     path: '/welcome',
-    name: '欢迎',
+    name: 'Chào mừng',
     icon: 'smile',
     component: './Welcome',
   },
   {
     path: '/admin',
-    name: '管理页',
+    name: 'Trang quản lý',
     icon: 'crown',
     access: 'canAdmin',
     routes: [
@@ -28,13 +28,13 @@ export default [
       },
       {
         path: '/admin/sub-page',
-        name: '二级管理页',
+        name: 'Trang quản lý cấp 2',
         component: './Admin',
       },
     ],
   },
   {
-    name: '查询表格',
+    name: 'Bảng truy vấn',
     icon: 'table',
     path: '/list',
     component: './table-list',

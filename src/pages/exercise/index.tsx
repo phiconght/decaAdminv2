@@ -9,16 +9,25 @@ import {
   QueryFilter,
 } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { message, Tag } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Badge, message, Popconfirm, Tag } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import BulkImportDrawer from './components/bulk-import/BulkImportDrawer';
 import CreateExerciseForm from './components/CreateExerciseForm';
-import type { ExerciseItem, ExerciseQuery } from './data';
-import { queryExercises, updateExerciseStatus } from './service';
+import type { ExerciseItem, ExerciseQuery, ExerciseStatus } from './data';
+import {
+  confirmExercise,
+  getImportBatchInProgressCount,
+  queryExercises,
+  updateExerciseStatus,
+} from './service';
+import { EXERCISE_STATUS_META } from './statusMeta';
 
-const STATUS_OPTIONS = [
-  { label: 'ACTIVE', value: 'ACTIVE' },
-  { label: 'INACTIVE', value: 'INACTIVE' },
-];
+const STATUS_OPTIONS = (
+  Object.keys(EXERCISE_STATUS_META) as ExerciseStatus[]
+).map((s) => ({
+  label: EXERCISE_STATUS_META[s].label,
+  value: s,
+}));
 
 const DIFFICULTY_OPTIONS = [
   { label: 'Dễ', value: 'EASY' },
@@ -38,23 +47,41 @@ const ExercisePage: React.FC = () => {
     status: 'ACTIVE',
   });
   const [editId, setEditId] = useState<number | null>(null);
-  const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
+  const [inProgressCount, setInProgressCount] = useState(0);
 
-  const handleToggleStatus = async (record: ExerciseItem) => {
-    if (togglingIds.has(record.id)) return;
-    setTogglingIds((prev) => new Set(prev).add(record.id));
+  const reloadBadge = () => {
+    getImportBatchInProgressCount()
+      .then((res) => setInProgressCount(res.data ?? 0))
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    reloadBadge();
+  }, []);
+
+  const reload = () => {
+    actionRef.current?.reload();
+    reloadBadge();
+  };
+
+  const handleConfirm = async (id: number) => {
     try {
-      const newStatus = record.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-      await updateExerciseStatus(Number(record.id), newStatus);
-      actionRef.current?.reload();
+      await confirmExercise(id);
+      message.success('Đã xác nhận bài tập');
+      reload();
     } catch {
-      message.error('Không thể thay đổi trạng thái');
-    } finally {
-      setTogglingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(record.id);
-        return next;
-      });
+      message.error('Xác nhận thất bại');
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await updateExerciseStatus(id, 'DELETED');
+      message.success('Đã xóa bài tập');
+      reload();
+    } catch {
+      message.error('Xóa thất bại');
     }
   };
 
@@ -104,25 +131,49 @@ const ExercisePage: React.FC = () => {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (_, record) => (
-        <Tag
-          color={record.status === 'ACTIVE' ? 'success' : 'default'}
-          style={{ cursor: 'pointer' }}
-          onClick={() => handleToggleStatus(record)}
-        >
-          {togglingIds.has(record.id) ? '...' : record.status}
-        </Tag>
-      ),
+      render: (_, record) => {
+        const meta = EXERCISE_STATUS_META[record.status];
+        return <Tag color={meta.color}>{meta.label}</Tag>;
+      },
     },
     {
       title: 'Thao tác',
       valueType: 'option',
       key: 'option',
-      render: (_, record) => [
-        <a key="view" onClick={() => setEditId(Number(record.id))}>
-          Xem / Sửa
-        </a>,
-      ],
+      render: (_, record) => {
+        const id = Number(record.id);
+        if (record.status === 'DELETED') return [];
+        const actions: React.ReactNode[] = [
+          <a key="view" onClick={() => setEditId(id)}>
+            Xem / Sửa
+          </a>,
+        ];
+        if (record.status === 'PENDING') {
+          actions.push(
+            <Popconfirm
+              key="confirm"
+              title="Xác nhận bài tập này để đưa vào sử dụng?"
+              okText="Xác nhận"
+              cancelText="Đóng"
+              onConfirm={() => handleConfirm(id)}
+            >
+              <a>Xác nhận</a>
+            </Popconfirm>,
+          );
+        }
+        actions.push(
+          <Popconfirm
+            key="delete"
+            title="Xóa bài tập này?"
+            okText="Xóa"
+            cancelText="Đóng"
+            onConfirm={() => handleDelete(id)}
+          >
+            <a style={{ color: '#ff4d4f' }}>Xóa</a>
+          </Popconfirm>,
+        );
+        return actions;
+      },
     },
   ];
 
@@ -136,8 +187,13 @@ const ExercisePage: React.FC = () => {
         }}
         onSuccess={() => {
           setEditId(null);
-          actionRef.current?.reload();
+          reload();
         }}
+      />
+      <BulkImportDrawer
+        open={bulkImportOpen}
+        onClose={() => setBulkImportOpen(false)}
+        onChanged={reload}
       />
       <ProCard title="Tìm kiếm bài tập" style={{ marginBottom: 16 }}>
         <QueryFilter<ExerciseQuery>
@@ -222,10 +278,27 @@ const ExercisePage: React.FC = () => {
         search={false}
         options={false}
         toolBarRender={() => [
-          <CreateExerciseForm
-            key="create"
-            onSuccess={() => actionRef.current?.reload()}
-          />,
+          <CreateExerciseForm key="create" onSuccess={() => reload()} />,
+          <Badge
+            key="import"
+            count={inProgressCount}
+            size="small"
+            offset={[-6, 4]}
+          >
+            <a
+              onClick={() => setBulkImportOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '4px 15px',
+                border: '1px solid #d9d9d9',
+                borderRadius: 6,
+                color: 'rgba(0,0,0,0.88)',
+              }}
+            >
+              Nhập theo lô
+            </a>
+          </Badge>,
         ]}
         request={async ({ current, pageSize }) =>
           queryExercises({ ...searchParams, current, pageSize })

@@ -25,7 +25,7 @@ const ProportionSales = ({
       loading={loading}
       className={styles.salesCard}
       variant="borderless"
-      title="销售额类别占比"
+      title="Tỷ lệ bán hàng theo loại"
       style={{
         height: '100%',
       }}
@@ -37,16 +37,16 @@ const ProportionSales = ({
             value={salesType}
             onChange={handleChangeSalesType}
             options={[
-              { label: '全部渠道', value: 'all' },
-              { label: '线上', value: 'online' },
-              { label: '门店', value: 'stores' },
+              { label: 'Tất cả các kênh', value: 'all' },
+              { label: 'Trực tuyến', value: 'online' },
+              { label: 'Cửa hàng', value: 'stores' },
             ]}
             size="middle"
           />
         </div>
       }
     >
-      <Text>销售额</Text>
+      <Text>Doanh số bán hàng</Text>
       <Pie
         height={340}
         radius={0.8}

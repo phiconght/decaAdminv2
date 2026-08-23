@@ -26,16 +26,20 @@ const StepDescriptions: React.FC<{
 }> = ({ stepData, bordered }) => {
   const { payAccount, receiverAccount, receiverName, amount } = stepData;
   const items = [
-    { key: 'payAccount', label: '付款账户', children: payAccount },
-    { key: 'receiverAccount', label: '收款账户', children: receiverAccount },
-    { key: 'receiverName', label: '收款人姓名', children: receiverName },
+    { key: 'payAccount', label: 'Tài khoản thanh toán', children: payAccount },
+    {
+      key: 'receiverAccount',
+      label: 'Tài khoản nhận',
+      children: receiverAccount,
+    },
+    { key: 'receiverName', label: 'Tên người nhận', children: receiverName },
     {
       key: 'amount',
-      label: '转账金额',
+      label: 'Số tiền chuyển',
       children: (
         <Statistic
           value={amount}
-          suffix={<span style={{ fontSize: 14 }}>元</span>}
+          suffix={<span style={{ fontSize: 14 }}>VND</span>}
           precision={2}
         />
       ),
@@ -51,14 +55,14 @@ const StepResult: React.FC<{
   return (
     <Result
       status="success"
-      title="操作成功"
-      subTitle="预计两小时内到账"
+      title="Thao tác thành công"
+      subTitle="Dự kiến đến tài khoản trong 2 giờ"
       extra={
         <>
           <Button type="primary" onClick={props.onFinish}>
-            再转一笔
+            Chuyển lại
           </Button>
-          <Button>查看账单</Button>
+          <Button>Xem hóa đơn</Button>
         </>
       }
       className={styles.result}
@@ -79,7 +83,7 @@ const StepForm: React.FC<Record<string, any>> = () => {
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm<StepDataType>();
   return (
-    <PageContainer content="将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。">
+    <PageContainer content="Chia tác vụ biểu mẫu dài hoặc không quen thuộc thành nhiều bước để hướng dẫn người dùng hoàn thành.">
       <Card variant="borderless">
         <StepsForm
           current={current}
@@ -97,7 +101,7 @@ const StepForm: React.FC<Record<string, any>> = () => {
             formRef={{
               current: form,
             }}
-            title="填写转账信息"
+            title="Nhập thông tin chuyển tiền"
             initialValues={stepData}
             onFinish={async (values) => {
               setStepData(values);
@@ -105,13 +109,13 @@ const StepForm: React.FC<Record<string, any>> = () => {
             }}
           >
             <ProFormSelect
-              label="付款账户"
+              label="Tài khoản thanh toán"
               width="md"
               name="payAccount"
               rules={[
                 {
                   required: true,
-                  message: '请选择付款账户',
+                  message: 'Vui lòng chọn tài khoản thanh toán',
                 },
               ]}
               valueEnum={{
@@ -119,18 +123,18 @@ const StepForm: React.FC<Record<string, any>> = () => {
               }}
             />
 
-            <ProForm.Group title="收款账户" size={8}>
+            <ProForm.Group title="Tài khoản nhận" size={8}>
               <ProFormSelect
                 name="receiverMode"
                 rules={[
                   {
                     required: true,
-                    message: '请选择付款账户',
+                    message: 'Vui lòng chọn tài khoản thanh toán',
                   },
                 ]}
                 valueEnum={{
-                  alipay: '支付宝',
-                  bank: '银行账户',
+                  alipay: 'Alipay',
+                  bank: 'Tài khoản ngân hàng',
                 }}
               />
               <ProFormText
@@ -138,55 +142,55 @@ const StepForm: React.FC<Record<string, any>> = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入收款人账户',
+                    message: 'Vui lòng nhập tài khoản người nhận',
                   },
                   {
                     type: 'email',
-                    message: '账户名应为邮箱格式',
+                    message: 'Tên tài khoản phải ở định dạng email',
                   },
                 ]}
                 placeholder="test@example.com"
               />
             </ProForm.Group>
             <ProFormText
-              label="收款人姓名"
+              label="Tên người nhận"
               width="md"
               name="receiverName"
               rules={[
                 {
                   required: true,
-                  message: '请输入收款人姓名',
+                  message: 'Vui lòng nhập tên người nhận',
                 },
               ]}
-              placeholder="请输入收款人姓名"
+              placeholder="Vui lòng nhập tên người nhận"
             />
             <ProFormDigit
-              label="转账金额"
+              label="Số tiền chuyển"
               name="amount"
               width="md"
               rules={[
                 {
                   required: true,
-                  message: '请输入转账金额',
+                  message: 'Vui lòng nhập số tiền chuyển',
                 },
                 {
                   pattern: /^(\d+)((?:\.\d+)?)$/,
-                  message: '请输入合法金额数字',
+                  message: 'Vui lòng nhập số tiền hợp lệ',
                 },
               ]}
-              placeholder="请输入金额"
+              placeholder="Vui lòng nhập số tiền"
               fieldProps={{
                 prefix: '￥',
               }}
             />
           </StepsForm.StepForm>
 
-          <StepsForm.StepForm title="确认转账信息">
+          <StepsForm.StepForm title="Xác nhận thông tin chuyển tiền">
             <div className={styles.result}>
               <Alert
                 closable
                 showIcon
-                title="确认转账后，资金将直接打入对方账户，无法退回。"
+                title="Sau khi xác nhận chuyển tiền, quỹ sẽ được chuyển trực tiếp vào tài khoản của người khác, không thể hoàn lại."
                 style={{
                   marginBottom: 24,
                 }}
@@ -198,20 +202,20 @@ const StepForm: React.FC<Record<string, any>> = () => {
                 }}
               />
               <ProFormText.Password
-                label="支付密码"
+                label="Mật khẩu thanh toán"
                 width="md"
                 name="password"
                 required={false}
                 rules={[
                   {
                     required: true,
-                    message: '需要支付密码才能进行支付',
+                    message: 'Cần mật khẩu thanh toán để thực hiện thanh toán',
                   },
                 ]}
               />
             </div>
           </StepsForm.StepForm>
-          <StepsForm.StepForm title="完成">
+          <StepsForm.StepForm title="Hoàn thành">
             <StepResult
               onFinish={async () => {
                 setCurrent(0);
@@ -228,14 +232,20 @@ const StepForm: React.FC<Record<string, any>> = () => {
           }}
         />
         <div>
-          <h3>说明</h3>
-          <h4>转账到支付宝账户</h4>
+          <h3>Hướng dẫn</h3>
+          <h4>Chuyển đến tài khoản Alipay</h4>
           <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
+            Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản phẩm tại
+            đây. Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản phẩm
+            tại đây. Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản
+            phẩm tại đây.
           </p>
-          <h4>转账到银行卡</h4>
+          <h4>Chuyển đến thẻ ngân hàng</h4>
           <p>
-            如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
+            Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản phẩm tại
+            đây. Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản phẩm
+            tại đây. Nếu cần, bạn có thể đặt một số câu hỏi thường gặp về sản
+            phẩm tại đây.
           </p>
         </div>
       </Card>

@@ -112,6 +112,19 @@ const InvoiceDetailDrawer: React.FC<Props> = ({ invoiceId, open, onClose }) => {
             <Descriptions.Item label="Thành tiền">
               <strong>{formatVnd(detail.amount)}</strong>
             </Descriptions.Item>
+            {detail.adjustmentAmount ? (
+              <Descriptions.Item label="Điều chỉnh lúc xác nhận" span={2}>
+                <span
+                  style={{
+                    color: detail.adjustmentAmount < 0 ? '#ff4d4f' : '#389e0d',
+                  }}
+                >
+                  {detail.adjustmentAmount > 0 ? '+' : ''}
+                  {formatVnd(detail.adjustmentAmount)}
+                </span>
+                {detail.adjustmentNote ? ` — ${detail.adjustmentNote}` : ''}
+              </Descriptions.Item>
+            ) : null}
             <Descriptions.Item label="Trạng thái">
               <Tag color={INVOICE_STATUS_META[detail.status].color}>
                 {INVOICE_STATUS_META[detail.status].label}

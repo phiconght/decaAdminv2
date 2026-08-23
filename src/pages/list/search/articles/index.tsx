@@ -91,23 +91,23 @@ const Articles: FC = () => {
   const owners = [
     {
       id: 'wzj',
-      name: '我自己',
+      name: 'Chính tôi',
     },
     {
       id: 'wjh',
-      name: '吴家豪',
+      name: 'Vũ Gia Hào',
     },
     {
       id: 'zxx',
-      name: '周星星',
+      name: 'Chu Tinh Tinh',
     },
     {
       id: 'zly',
-      name: '赵丽颖',
+      name: 'Triệu Lệ Dĩnh',
     },
     {
       id: 'ym',
-      name: '姚明',
+      name: 'Yao Ming',
     },
   ];
 
@@ -124,10 +124,10 @@ const Articles: FC = () => {
       <Button onClick={loadMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
         {loadingMore ? (
           <span>
-            <LoadingOutlined /> 加载中...
+            <LoadingOutlined /> Đang tải...
           </span>
         ) : (
-          '加载更多'
+          'Tải thêm'
         )}
       </Button>
     </div>
@@ -153,7 +153,11 @@ const Articles: FC = () => {
           }}
           onValuesChange={reload}
         >
-          <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
+          <StandardFormRow
+            title="Danh mục thuộc"
+            block
+            style={{ paddingBottom: 11 }}
+          >
             <FormItem name="category">
               <TagSelect expandable>
                 {categoryOptions.flatMap((category) =>
@@ -171,11 +175,11 @@ const Articles: FC = () => {
               </TagSelect>
             </FormItem>
           </StandardFormRow>
-          <StandardFormRow title="owner" grid>
+          <StandardFormRow title="Chủ sở hữu" grid>
             <FormItem name="owner" noStyle>
               <Select
                 mode="multiple"
-                placeholder="选择 owner"
+                placeholder="Chọn chủ sở hữu"
                 style={{ minWidth: '6rem' }}
                 options={ownerOptions}
               />
@@ -194,19 +198,23 @@ const Articles: FC = () => {
                 }
               }}
             >
-              只看自己的
+              Chỉ xem của riêng tôi
             </a>
           </StandardFormRow>
-          <StandardFormRow title="其它选项" grid last>
+          <StandardFormRow title="Tùy chọn khác" grid last>
             <Row gutter={16}>
               <Col xl={8} lg={10} md={12} sm={24} xs={24}>
-                <FormItem {...formItemLayout} label="活跃用户" name="user">
+                <FormItem
+                  {...formItemLayout}
+                  label="Người dùng hoạt động"
+                  name="user"
+                >
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{ maxWidth: 200, width: '100%' }}
                     options={[
                       {
-                        label: '李三',
+                        label: 'Lý Ba',
                         value: 'lisa',
                       },
                     ]}
@@ -214,13 +222,17 @@ const Articles: FC = () => {
                 </FormItem>
               </Col>
               <Col xl={8} lg={10} md={12} sm={24} xs={24}>
-                <FormItem {...formItemLayout} label="好评度" name="rate">
+                <FormItem
+                  {...formItemLayout}
+                  label="Mức độ đánh giá cao"
+                  name="rate"
+                >
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{ maxWidth: 200, width: '100%' }}
                     options={[
                       {
-                        label: '优秀',
+                        label: 'Xuất sắc',
                         value: 'good',
                       },
                     ]}
@@ -266,8 +278,8 @@ const Articles: FC = () => {
                 description={
                   <Flex wrap gap="small">
                     <Tag>Ant Design</Tag>
-                    <Tag>设计语言</Tag>
-                    <Tag>蚂蚁集团</Tag>
+                    <Tag>Ngôn ngữ thiết kế</Tag>
+                    <Tag>Ant Group</Tag>
                   </Flex>
                 }
               />

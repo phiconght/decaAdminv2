@@ -30,7 +30,7 @@ const operationTabList = [
     key: 'articles',
     tab: (
       <span>
-        文章{' '}
+        Bài viết{' '}
         <span
           style={{
             fontSize: 14,
@@ -45,7 +45,7 @@ const operationTabList = [
     key: 'applications',
     tab: (
       <span>
-        应用{' '}
+        Ứng dụng{' '}
         <span
           style={{
             fontSize: 14,
@@ -60,7 +60,7 @@ const operationTabList = [
     key: 'projects',
     tab: (
       <span>
-        项目{' '}
+        Dự án{' '}
         <span
           style={{
             fontSize: 14,
@@ -109,7 +109,7 @@ const TagList: React.FC<{
   };
   return (
     <div className={styles.tags}>
-      <div className={styles.tagsTitle}>标签</div>
+      <div className={styles.tagsTitle}>Nhãn</div>
       <Flex wrap gap="small">
         {(tags || []).concat(newTags).map((item) => (
           <Tag key={item.key}>{item.label}</Tag>
@@ -241,7 +241,7 @@ const Center: React.FC = () => {
                   dashed
                 />
                 <div className={styles.team}>
-                  <div className={styles.teamTitle}>团队</div>
+                  <div className={styles.teamTitle}>Đội ngũ</div>
                   <Row gutter={36}>
                     {currentUser.notice?.map((item) => (
                       <Col key={item.id} lg={24} xl={12}>

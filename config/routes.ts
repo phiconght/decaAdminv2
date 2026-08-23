@@ -415,6 +415,12 @@ export default [
         component: './fee/Coins',
       },
       {
+        path: '/fee/coin-topups',
+        name: 'fee-coin-topups',
+        access: 'canReadCoin',
+        component: './fee/CoinTopups',
+      },
+      {
         path: '/fee/settings',
         name: 'fee-settings',
         access: 'canAdmin',

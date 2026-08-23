@@ -62,6 +62,8 @@ export type InvoiceItem = {
   note: string | null;
   createdBy: string | null;
   createdAt: string;
+  adjustmentAmount: number;
+  adjustmentNote: string | null;
 };
 
 export type InvoiceLineItem = {
@@ -136,4 +138,30 @@ export type CoinTransactionItem = {
   reason: string;
   createdBy: string | null;
   createdAt: string;
+};
+
+// ---- Nạp Xu bằng chuyển khoản (CoinTopupController) ----
+export type CoinTopupStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+
+export type CoinTopupItem = {
+  id: number;
+  studentId: number;
+  studentName: string;
+  username: string;
+  amountVnd: number;
+  coinAmount: number;
+  paymentCode: string;
+  status: CoinTopupStatus;
+  confirmedAt: string | null;
+  note: string | null;
+  createdAt: string;
+  adjustmentCoinAmount: number;
+  adjustmentNote: string | null;
+};
+
+export type CoinTopupQuery = {
+  studentId?: number;
+  status?: CoinTopupStatus;
+  current?: number;
+  pageSize?: number;
 };

@@ -12,34 +12,20 @@ import { request } from '@umijs/max';
 import { Button, Divider, Form, message, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { MathMarkdownEditor } from '@/components';
-import { uploadFile } from '@/services/file';
-import type { ChoiceOption, ExerciseDetail, TrueFalseItem } from '../data';
+import type {
+  ChoiceOption,
+  ExerciseDetail,
+  ExerciseStatus,
+  TrueFalseItem,
+} from '../data';
 import { createExercise, getExerciseDetail, updateExercise } from '../service';
+import { EXERCISE_STATUS_META } from '../statusMeta';
 import ImageUpload from './ImageUpload';
+import { uploadIfDataUrl } from './imageUpload.utils';
 import MultipleChoiceInput from './MultipleChoiceInput';
 import TrueFalseInput from './TrueFalseInput';
 
-// ── Upload-on-submit helpers ──────────────────────────────────────────────────
-
-function dataUrlToFile(dataUrl: string, filename: string): File {
-  const [header, b64] = dataUrl.split(',');
-  const mime = header.match(/:(.*?);/)?.[1] ?? 'image/png';
-  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  return new File([bytes], filename, { type: mime });
-}
-
-async function uploadIfDataUrl(
-  value: string | undefined,
-  name: string,
-): Promise<string | undefined> {
-  if (!value?.startsWith('data:')) return value;
-  try {
-    const res = await uploadFile(dataUrlToFile(value, name), 'exercise');
-    return res.success ? res.data.url : value;
-  } catch {
-    return value;
-  }
-}
+// ── Upload-on-submit helper ──────────────────────────────────────────────────
 
 async function resolveImages(payload: ExerciseDetail): Promise<ExerciseDetail> {
   const [questionImage, essayAnswerImage] = await Promise.all([
@@ -346,10 +332,12 @@ const CreateExerciseForm: React.FC<Props> = ({
               <ProFormSelect
                 name="status"
                 label="Trạng thái"
-                options={[
-                  { label: 'ACTIVE', value: 'ACTIVE' },
-                  { label: 'INACTIVE', value: 'INACTIVE' },
-                ]}
+                options={(
+                  Object.keys(EXERCISE_STATUS_META) as ExerciseStatus[]
+                ).map((s) => ({
+                  label: EXERCISE_STATUS_META[s].label,
+                  value: s,
+                }))}
                 width="xs"
                 allowClear={false}
               />

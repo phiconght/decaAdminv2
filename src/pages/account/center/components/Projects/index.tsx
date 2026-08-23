@@ -9,7 +9,7 @@ import useStyles from './index.style';
 
 const Projects: React.FC = () => {
   const { styles } = useStyles();
-  // 获取tab列表数据
+  // Lấy dữ liệu danh sách tab
   const { data: listData } = useQuery({
     queryKey: ['projects-list', 30],
     queryFn: () => queryFakeList({ count: 30 }).then((res) => res.data),

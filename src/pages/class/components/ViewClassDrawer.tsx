@@ -76,6 +76,48 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
             </Tag>
           ),
         },
+        {
+          key: 'deliveryMode',
+          label: 'Hình thức học',
+          children: (
+            <Tag color={detail.deliveryMode === 'ONLINE' ? 'blue' : 'default'}>
+              {detail.deliveryMode === 'ONLINE'
+                ? 'Trực tuyến (tự điểm danh)'
+                : 'Trực tiếp (QR/GV điểm danh)'}
+            </Tag>
+          ),
+        },
+        {
+          key: 'paymentType',
+          label: 'Hình thức thanh toán',
+          children: (
+            <Tag
+              color={detail.paymentType === 'PREPAID_COIN' ? 'gold' : 'purple'}
+            >
+              {detail.paymentType === 'PREPAID_COIN'
+                ? 'Thanh toán trước (Xu trọn khóa)'
+                : 'Thanh toán sau (chuyển khoản hàng tháng)'}
+            </Tag>
+          ),
+        },
+        {
+          key: 'pricePerSession',
+          label: 'Đơn giá/buổi',
+          children: detail.pricePerSession
+            ? `${detail.pricePerSession.toLocaleString('vi-VN')} đ`
+            : '—',
+        },
+        {
+          key: 'coinPrice',
+          label: 'Giá Xu (tự đăng ký)',
+          children: detail.coinPrice ? (
+            <Tag color="gold">
+              {detail.coinPrice.toLocaleString('vi-VN')} Xu
+            </Tag>
+          ) : (
+            <Tag>Không mở bán qua Xu</Tag>
+          ),
+        },
         { key: 'createdBy', label: 'Người tạo', children: detail.createdBy },
         {
           key: 'createdAt',

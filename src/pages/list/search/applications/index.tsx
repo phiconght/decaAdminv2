@@ -42,7 +42,7 @@ function formatWan(val: number) {
             marginLeft: 2,
           }}
         >
-          万
+          Vạn
         </span>
       </span>
     );
@@ -67,11 +67,11 @@ const CardInfo: React.FC<{
   return (
     <div className={styles.cardInfo}>
       <div>
-        <p>活跃用户</p>
+        <p>Người dùng hoạt động</p>
         <p>{activeUser}</p>
       </div>
       <div>
-        <p>新增用户</p>
+        <p>Người dùng mới</p>
         <p>{newUser}</p>
       </div>
     </div>
@@ -104,7 +104,7 @@ const Applications: FC<Record<string, any>> = () => {
           }}
         >
           <StandardFormRow
-            title="所属类目"
+            title="Danh mục thuộc"
             block
             style={{
               paddingBottom: 11,
@@ -127,19 +127,19 @@ const Applications: FC<Record<string, any>> = () => {
               </TagSelect>
             </Form.Item>
           </StandardFormRow>
-          <StandardFormRow title="其它选项" grid last>
+          <StandardFormRow title="Tùy chọn khác" grid last>
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <Form.Item {...formItemLayout} name="author" label="作者">
+                <Form.Item {...formItemLayout} name="author" label="Tác giả">
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '王昭君',
+                        label: 'Vương Chiêu Quân',
                         value: 'lisa',
                       },
                     ]}
@@ -147,20 +147,24 @@ const Applications: FC<Record<string, any>> = () => {
                 </Form.Item>
               </Col>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <Form.Item {...formItemLayout} name="rate" label="好评度">
+                <Form.Item
+                  {...formItemLayout}
+                  name="rate"
+                  label="Mức độ đánh giá cao"
+                >
                   <Select
-                    placeholder="不限"
+                    placeholder="Không giới hạn"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '优秀',
+                        label: 'Xuất sắc',
                         value: 'good',
                       },
                       {
-                        label: '普通',
+                        label: 'Bình thường',
                         value: 'normal',
                       },
                     ]}
@@ -195,13 +199,13 @@ const Applications: FC<Record<string, any>> = () => {
                 },
               }}
               actions={[
-                <Tooltip key="download" title="下载">
+                <Tooltip key="download" title="Tải xuống">
                   <DownloadOutlined />
                 </Tooltip>,
-                <Tooltip key="edit" title="编辑">
+                <Tooltip key="edit" title="Chỉnh sửa">
                   <EditOutlined />
                 </Tooltip>,
-                <Tooltip title="分享" key="share">
+                <Tooltip title="Chia sẻ" key="share">
                   <ShareAltOutlined />
                 </Tooltip>,
                 <Dropdown

@@ -27,7 +27,7 @@ const TableList: React.FC = () => {
 
   /**
    * @en-US International configuration
-   * @zh-CN 国际化配置
+   * @zh-CN Cấu hình quốc tế hóa
    * */
   const intl = useIntl();
 
@@ -94,7 +94,7 @@ const TableList: React.FC = () => {
       renderText: (val: string) =>
         `${val}${intl.formatMessage({
           id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
+          defaultMessage: ' Vạn ',
         })}`,
     },
     {
@@ -227,7 +227,7 @@ const TableList: React.FC = () => {
   const handleRemove = useCallback(
     async (selectedRows: API.RuleListItem[]) => {
       if (!selectedRows?.length) {
-        messageApi.warning('请选择删除项');
+        messageApi.warning('Vui lòng chọn mục cần xóa');
 
         return;
       }
@@ -278,7 +278,7 @@ const TableList: React.FC = () => {
               </span>{' '}
               <FormattedMessage
                 id="pages.searchTable.item"
-                defaultMessage="项"
+                defaultMessage="Mục"
               />
               &nbsp;&nbsp;
               <span>
@@ -292,7 +292,7 @@ const TableList: React.FC = () => {
                 )}{' '}
                 <FormattedMessage
                   id="pages.searchTable.tenThousand"
-                  defaultMessage="万"
+                  defaultMessage="Vạn"
                 />
               </span>
             </div>

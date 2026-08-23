@@ -24,7 +24,7 @@ export default {
           isLogin: false,
         },
         errorCode: '401',
-        errorMessage: '请先登录！',
+        errorMessage: 'Vui lòng đăng nhập trước!',
         success: true,
       });
       return;

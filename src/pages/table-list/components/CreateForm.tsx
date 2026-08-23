@@ -22,7 +22,7 @@ const CreateForm: FC<CreateFormProps> = (props) => {
   const queryClient = useQueryClient();
   /**
    * @en-US International configuration
-   * @zh-CN 国际化配置
+   * @zh-CN Cấu hình quốc tế hóa
    * */
   const intl = useIntl();
 

@@ -39,12 +39,12 @@ const useStyles = createStyles(({ token, css }) => ({
 export const DocLink: React.FC = () => {
   const { styles } = useStyles();
   return (
-    <Tooltip title="使用文档">
+    <Tooltip title="Hướng dẫn sử dụng">
       <Button
         type="text"
         className={styles.action}
         icon={<BookOutlined />}
-        aria-label="使用文档"
+        aria-label="Hướng dẫn sử dụng"
         onClick={() => {
           history.push('/welcome');
         }}

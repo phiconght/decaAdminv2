@@ -21,7 +21,7 @@ const BasicForm: FC<Record<string, any>> = () => {
   const { mutate: run } = useMutation({
     mutationFn: fakeSubmitForm,
     onSuccess: () => {
-      message.success('提交成功');
+      message.success('Nộp thành công');
       queryClient.invalidateQueries({ queryKey: ['basic-form'] });
     },
   });
@@ -29,7 +29,7 @@ const BasicForm: FC<Record<string, any>> = () => {
     run(values);
   };
   return (
-    <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+    <PageContainer content="Trang biểu mẫu được sử dụng để thu thập hoặc xác thực thông tin từ người dùng, biểu mẫu cơ bản thường gặp ở các kịch bản biểu mẫu có ít mục dữ liệu.">
       <Card variant="borderless">
         <ProForm
           requiredMark={false}
@@ -47,88 +47,88 @@ const BasicForm: FC<Record<string, any>> = () => {
         >
           <ProFormText
             width="md"
-            label="标题"
+            label="Tiêu đề"
             name="title"
             rules={[
               {
                 required: true,
-                message: '请输入标题',
+                message: 'Vui lòng nhập tiêu đề',
               },
             ]}
-            placeholder="给目标起个名字"
+            placeholder="Đặt tên cho mục tiêu của bạn"
           />
           <ProFormDateRangePicker
-            label="起止日期"
+            label="Ngày bắt đầu - kết thúc"
             width="md"
             name="date"
             rules={[
               {
                 required: true,
-                message: '请选择起止日期',
+                message: 'Vui lòng chọn ngày bắt đầu - kết thúc',
               },
             ]}
-            placeholder={['开始日期', '结束日期']}
+            placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
           />
           <ProFormTextArea
-            label="目标描述"
+            label="Mô tả mục tiêu"
             width="xl"
             name="goal"
             rules={[
               {
                 required: true,
-                message: '请输入目标描述',
+                message: 'Vui lòng nhập mô tả mục tiêu',
               },
             ]}
-            placeholder="请输入你的阶段性工作目标"
+            placeholder="Vui lòng nhập mục tiêu công việc giai đoạn của bạn"
           />
 
           <ProFormTextArea
-            label="衡量标准"
+            label="Tiêu chuẩn đo lường"
             name="standard"
             width="xl"
             rules={[
               {
                 required: true,
-                message: '请输入衡量标准',
+                message: 'Vui lòng nhập tiêu chuẩn đo lường',
               },
             ]}
-            placeholder="请输入衡量标准"
+            placeholder="Vui lòng nhập tiêu chuẩn đo lường"
           />
 
           <ProFormText
             width="md"
             label={
               <span>
-                客户
-                <em className={styles.optional}>（选填）</em>
+                Khách hàng
+                <em className={styles.optional}>(tùy chọn)</em>
               </span>
             }
-            tooltip="目标的服务对象"
+            tooltip="Đối tượng phục vụ của mục tiêu"
             name="client"
-            placeholder="请描述你服务的客户，内部客户直接 @姓名／工号"
+            placeholder="Vui lòng mô tả khách hàng bạn phục vụ, khách hàng nội bộ trực tiếp @tên/mã số"
           />
 
           <ProFormText
             width="md"
             label={
               <span>
-                邀评人
-                <em className={styles.optional}>（选填）</em>
+                Người mời đánh giá
+                <em className={styles.optional}>(tùy chọn)</em>
               </span>
             }
             name="invites"
-            placeholder="请直接 @姓名／工号，最多可邀请 5 人"
+            placeholder="Vui lòng @tên/mã số trực tiếp, có thể mời tối đa 5 người"
           />
 
           <ProFormDigit
             label={
               <span>
-                权重
-                <em className={styles.optional}>（选填）</em>
+                Trọng số
+                <em className={styles.optional}>(tùy chọn)</em>
               </span>
             }
             name="weight"
-            placeholder="请输入"
+            placeholder="Vui lòng nhập"
             min={0}
             max={100}
             width="xs"
@@ -142,19 +142,19 @@ const BasicForm: FC<Record<string, any>> = () => {
             options={[
               {
                 value: '1',
-                label: '公开',
+                label: 'Công khai',
               },
               {
                 value: '2',
-                label: '部分公开',
+                label: 'Công khai một phần',
               },
               {
                 value: '3',
-                label: '不公开',
+                label: 'Không công khai',
               },
             ]}
-            label="目标公开"
-            help="客户、邀评人默认被分享"
+            label="Mục tiêu công khai"
+            help="Khách hàng, người mời đánh giá được chia sẻ mặc định"
             name="publicType"
           />
           <ProFormDependency name={['publicType']}>
@@ -173,15 +173,15 @@ const BasicForm: FC<Record<string, any>> = () => {
                   options={[
                     {
                       value: '1',
-                      label: '同事甲',
+                      label: 'Đồng nghiệp A',
                     },
                     {
                       value: '2',
-                      label: '同事乙',
+                      label: 'Đồng nghiệp B',
                     },
                     {
                       value: '3',
-                      label: '同事丙',
+                      label: 'Đồng nghiệp C',
                     },
                   ]}
                 />

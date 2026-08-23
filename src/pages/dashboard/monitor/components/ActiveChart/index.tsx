@@ -47,7 +47,10 @@ const ActiveChart = () => {
 
   return (
     <div className={styles.activeChart}>
-      <Statistic title="目标评估" value="有望达到预期" />
+      <Statistic
+        title="Đánh giá mục tiêu"
+        value="Có khả năng đạt được kỳ vọng"
+      />
       <div
         style={{
           marginTop: 32,
@@ -69,8 +72,8 @@ const ActiveChart = () => {
       {activeData && (
         <div>
           <div className={styles.activeChartGrid}>
-            <p>{maxValue + 200} 亿元</p>
-            <p>{medianValue} 亿元</p>
+            <p>{maxValue + 200} Tỷ Đ</p>
+            <p>{medianValue} Tỷ Đ</p>
           </div>
           <div className={styles.dashedLine}>
             <div className={styles.line} />
