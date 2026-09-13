@@ -231,12 +231,14 @@ const ExamPage: React.FC = () => {
           <ProFormSelect
             name="type"
             label="Loại đề"
+            placeholder="Tất cả"
             options={TYPE_OPTIONS}
             allowClear
           />
           <ProFormSelect
             name="status"
             label="Trạng thái"
+            placeholder="Tất cả"
             options={STATUS_OPTIONS}
             allowClear={false}
           />
@@ -249,6 +251,12 @@ const ExamPage: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        // Nhieu cot khong dat `width` co dinh + khong co scroll.x khien
+        // antd ep co cac cot do rat hep (hep hon 1 ky tu), buoc chu xuong
+        // dong theo tung ky tu (loi hien thi header xau, KHONG phai loi
+        // font — phan hoi nguoi dung 13/09/2026). `max-content` de bang
+        // rong theo dung noi dung tu nhien + cuon ngang thay vi ep co.
+        scroll={{ x: 'max-content' }}
         toolBarRender={() => [
           <a key="create" onClick={() => setEditorId(null)}>
             <Tag

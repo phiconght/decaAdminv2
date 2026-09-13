@@ -74,6 +74,7 @@
   'menu.content': 'Nội Dung',
   'menu.content.posts': 'Bài Viết',
   'menu.content.announcements': 'Thông Báo',
+  'menu.content.hero': 'Trang Chủ Web',
   'menu.system': 'Hệ Thống',
   'menu.system.user': 'Tài khoản',
 };

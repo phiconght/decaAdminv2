@@ -99,7 +99,9 @@ export const layout: RunTimeLayoutConfig = ({
     },
     avatarProps: {
       src: initialState?.currentUser?.avatar,
-      title: 'ProUser',
+      // Ten nguoi dung that thay vi nhan "ProUser" hard-code cua scaffold
+      // (phan hoi nguoi dung 13/09/2026).
+      title: initialState?.currentUser?.name ?? 'Người dùng',
       render: (_, avatarChildren) => (
         <AvatarDropdown>{avatarChildren}</AvatarDropdown>
       ),
@@ -188,7 +190,7 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: isDev ? '' : 'https://pro-api.ant-design-demo.workers.dev',
+  baseURL: '',
   ...errorConfig,
 };
 

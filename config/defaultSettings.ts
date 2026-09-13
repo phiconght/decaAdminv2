@@ -7,18 +7,23 @@ const Settings: ProLayoutProps & {
   logo?: string;
 } = {
   navTheme: 'light',
-  colorPrimary: '#1677ff',
+  // Cobalt thương hiệu — khớp WEB (`--cobalt`)/MOBILE (`AppColors.brand`),
+  // thay vì xanh mặc định của antd (phản hồi người dùng 13/09/2026).
+  colorPrimary: '#2E43E8',
   layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  title: 'DecaMath',
+  logo: '/logo-deca.png',
   iconfontUrl: '',
   token: {
-    // 参见ts声明，demo 见文档，通过token 修改样式
-    //https://procomponents.ant.design/components/layout#%E9%80%9A%E8%BF%87-token-%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F
+    // Đồng nhất nền với WEB (`--paper`)/MOBILE (`AppColors.paper`) —
+    // #FAFAF5, sáng hơn bản mặc định #F5F5F5 của antd Pro (phản hồi người
+    // dùng 13/09/2026). Xem WEB/src/global.less và
+    // MOBILE/lib/core/theme/app_colors.dart.
+    bgLayout: '#FAFAF5',
   },
 };
 

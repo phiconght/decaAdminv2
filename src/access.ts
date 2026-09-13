@@ -38,6 +38,10 @@ export default function access(
     canWritePost: has('POST:WRITE'),
     canReadAnnounce: has('ANNOUNCE:READ'),
     canWriteAnnounce: has('ANNOUNCE:WRITE'),
+    // Hero Trang chủ công khai Web — dùng lại quyền MARKETING:* (đã cấp sẵn
+    // cho ADMIN + EMPLOYEE từ V41, chưa từng có controller nào dùng tới).
+    canReadHero: has('MARKETING:READ'),
+    canWriteHero: has('MARKETING:WRITE'),
     // Học phí (payment) / Xu (coin)
     canReadFee: has('FEE:READ'),
     canWriteFee: has('FEE:WRITE'),

@@ -46,6 +46,9 @@ export default defineConfig({
 
   publicPath: PUBLIC_PATH,
 
+  // Logo thương hiệu làm favicon tab — khớp WEB (WEB/config/config.ts).
+  favicons: ['/logo-deca.png'],
+
   /**
    * @name 兼容性设置
    * @description 设置 ie11 不一定完美兼容，需要检查自己使用的所有依赖
@@ -114,7 +117,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
+  title: 'DecaMath',
   layout: {
     locale: true,
     ...defaultSettings,
@@ -133,11 +136,17 @@ export default defineConfig({
    * @doc https://umijs.org/docs/max/i18n
    */
   locale: {
-    // default zh-CN
-    default: 'zh-CN',
+    // Doi tu 'zh-CN' + baseNavigator:true sang cung quy uoc voi WEB
+    // (WEB/config/config.ts) — dung 'en-US' lam locale ky thuat duy nhat
+    // (text hien thi la tieng Viet nhet thang vao src/locales/en-US/*),
+    // baseNavigator:false de KHONG tu doi theo navigator.language cua trinh
+    // duyet. Sua vi ADMIN van giu nguyen locale mac dinh 'zh-CN' cua
+    // scaffold Ant Design Pro — khien mot so text mac dinh cua antd (vd
+    // placeholder Select chua set rieng) hien tieng Trung thay vi tieng
+    // Viet (phan hoi nguoi dung 13/09/2026, vd o man Đề Thi).
+    default: 'en-US',
     antd: true,
-    // default true, when it is true, will use `navigator.language` overwrite default
-    baseNavigator: true,
+    baseNavigator: false,
   },
   /**
    * @name antd 插件
@@ -150,7 +159,14 @@ export default defineConfig({
       variant: 'filled',
       theme: {
         token: {
-          fontFamily: 'AlibabaSans, sans-serif',
+          // Font + màu thương hiệu — khớp WEB (`--cobalt`, "Be Vietnam
+          // Pro"), thay AlibabaSans/xanh mặc định của scaffold (phản hồi
+          // người dùng 13/09/2026). Đặt ở day (khong phai
+          // `layout.colorPrimary` trong defaultSettings.ts) vi day la
+          // ConfigProvider toan cuc — ap dung ca man /user/login von nam
+          // ngoai ProLayout.
+          fontFamily: "'Be Vietnam Pro', AlibabaSans, sans-serif",
+          colorPrimary: '#2E43E8',
         },
       },
     },

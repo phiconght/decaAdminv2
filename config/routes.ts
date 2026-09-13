@@ -483,6 +483,13 @@ export default [
         access: 'canReadAnnounce',
         component: './content/announcements',
       },
+      {
+        path: '/content/hero',
+        name: 'hero',
+        icon: 'picture',
+        access: 'canReadHero',
+        component: './content/hero',
+      },
     ],
   },
   {
