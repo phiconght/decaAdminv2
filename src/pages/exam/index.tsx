@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import ExamClassesDrawer from './components/ExamClassesDrawer';
 import ExamEditorDrawer from './components/ExamEditorDrawer';
+import ExamPreviewDrawer from './components/ExamPreviewDrawer';
 import ExportPdfDropdown from './components/ExportPdfDropdown';
 import type { ExamItem, ExamQuery } from './data';
 import { deleteExam, queryExams } from './service';
@@ -37,15 +38,14 @@ const TYPE_OPTIONS = [
   { label: 'Bổ sung', value: 'SUPPLEMENTARY' },
 ];
 const STATUS_OPTIONS = [
+  { label: 'Tất cả', value: '' },
   { label: 'Đã phát hành', value: 'ACTIVE' },
   { label: 'Chưa phát hành', value: 'INACTIVE' },
 ];
 
 const ExamPage: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
-  const [searchParams, setSearchParams] = useState<ExamQuery>({
-    status: 'ACTIVE',
-  });
+  const [searchParams, setSearchParams] = useState<ExamQuery>({});
   const [classesFor, setClassesFor] = useState<{
     examId: number;
     examName: string;
@@ -54,6 +54,7 @@ const ExamPage: React.FC = () => {
   const [editorId, setEditorId] = useState<number | null | undefined>(
     undefined,
   );
+  const [previewId, setPreviewId] = useState<number | null>(null);
 
   const handleDelete = async (id: number) => {
     try {
@@ -150,6 +151,9 @@ const ExamPage: React.FC = () => {
       title: 'Thao tác',
       valueType: 'option',
       render: (_, record) => [
+        <a key="view" onClick={() => setPreviewId(record.id)}>
+          Xem đề thi
+        </a>,
         <a key="edit" onClick={() => setEditorId(record.id)}>
           Sửa
         </a>,
@@ -184,9 +188,14 @@ const ExamPage: React.FC = () => {
           actionRef.current?.reload();
         }}
       />
+      <ExamPreviewDrawer
+        examId={previewId}
+        open={previewId !== null}
+        onClose={() => setPreviewId(null)}
+      />
       <ProCard title="Tìm kiếm đề thi" style={{ marginBottom: 16 }}>
         <QueryFilter<ExamQuery>
-          initialValues={{ status: 'ACTIVE' }}
+          initialValues={{ status: '' }}
           defaultCollapsed={false}
           collapseRender={false}
           layout="vertical"
@@ -198,7 +207,7 @@ const ExamPage: React.FC = () => {
             actionRef.current?.reload();
           }}
           onReset={() => {
-            setSearchParams({ status: 'ACTIVE' });
+            setSearchParams({});
             actionRef.current?.reload();
           }}
         >

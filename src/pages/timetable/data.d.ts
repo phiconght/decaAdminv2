@@ -2,7 +2,9 @@
 export type TimetableView = 'STUDENT' | 'TEACHER' | 'ROOM' | 'PARENT';
 // Chế độ hiển thị (Tháng để phase 2).
 export type CalendarMode = 'DAY' | 'WEEK';
-export type SessionStatus = 'PLANNED' | 'CANCELLED' | 'DONE';
+// Khớp cột status DB — SessionStateJob (BE) quét mỗi phút, tự chuyển
+// PLANNED -> IN_PROGRESS (đến giờ bắt đầu) -> DONE (qua giờ kết thúc).
+export type SessionStatus = 'PLANNED' | 'IN_PROGRESS' | 'CANCELLED' | 'DONE';
 export type AttendanceStatus =
   | 'CHUA_CHECKIN'
   | 'CO_MAT'

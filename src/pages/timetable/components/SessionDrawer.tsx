@@ -16,6 +16,7 @@ type Props = {
 
 const STATUS_TAG: Record<SessionStatus, { label: string; color: string }> = {
   PLANNED: { label: 'Đã lên lịch', color: 'processing' },
+  IN_PROGRESS: { label: 'Đang diễn ra', color: 'blue' },
   DONE: { label: 'Đã dạy', color: 'default' },
   CANCELLED: { label: 'Đã hủy', color: 'error' },
 };

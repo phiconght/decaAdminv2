@@ -17,12 +17,14 @@ export const RECURRENCE_LABELS: Record<RecurrenceType, string> = {
 
 export const STATUS_LABELS: Record<SessionStatus, string> = {
   PLANNED: 'Dự kiến',
+  IN_PROGRESS: 'Đang diễn ra',
   DONE: 'Đã dạy',
   CANCELLED: 'Đã hủy',
 };
 
 export const STATUS_COLORS: Record<SessionStatus, string> = {
   PLANNED: 'blue',
+  IN_PROGRESS: 'processing',
   DONE: 'green',
   CANCELLED: 'red',
 };

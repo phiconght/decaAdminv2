@@ -412,8 +412,14 @@ const ClassScheduleDrawer: React.FC<Props> = ({
             key: 'option',
             width: 140,
             render: (_: unknown, r: SessionDetail) => {
-              const disableEdit = r.status !== 'PLANNED';
-              const disableCancel = r.status !== 'PLANNED';
+              // Buổi ĐANG diễn ra vẫn cho sửa/hủy như buổi dự kiến: modal
+              // "Sửa buổi học" cũng là nơi gán video bài giảng / link Zoom,
+              // khóa từ lúc vào giờ học thì không kịp thêm/sửa link Zoom
+              // giữa buổi. Chỉ buổi đã xong/đã hủy mới khóa.
+              const editable =
+                r.status === 'PLANNED' || r.status === 'IN_PROGRESS';
+              const disableEdit = !editable;
+              const disableCancel = !editable;
               return (
                 <Space size="small">
                   {disableEdit ? (

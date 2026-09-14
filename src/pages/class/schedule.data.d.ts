@@ -1,7 +1,11 @@
 // Types cho module Lịch học (drawer trong Khóa học). Tách khỏi data.d.ts của class.
 
 export type RecurrenceType = 'ONCE' | 'DAILY' | 'WEEKLY';
-export type SessionStatus = 'PLANNED' | 'CANCELLED' | 'DONE';
+/**
+ * Khớp cột status trong DB. BE có SessionStateJob quét mỗi phút, tự chuyển
+ * PLANNED -> IN_PROGRESS (đến giờ bắt đầu) -> DONE (qua giờ kết thúc).
+ */
+export type SessionStatus = 'PLANNED' | 'IN_PROGRESS' | 'CANCELLED' | 'DONE';
 export type ConflictType = 'ROOM' | 'TEACHER' | 'STUDENT';
 
 // --- Quy tắc lịch ---

@@ -16,6 +16,12 @@ export { default as ArticleListContent } from './ArticleListContent';
 export { default as AvatarList } from './AvatarList';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export {
+  EssayView as ExerciseEssayView,
+  EXERCISE_TYPE_LABEL,
+  MultipleChoiceView as ExerciseMultipleChoiceView,
+  TrueFalseView as ExerciseTrueFalseView,
+} from './ExerciseAnswerViews';
+export {
   default as MathMarkdownEditor,
   MathPreview,
 } from './MathMarkdownEditor';

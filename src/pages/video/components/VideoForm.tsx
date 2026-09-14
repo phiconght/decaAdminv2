@@ -1,4 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
+import type { ProFormInstance } from '@ant-design/pro-components';
 import {
   DrawerForm,
   ProFormSelect,
@@ -6,7 +7,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type {
   LectureVideoItem,
   LectureVideoForm as VideoFormValues,
@@ -41,9 +42,13 @@ const VideoForm: React.FC<Props> = ({
   const [messageApi, contextHolder] = message.useMessage();
   const isEdit = mode === 'edit';
   const [initialValues, setInitialValues] = useState<Partial<InternalForm>>({});
+  const formRef = useRef<ProFormInstance<InternalForm> | undefined>(undefined);
 
   // Sửa video: chuyên đề đã có nhưng không biết thuộc môn nào -> tra ngược
   // qua GET /topics/{id} để suy ra subjectId, dùng preselect dropdown Môn.
+  // Ket qua duoc set qua ca `initialValues` (lan mo dau) LAN formRef.setFieldsValue
+  // (vi Form chi ap dung initialValues 1 lan luc mount — du lieu tra ve sau do
+  // (async) khong tu dong dien lai vao form da mount, khien cac o de trong).
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -54,16 +59,19 @@ const VideoForm: React.FC<Props> = ({
           subjectId = topic?.subjectId;
         }
         if (!cancelled) {
-          setInitialValues({
+          const values: Partial<InternalForm> = {
             title: editData.title,
             youtubeUrl: editData.youtubeUrl,
             description: editData.description ?? undefined,
             topicId: editData.topicId ?? null,
             subjectId,
-          });
+          };
+          setInitialValues(values);
+          formRef.current?.setFieldsValue(values);
         }
       } else {
         setInitialValues({});
+        formRef.current?.resetFields();
       }
     })();
     return () => {
@@ -104,6 +112,7 @@ const VideoForm: React.FC<Props> = ({
         open={open}
         onOpenChange={onOpenChange}
         key={editData?.id ?? 'create'}
+        formRef={formRef}
         initialValues={initialValues}
         drawerProps={{ destroyOnHidden: true }}
         onFinish={handleFinish}
