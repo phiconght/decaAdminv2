@@ -13,7 +13,7 @@ export default {
   // Moi truong dev: chuyen tiep /api/v1 sang backend Spring Boot (localhost:9090)
   dev: {
     '/api/v1/': {
-      target: 'http://localhost:9090',
+      target: 'https://decamath-api.duckdns.org',
       changeOrigin: true,
     },
   },

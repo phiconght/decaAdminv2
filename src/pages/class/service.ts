@@ -1,5 +1,6 @@
 import { request } from '@umijs/max';
 import type {
+  ClassContent,
   ClassDetail,
   ClassExamItem,
   ClassItem,
@@ -84,5 +85,21 @@ export async function queryClassExams(
 ): Promise<{ success: boolean; data: ClassExamItem[]; total: number }> {
   return request('/api/v1/exams', {
     params: { classId, pageSize: 100 },
+  });
+}
+
+export async function getClassContent(
+  classId: number,
+): Promise<{ success: boolean; data: ClassContent }> {
+  return request(`/api/v1/classes/${classId}/content`);
+}
+
+export async function updateClassContent(
+  classId: number,
+  data: Omit<ClassContent, 'classId'>,
+): Promise<{ success: boolean; data: ClassContent }> {
+  return request(`/api/v1/classes/${classId}/content`, {
+    method: 'PUT',
+    data,
   });
 }

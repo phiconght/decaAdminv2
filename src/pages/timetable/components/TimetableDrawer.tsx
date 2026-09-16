@@ -13,6 +13,7 @@ import {
 import dayjs, { type Dayjs } from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDrawerWidth, useIsMobile } from '@/hooks/useResponsiveWidth';
 import type { CalendarMode, ChildRef, TimetableItem } from '../data';
 import { queryChildren, queryTimetable } from '../service';
 import SessionDrawer from './SessionDrawer';
@@ -41,6 +42,8 @@ const TimetableDrawer: React.FC<Props> = ({
   refId,
   title,
 }) => {
+  const drawerWidth = useDrawerWidth('70vw');
+  const isMobile = useIsMobile();
   const [mode, setMode] = useState<CalendarMode>('WEEK');
   const [anchorDate, setAnchorDate] = useState<Dayjs>(dayjs());
   const [items, setItems] = useState<TimetableItem[]>([]);
@@ -50,12 +53,14 @@ const TimetableDrawer: React.FC<Props> = ({
   const [detailOpen, setDetailOpen] = useState(false);
   const reqIdRef = useRef(0);
 
-  // Mỗi lần mở: về tuần hiện tại.
+  // Mỗi lần mở: về hôm nay — mặc định xem theo Ngày trên điện thoại (lưới tuần quá chật),
+  // theo Tuần trên desktop/tablet.
   useEffect(() => {
     if (open) {
       setAnchorDate(dayjs());
-      setMode('WEEK');
+      setMode(isMobile ? 'DAY' : 'WEEK');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   // view PARENT: nạp danh sách con để tô màu theo con.
@@ -126,6 +131,7 @@ const TimetableDrawer: React.FC<Props> = ({
   return (
     <Drawer
       title={title ?? 'Thời khóa biểu'}
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnHidden

@@ -21,6 +21,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type {
   RoomOption,
   ScheduleItem,
@@ -78,6 +79,7 @@ const ClassScheduleDrawer: React.FC<Props> = ({
   const access = useAccess();
   const canWrite = access.canWriteClass;
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth('80vw');
 
   const [rules, setRules] = useState<ScheduleItem[]>([]);
   const [rulesLoading, setRulesLoading] = useState(false);
@@ -470,6 +472,7 @@ const ClassScheduleDrawer: React.FC<Props> = ({
       {contextHolder}
       <Drawer
         title={`Lịch học — ${className ?? ''}`}
+        width={drawerWidth}
         open={open}
         onClose={onClose}
         destroyOnHidden

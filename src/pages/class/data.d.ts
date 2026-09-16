@@ -17,6 +17,8 @@ export type ClassItem = {
   teachers: { id: number; username: string; fullName: string }[];
   pricePerSession?: number;
   coinPrice?: number;
+  /** Giá trọn gói cho đăng ký tự phục vụ bằng chuyển khoản (khác coinPrice — VND thật, không phải Xu). */
+  fullPrice?: number;
   paymentType?: PaymentType;
   deliveryMode?: DeliveryMode;
   createdBy: string;
@@ -49,10 +51,19 @@ export type ClassDetail = {
   pricePerSession?: number;
   /** Giá Xu để HS tự đăng ký (Mobile/Web). Bỏ trống/0 = không mở bán qua Xu. */
   coinPrice?: number;
+  /** Giá trọn gói cho đăng ký tự phục vụ bằng chuyển khoản. Bỏ trống = ẩn nút Đăng ký + QR ở Card/trang chi tiết. */
+  fullPrice?: number;
   /** Hình thức thanh toán học phí — PREPAID_COIN hoặc POSTPAID_TRANSFER. */
   paymentType?: PaymentType;
   /** Hình thức học, quyết định cách điểm danh — ONLINE hoặc OFFLINE. */
   deliveryMode?: DeliveryMode;
+};
+
+export type ClassContent = {
+  classId: number;
+  title?: string;
+  coverImageUrl?: string;
+  contentMd?: string;
 };
 
 export type ClassQuery = {

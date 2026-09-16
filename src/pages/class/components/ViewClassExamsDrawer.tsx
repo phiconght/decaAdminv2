@@ -1,5 +1,6 @@
 import { Drawer, Empty, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ClassExamItem } from '../data';
 import { queryClassExams } from '../service';
 
@@ -18,6 +19,7 @@ const ViewClassExamsDrawer: React.FC<Props> = ({
 }) => {
   const [exams, setExams] = useState<ClassExamItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const drawerWidth = useDrawerWidth(560);
 
   useEffect(() => {
     if (!open || !classId) return;
@@ -32,7 +34,7 @@ const ViewClassExamsDrawer: React.FC<Props> = ({
       title={`Đề thi của khóa — ${className ?? ''}`}
       open={open}
       onClose={onClose}
-      width={560}
+      width={drawerWidth}
     >
       <Table<ClassExamItem>
         rowKey="id"

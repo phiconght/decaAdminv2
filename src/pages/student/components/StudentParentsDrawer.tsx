@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { GuardianRelationship, RelativeItem } from '../data';
 import {
   linkStudentParent,
@@ -52,6 +53,7 @@ type ParentOption = { label: string; value: number };
 const StudentParentsDrawer: React.FC<Props> = ({ studentId, studentName }) => {
   const access = useAccess();
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(680);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -218,6 +220,7 @@ const StudentParentsDrawer: React.FC<Props> = ({ studentId, studentName }) => {
 
       <Drawer
         title={`Phụ huynh của ${studentName}`}
+        width={drawerWidth}
         open={open}
         onClose={() => setOpen(false)}
         destroyOnHidden
@@ -268,6 +271,7 @@ const StudentParentsDrawer: React.FC<Props> = ({ studentId, studentName }) => {
           loading={loading}
           dataSource={parents}
           columns={columns}
+          scroll={{ x: 'max-content' }}
           pagination={false}
           locale={{ emptyText: 'Học viên chưa có phụ huynh nào được gán' }}
         />

@@ -1,6 +1,7 @@
 import { UserAddOutlined } from '@ant-design/icons';
 import { Button, Drawer, message, Popconfirm, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { StudentOption } from '../data';
 import { queryClassStudents, removeClassStudent } from '../service';
 import AddStudentsModal from './AddStudentsModal';
@@ -22,6 +23,7 @@ const ManageStudentsDrawer: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [removingId, setRemovingId] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const drawerWidth = useDrawerWidth(520);
 
   const fetchStudents = async () => {
     if (!classId) return;
@@ -60,7 +62,7 @@ const ManageStudentsDrawer: React.FC<Props> = ({
         title={`Học sinh — ${className ?? ''}`}
         open={open}
         onClose={onClose}
-        width={520}
+        width={drawerWidth}
         extra={
           <Button
             type="primary"

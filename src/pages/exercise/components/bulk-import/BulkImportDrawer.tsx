@@ -1,6 +1,7 @@
 import { request } from '@umijs/max';
-import { Drawer, Input, message, Select, Spin } from 'antd';
+import { Drawer, Empty, Input, message, Select, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
+import { useIsMobile } from '@/hooks/useResponsiveWidth';
 import type { ImportBatchDetail } from '../../data';
 import { getImportBatchDetail, importBatch } from '../../service';
 import ImportBatchListPanel from './ImportBatchListPanel';
@@ -19,6 +20,7 @@ type Props = {
  * SPEC_NhapBaiTap_TuWord_QuaAI.md §6.
  */
 const BulkImportDrawer: React.FC<Props> = ({ open, onClose, onChanged }) => {
+  const isMobile = useIsMobile();
   const [subjectId, setSubjectId] = useState<number | undefined>();
   const [topicId, setTopicId] = useState<number | undefined>();
   const [examName, setExamName] = useState('');
@@ -100,92 +102,105 @@ const BulkImportDrawer: React.FC<Props> = ({ open, onClose, onChanged }) => {
         if (!o) reset();
       }}
     >
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".json"
-        style={{ display: 'none' }}
-        onChange={handleFileSelected}
-      />
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-        <div style={{ width: 260, flexShrink: 0 }}>
-          <SubjectAndTopicFields
-            subjectId={subjectId}
-            topicId={topicId}
-            disabled={!!batch}
-            onSubjectChange={(v) => {
-              setSubjectId(v);
-              setTopicId(undefined);
-            }}
-            onTopicChange={setTopicId}
+      {isMobile ? (
+        <Empty
+          description="Màn nhập bài tập theo lô cần nhiều không gian màn hình — vui lòng dùng máy tính để thao tác."
+          style={{ marginTop: 48 }}
+        />
+      ) : (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            style={{ display: 'none' }}
+            onChange={handleFileSelected}
           />
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ marginBottom: 4 }}>Tên đề thi</div>
-            <Input
-              placeholder="Chỉ cần khi Import Đề Thi"
-              value={examName}
-              disabled={!!batch}
-              onChange={(e) => setExamName(e.target.value)}
-            />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <a
-              onClick={() => triggerImport('exercise')}
-              style={{
-                textAlign: 'center',
-                padding: '8px 0',
-                background: uploading ? '#f5f5f5' : '#1677ff',
-                color: uploading ? 'rgba(0,0,0,0.25)' : '#fff',
-                borderRadius: 6,
-                pointerEvents: uploading || batch ? 'none' : undefined,
-              }}
-            >
-              Import Bài Tập
-            </a>
-            <a
-              onClick={() => triggerImport('exam')}
-              style={{
-                textAlign: 'center',
-                padding: '8px 0',
-                border: '1px solid #d9d9d9',
-                borderRadius: 6,
-                pointerEvents: uploading || batch ? 'none' : undefined,
-              }}
-            >
-              Import Đề Thi
-            </a>
-          </div>
-          {batch && (
-            <a
-              style={{ display: 'block', marginTop: 12, textAlign: 'center' }}
-              onClick={reset}
-            >
-              ◀ Quay lại danh sách lô
-            </a>
-          )}
-        </div>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {!batch ? (
-            <Spin spinning={loadingExisting}>
-              <div style={{ marginBottom: 8, color: 'rgba(0,0,0,0.45)' }}>
-                Chọn Import Bài Tập/Import Đề Thi ở bên trái để nhập lô mới,
-                hoặc chọn 1 lô bên dưới để tiếp tục duyệt:
-              </div>
-              <ImportBatchListPanel
-                onSelect={openExistingBatch}
-                refreshKey={batchListRefreshKey}
+          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+            <div style={{ width: 260, flexShrink: 0 }}>
+              <SubjectAndTopicFields
+                subjectId={subjectId}
+                topicId={topicId}
+                disabled={!!batch}
+                onSubjectChange={(v) => {
+                  setSubjectId(v);
+                  setTopicId(undefined);
+                }}
+                onTopicChange={setTopicId}
               />
-            </Spin>
-          ) : (
-            <ImportBatchPanel
-              batch={batch}
-              onRefresh={refreshBatch}
-              onChanged={onChanged}
-            />
-          )}
-        </div>
-      </div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ marginBottom: 4 }}>Tên đề thi</div>
+                <Input
+                  placeholder="Chỉ cần khi Import Đề Thi"
+                  value={examName}
+                  disabled={!!batch}
+                  onChange={(e) => setExamName(e.target.value)}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <a
+                  onClick={() => triggerImport('exercise')}
+                  style={{
+                    textAlign: 'center',
+                    padding: '8px 0',
+                    background: uploading ? '#f5f5f5' : '#1677ff',
+                    color: uploading ? 'rgba(0,0,0,0.25)' : '#fff',
+                    borderRadius: 6,
+                    pointerEvents: uploading || batch ? 'none' : undefined,
+                  }}
+                >
+                  Import Bài Tập
+                </a>
+                <a
+                  onClick={() => triggerImport('exam')}
+                  style={{
+                    textAlign: 'center',
+                    padding: '8px 0',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: 6,
+                    pointerEvents: uploading || batch ? 'none' : undefined,
+                  }}
+                >
+                  Import Đề Thi
+                </a>
+              </div>
+              {batch && (
+                <a
+                  style={{
+                    display: 'block',
+                    marginTop: 12,
+                    textAlign: 'center',
+                  }}
+                  onClick={reset}
+                >
+                  ◀ Quay lại danh sách lô
+                </a>
+              )}
+            </div>
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {!batch ? (
+                <Spin spinning={loadingExisting}>
+                  <div style={{ marginBottom: 8, color: 'rgba(0,0,0,0.45)' }}>
+                    Chọn Import Bài Tập/Import Đề Thi ở bên trái để nhập lô mới,
+                    hoặc chọn 1 lô bên dưới để tiếp tục duyệt:
+                  </div>
+                  <ImportBatchListPanel
+                    onSelect={openExistingBatch}
+                    refreshKey={batchListRefreshKey}
+                  />
+                </Spin>
+              ) : (
+                <ImportBatchPanel
+                  batch={batch}
+                  onRefresh={refreshBatch}
+                  onChanged={onChanged}
+                />
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </Drawer>
   );
 };

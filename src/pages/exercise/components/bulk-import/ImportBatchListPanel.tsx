@@ -135,6 +135,7 @@ const ImportBatchListPanel: React.FC<Props> = ({ onSelect, refreshKey }) => {
             size="small"
             columns={columns}
             dataSource={filtered}
+            scroll={{ x: 'max-content' }}
             pagination={{ pageSize: 10 }}
             onRow={(r) => ({
               onClick: () => onSelect(r.id),

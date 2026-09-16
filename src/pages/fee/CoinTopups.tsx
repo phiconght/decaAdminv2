@@ -187,6 +187,7 @@ const CoinTopups: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         request={async ({ current, pageSize }) =>
           queryCoinTopups({ ...searchParams, current, pageSize })
         }

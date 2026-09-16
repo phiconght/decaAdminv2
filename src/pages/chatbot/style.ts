@@ -26,6 +26,15 @@ export const useStyles = createStyles(({ css, token }) => ({
     background: ${token.colorBgContainer};
   `,
 
+  mobileHeader: css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: ${token.paddingSM}px ${token.paddingMD}px;
+    border-bottom: 1px solid ${token.colorBorderSecondary};
+    flex-shrink: 0;
+  `,
+
   messages: css`
     flex: 1;
     overflow-y: auto;

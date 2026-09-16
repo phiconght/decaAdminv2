@@ -11,6 +11,7 @@ import {
   Statistic,
 } from 'antd';
 import { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import AnalysisCard from './components/AnalysisCard';
 import AttendanceDonut from './components/AttendanceDonut';
 import AttendanceMonthChart from './components/AttendanceMonthChart';
@@ -41,6 +42,7 @@ const StudentReport = () => {
   const [byType, setByType] = useState(false);
   const [detail, setDetail] = useState<ExamReportDetail | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const drawerWidth = useDrawerWidth(640);
 
   useEffect(() => {
     if (!studentId || !classId) return;
@@ -162,17 +164,17 @@ const StudentReport = () => {
           </Col>
           <Col xs={24} lg={12}>
             <ProCard title="Chuyên cần" style={{ height: '100%' }}>
-              <Row gutter={8} style={{ marginBottom: 8 }}>
-                <Col span={8}>
+              <Row gutter={[8, 8]} style={{ marginBottom: 8 }}>
+                <Col xs={24} sm={8}>
                   <Statistic
                     title="Đi học đủ"
                     value={pct(att.attendanceRate)}
                   />
                 </Col>
-                <Col span={8}>
+                <Col xs={24} sm={8}>
                   <Statistic title="Đúng giờ" value={pct(att.onTimeRate)} />
                 </Col>
-                <Col span={8}>
+                <Col xs={24} sm={8}>
                   <Statistic title="Số buổi" value={att.totalSessions} />
                 </Col>
               </Row>
@@ -193,7 +195,7 @@ const StudentReport = () => {
         title={detail ? `Chi tiết: ${detail.examName}` : 'Chi tiết bài thi'}
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
-        width={640}
+        width={drawerWidth}
       >
         {!detail ? (
           <Spin />

@@ -342,7 +342,7 @@ const LeavePage: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
-        scroll={{ x: 1100 }}
+        scroll={{ x: 'max-content' }}
         toolBarRender={() =>
           canWrite
             ? [

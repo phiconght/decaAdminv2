@@ -16,6 +16,7 @@ import {
   ExerciseTrueFalseView as TrueFalseView,
   EXERCISE_TYPE_LABEL as TYPE_LABEL,
 } from '@/components';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ExerciseDetailView } from '../data';
 import { getExerciseDetail } from '../service';
 
@@ -33,6 +34,7 @@ const ViewExerciseDrawer: React.FC<ViewExerciseDrawerProps> = ({
   const [detail, setDetail] = useState<ExerciseDetailView | null>(null);
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth('66vw');
 
   useEffect(() => {
     if (!open || id === null) {
@@ -87,7 +89,7 @@ const ViewExerciseDrawer: React.FC<ViewExerciseDrawerProps> = ({
       {contextHolder}
       <Drawer
         title="Xem bài tập"
-        width="66vw"
+        width={drawerWidth}
         open={open}
         onClose={onClose}
         destroyOnClose

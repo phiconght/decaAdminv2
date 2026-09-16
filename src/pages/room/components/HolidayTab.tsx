@@ -173,6 +173,7 @@ const HolidayTab: React.FC = () => {
           loading={loading}
           dataSource={filtered}
           columns={columns}
+          scroll={{ x: 'max-content' }}
           pagination={{ pageSize: 20, showSizeChanger: false }}
           locale={{ emptyText: 'Không có ngày nghỉ trong khoảng' }}
         />

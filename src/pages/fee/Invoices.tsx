@@ -253,6 +253,7 @@ const Invoices: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         rowSelection={
           access.canWriteFee
             ? {

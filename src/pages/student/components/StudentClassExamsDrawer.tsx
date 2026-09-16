@@ -12,6 +12,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { StudentExamItem, StudentExamStatus } from '../data';
 import { queryStudentClassExams, updateStudentExamStatus } from '../service';
 
@@ -44,6 +45,7 @@ const StudentClassExamsDrawer: React.FC<Props> = ({
   open,
   onClose,
 }) => {
+  const drawerWidth = useDrawerWidth('66vw');
   const [exams, setExams] = useState<StudentExamItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -196,7 +198,7 @@ const StudentClassExamsDrawer: React.FC<Props> = ({
   return (
     <Drawer
       title={`Đề thi — ${studentName ?? ''}${className ? ` · ${className}` : ''}`}
-      width="66vw"
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnClose

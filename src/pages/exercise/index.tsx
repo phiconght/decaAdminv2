@@ -277,6 +277,7 @@ const ExercisePage: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         toolBarRender={() => [
           <CreateExerciseForm key="create" onSuccess={() => reload()} />,
           <Badge

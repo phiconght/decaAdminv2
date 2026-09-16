@@ -115,6 +115,7 @@ const Coins: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         request={async ({ current, pageSize }) => {
           const res = await queryUserOptions('STUDENT', searchParams.keyword);
           const all = res.data ?? [];

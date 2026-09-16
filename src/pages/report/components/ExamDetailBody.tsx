@@ -146,8 +146,8 @@ const ExamDetailBody = ({
       <ExamAnalysisCard analysis={analysis} />
 
       {/* Tầng ĐIỂM — theo bài thi */}
-      <Row gutter={16} style={{ marginBottom: 16 }}>
-        <Col span={8}>
+      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Col xs={24} sm={8}>
           <Statistic
             title="Điểm"
             value={detail.score ?? 0}
@@ -155,14 +155,14 @@ const ExamDetailBody = ({
             suffix={detail.maxScore != null ? `/ ${detail.maxScore}` : ''}
           />
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={8}>
           <Statistic
             title="TB lớp"
             value={detail.classAverage ?? 0}
             precision={2}
           />
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={8}>
           <Statistic
             title="Xếp hạng"
             value={

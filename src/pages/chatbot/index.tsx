@@ -1,4 +1,4 @@
-import { UserOutlined } from '@ant-design/icons';
+import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { Bubble, Conversations, Sender, Think, XProvider } from '@ant-design/x';
 import type {
@@ -7,7 +7,7 @@ import type {
 } from '@ant-design/x/es/bubble/interface';
 import XMarkdown from '@ant-design/x-markdown';
 import { useXChat } from '@ant-design/x-sdk';
-import { Avatar, Card } from 'antd';
+import { Avatar, Button, Card, Drawer } from 'antd';
 import React, {
   useCallback,
   useEffect,
@@ -16,6 +16,7 @@ import React, {
   useState,
 } from 'react';
 
+import { useIsMobile } from '@/hooks/useResponsiveWidth';
 import type { ConversationItem, ParsedMessage } from './data';
 import { createChatProvider } from './service';
 import { useStyles } from './style';
@@ -115,6 +116,8 @@ const roleConfig: BubbleListProps['role'] = {
 
 const ChatbotPage: React.FC = () => {
   const { styles } = useStyles();
+  const isMobile = useIsMobile();
+  const [navOpen, setNavOpen] = useState(false);
   const idCounter = useRef(0);
   const generateId = useCallback(() => `conv-${++idCounter.current}`, []);
 
@@ -230,6 +233,48 @@ const ChatbotPage: React.FC = () => {
 
   const hasMessages = parsedMessages.length > 0;
 
+  const conversationsList = (
+    <Conversations
+      items={conversations}
+      activeKey={activeKey}
+      onActiveChange={(key) => {
+        setActiveKey(key);
+        setNavOpen(false);
+      }}
+      groupable
+      menu={(conversation) => ({
+        items: [{ key: 'delete', label: 'Xóa', danger: true }],
+        onClick: ({ key }) => {
+          if (key === 'delete') {
+            setConversations((prev) => {
+              const next = prev.filter((c) => c.key !== conversation.key);
+              if (next.length === 0) {
+                const key = generateId();
+                next.push({
+                  key,
+                  label: '💬 Cuộc hội thoại mới',
+                  group: 'Hôm nay',
+                  isDraft: true,
+                });
+                setActiveKey(key);
+              } else if (activeKey === conversation.key) {
+                setActiveKey(next[0]?.key ?? '');
+              }
+              return next;
+            });
+          }
+        },
+      })}
+      creation={{
+        onClick: () => {
+          newChat();
+          setNavOpen(false);
+        },
+        label: 'Tạo cuộc hội thoại mới',
+      }}
+    />
+  );
+
   return (
     <PageContainer
       ghost
@@ -261,42 +306,21 @@ const ChatbotPage: React.FC = () => {
       >
         <XProvider>
           <div className={styles.layout}>
-            <div className={styles.sidebar}>
-              <Conversations
-                items={conversations}
-                activeKey={activeKey}
-                onActiveChange={setActiveKey}
-                groupable
-                menu={(conversation) => ({
-                  items: [{ key: 'delete', label: 'Xóa', danger: true }],
-                  onClick: ({ key }) => {
-                    if (key === 'delete') {
-                      setConversations((prev) => {
-                        const next = prev.filter(
-                          (c) => c.key !== conversation.key,
-                        );
-                        if (next.length === 0) {
-                          const key = generateId();
-                          next.push({
-                            key,
-                            label: '💬 Cuộc hội thoại mới',
-                            group: 'Hôm nay',
-                            isDraft: true,
-                          });
-                          setActiveKey(key);
-                        } else if (activeKey === conversation.key) {
-                          setActiveKey(next[0]?.key ?? '');
-                        }
-                        return next;
-                      });
-                    }
-                  },
-                })}
-                creation={{ onClick: newChat, label: 'Tạo cuộc hội thoại mới' }}
-              />
-            </div>
+            {!isMobile && (
+              <div className={styles.sidebar}>{conversationsList}</div>
+            )}
 
             <div className={styles.main}>
+              {isMobile && (
+                <div className={styles.mobileHeader}>
+                  <Button
+                    icon={<MenuOutlined />}
+                    onClick={() => setNavOpen(true)}
+                  >
+                    Cuộc hội thoại
+                  </Button>
+                </div>
+              )}
               {hasMessages && (
                 <div className={styles.messages}>
                   <Bubble.List
@@ -329,6 +353,19 @@ const ChatbotPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            {isMobile && (
+              <Drawer
+                title="Cuộc hội thoại"
+                placement="left"
+                open={navOpen}
+                onClose={() => setNavOpen(false)}
+                width="80%"
+                styles={{ body: { padding: 0 } }}
+              >
+                {conversationsList}
+              </Drawer>
+            )}
           </div>
         </XProvider>
       </Card>

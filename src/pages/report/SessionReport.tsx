@@ -2,6 +2,7 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { history, useParams } from '@umijs/max';
 import { Descriptions, Drawer, Segmented, Spin } from 'antd';
 import { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import BreakdownChart from './components/BreakdownChart';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from './components/colors';
 import ExamDetailBody from './components/ExamDetailBody';
@@ -54,6 +55,7 @@ const SessionReport = () => {
   const [topics, setTopics] = useState<TopicMasteryItem[]>([]);
   const [detail, setDetail] = useState<ExamReportDetail | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const drawerWidth = useDrawerWidth(640);
 
   useEffect(() => {
     if (!classId || !sessionId) return;
@@ -203,7 +205,7 @@ const SessionReport = () => {
           title={detail ? `Chi tiết: ${detail.examName}` : 'Chi tiết bài thi'}
           open={detailOpen}
           onClose={() => setDetailOpen(false)}
-          width={640}
+          width={drawerWidth}
         >
           {!detail ? (
             <Spin />

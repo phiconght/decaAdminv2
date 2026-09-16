@@ -54,6 +54,7 @@
   'menu.parent': 'Phụ Huynh',
   'menu.exercise': 'Bài Tập',
   'menu.class': 'Khóa Học',
+  'menu.enrollment-requests': 'Yêu Cầu Đăng Ký',
   'menu.report': 'Báo Cáo',
   'menu.exam': 'Đề Thi',
   'menu.exam.new': 'Tạo Đề Thi',
@@ -72,4 +73,5 @@
   'menu.exam-confirmation': 'Xác Nhận Bài Thi',
   'menu.system': 'Hệ Thống',
   'menu.system.user': 'Tài khoản',
+  'menu.system.app-settings': 'Cấu Hình Chung',
 };

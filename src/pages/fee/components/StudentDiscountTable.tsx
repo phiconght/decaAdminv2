@@ -80,6 +80,7 @@ const StudentDiscountTable: React.FC<Props> = ({
       loading={loading}
       dataSource={data}
       columns={columns}
+      scroll={{ x: 'max-content' }}
       pagination={{ pageSize: 15, showSizeChanger: false }}
       locale={{ emptyText: 'Khóa chưa có học viên' }}
     />

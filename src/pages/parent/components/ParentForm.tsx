@@ -2,6 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { DrawerForm, ProFormText } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type {
   CreateUserPayload,
   UpdateUserPayload,
@@ -37,6 +38,7 @@ const ParentForm: React.FC<Props> = ({
   onOpenChange,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(520);
   const isEdit = mode === 'edit';
 
   const initialValues: Partial<FormValues> =
@@ -87,7 +89,7 @@ const ParentForm: React.FC<Props> = ({
       {contextHolder}
       <DrawerForm<FormValues>
         title={isEdit ? 'Sửa phụ huynh' : 'Tạo phụ huynh'}
-        width={520}
+        width={drawerWidth}
         trigger={
           isEdit ? undefined : (
             <Button type="primary" icon={<PlusOutlined />}>

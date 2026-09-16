@@ -2,6 +2,7 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { history, useParams } from '@umijs/max';
 import { Col, Descriptions, Drawer, Row, Segmented, Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import AttendanceDonut from './components/AttendanceDonut';
 import AttendanceMonthChart from './components/AttendanceMonthChart';
 import BreakdownChart from './components/BreakdownChart';
@@ -70,6 +71,7 @@ const ChapterReport = () => {
   const [topics, setTopics] = useState<TopicMasteryItem[]>([]);
   const [detail, setDetail] = useState<ExamReportDetail | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const drawerWidth = useDrawerWidth(640);
 
   useEffect(() => {
     if (!classId || !topicId) return;
@@ -269,7 +271,7 @@ const ChapterReport = () => {
           title={detail ? `Chi tiết: ${detail.examName}` : 'Chi tiết bài thi'}
           open={detailOpen}
           onClose={() => setDetailOpen(false)}
-          width={640}
+          width={drawerWidth}
         >
           {!detail ? (
             <Spin />

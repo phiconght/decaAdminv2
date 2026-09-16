@@ -126,6 +126,7 @@ const ExercisePickerModal: React.FC<Props> = ({
       search={false}
       options={{ reload: true, density: false, setting: false }}
       size="small"
+      scroll={{ x: 'max-content' }}
       pagination={{ pageSize: 8, showSizeChanger: false }}
       params={{ subjectId, topicId, status }}
       toolbar={{

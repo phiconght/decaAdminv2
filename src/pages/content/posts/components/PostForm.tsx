@@ -11,6 +11,7 @@ import { XMarkdown } from '@ant-design/x-markdown';
 import { Button, Image, message, Space, Upload } from 'antd';
 import type { UploadRequestOption } from 'rc-upload/lib/interface';
 import React, { useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import { uploadFile } from '@/services/file';
 import type { PostDetail, PostForm as PostFormValues } from '../data';
 import { createPost, getPost, updatePost } from '../service';
@@ -79,6 +80,7 @@ const PostForm: React.FC<Props> = ({
   onSuccess,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(760);
   const isEdit = mode === 'edit';
 
   const loadInitial = async (): Promise<PostFormValues> => {
@@ -113,7 +115,7 @@ const PostForm: React.FC<Props> = ({
       {contextHolder}
       <DrawerForm<PostFormValues>
         title={isEdit ? 'Sửa bài viết' : 'Viết bài mới'}
-        width={760}
+        width={drawerWidth}
         trigger={
           isEdit ? undefined : (
             <Button type="primary" icon={<PlusOutlined />}>

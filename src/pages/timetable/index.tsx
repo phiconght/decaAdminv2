@@ -4,6 +4,7 @@ import { Alert, Button, Empty, Spin } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useIsMobile } from '@/hooks/useResponsiveWidth';
 import ControlBar from './components/ControlBar';
 import SessionDrawer from './components/SessionDrawer';
 import WeekGrid from './components/WeekGrid';
@@ -71,8 +72,17 @@ const TimetablePage: React.FC = () => {
   // refId bị khóa khi currentUser là TEACHER tự-xem / HV / PH (không phải admin).
   const refLocked = cfg.lockedRefId != null;
 
+  const isMobile = useIsMobile();
   const [view, setView] = useState<TimetableView>(cfg.defaultView);
   const [mode, setMode] = useState<CalendarMode>('WEEK');
+  // Lưới tuần quá chật trên điện thoại — tự chuyển sang xem theo Ngày ngay khi phát
+  // hiện là điện thoại (useIsMobile chỉ có giá trị đúng ở lần render sau khi mount,
+  // không dùng được trực tiếp trong useState initializer). Sau lần tự-chuyển này,
+  // người dùng vẫn có thể bấm lại "Tuần" bất cứ lúc nào — effect chỉ chạy lại nếu
+  // isMobile thực sự đổi giá trị.
+  useEffect(() => {
+    if (isMobile) setMode('DAY');
+  }, [isMobile]);
   const [anchorDate, setAnchorDate] = useState<Dayjs>(dayjs());
   // refId khóa được prefill ngay (TEACHER/HV/PH tự xem); view mặc định không phải ROOM.
   const [refId, setRefId] = useState<number | undefined>(

@@ -2,6 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { DrawerForm, ProFormText } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { CreateUserPayload, UserStatus } from '../data';
 import { createStudent } from '../service';
 
@@ -21,6 +22,7 @@ type FormValues = {
 // Tạo học viên (vai trò STUDENT cố định).
 const StudentForm: React.FC<Props> = ({ onSuccess }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(520);
 
   const handleFinish = async (values: FormValues) => {
     if (!values.username || !values.password) return false;
@@ -48,7 +50,7 @@ const StudentForm: React.FC<Props> = ({ onSuccess }) => {
       {contextHolder}
       <DrawerForm<FormValues>
         title="Tạo học viên"
-        width={520}
+        width={drawerWidth}
         trigger={
           <Button type="primary" icon={<PlusOutlined />}>
             Tạo học viên

@@ -2,6 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Drawer, Input, message, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ClassItem } from '@/pages/class/data';
 import { queryStudentClasses } from '../service';
 import StudentClassExamsDrawer from './StudentClassExamsDrawer';
@@ -21,6 +22,7 @@ const StudentClassesDrawer: React.FC<Props> = ({ studentId, studentName }) => {
     classId: number;
     className: string;
   } | null>(null);
+  const drawerWidth = useDrawerWidth(680);
 
   const fetchClasses = async () => {
     setLoading(true);
@@ -98,7 +100,7 @@ const StudentClassesDrawer: React.FC<Props> = ({ studentId, studentName }) => {
 
       <Drawer
         title={`Khóa học của ${studentName}`}
-        width={680}
+        width={drawerWidth}
         open={open}
         onClose={() => setOpen(false)}
         destroyOnClose

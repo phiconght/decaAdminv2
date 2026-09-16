@@ -298,6 +298,7 @@ const TeacherPage: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         toolBarRender={() => [
           <TeacherForm
             key="create"

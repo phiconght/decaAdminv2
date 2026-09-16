@@ -310,6 +310,7 @@ const ClassPage: React.FC = () => {
         rowKey="id"
         search={false}
         options={false}
+        scroll={{ x: 'max-content' }}
         toolBarRender={() => [
           <ClassForm
             key="create"

@@ -15,6 +15,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { GuardianRelationship, RelativeItem } from '@/pages/student/data';
 import TimetableDrawer from '@/pages/timetable/components/TimetableDrawer';
 import { queryUserOptions } from '@/pages/timetable/service';
@@ -76,6 +77,7 @@ const ParentInfoDrawer: React.FC<Props> = ({
   const access = useAccess();
   const canWrite = access.canWriteUser;
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(560);
 
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -289,6 +291,7 @@ const ParentInfoDrawer: React.FC<Props> = ({
       {contextHolder}
       <Drawer
         title={`Thông tin — ${parentName ?? ''}`}
+        width={drawerWidth}
         open={open}
         onClose={onClose}
         destroyOnHidden
@@ -436,6 +439,7 @@ const ParentInfoDrawer: React.FC<Props> = ({
           loading={childrenLoading}
           dataSource={children}
           columns={childColumns}
+          scroll={{ x: 'max-content' }}
           pagination={false}
           locale={{ emptyText: 'Phụ huynh chưa liên kết học viên nào' }}
         />
@@ -464,6 +468,7 @@ const ParentInfoDrawer: React.FC<Props> = ({
       {/* Thông tin user của con */}
       <Drawer
         title={`Thông tin học viên — ${childInfo?.fullName || childInfo?.username || ''}`}
+        width={drawerWidth}
         open={childInfo !== null}
         onClose={() => setChildInfo(null)}
         destroyOnHidden

@@ -1,6 +1,7 @@
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Drawer, Empty, message, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ClassItem } from '../data';
 import { getClassDetail } from '../service';
 
@@ -18,6 +19,7 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
   const [detail, setDetail] = useState<ClassItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(520);
 
   useEffect(() => {
     if (!open || id === null) {
@@ -134,7 +136,7 @@ const ViewClassDrawer: React.FC<ViewClassDrawerProps> = ({
       {contextHolder}
       <Drawer
         title="Xem khóa học"
-        width="520px"
+        width={drawerWidth}
         open={open}
         onClose={onClose}
         destroyOnClose

@@ -3,6 +3,7 @@ import { useAccess } from '@umijs/max';
 import { Alert, Button, Descriptions, Drawer, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { SessionStatus, TimetableItem } from '../data';
 import { getCancelReason } from '../service';
 import AttendanceTable from './AttendanceTable';
@@ -35,6 +36,7 @@ const hhmm = (t: string): string => t.slice(0, 5);
 
 const SessionDrawer: React.FC<Props> = ({ item, open, onClose }) => {
   const access = useAccess();
+  const drawerWidth = useDrawerWidth(560);
   const canRead = access.canReadClass;
   const canWrite = access.canWriteClass;
   const [showAttendance, setShowAttendance] = useState(false);
@@ -54,7 +56,14 @@ const SessionDrawer: React.FC<Props> = ({ item, open, onClose }) => {
   }, [item?.sessionId]);
 
   if (!item) {
-    return <Drawer title="Chi tiết buổi học" open={open} onClose={onClose} />;
+    return (
+      <Drawer
+        title="Chi tiết buổi học"
+        width={drawerWidth}
+        open={open}
+        onClose={onClose}
+      />
+    );
   }
 
   const cancelled = item.status === 'CANCELLED';
@@ -68,6 +77,7 @@ const SessionDrawer: React.FC<Props> = ({ item, open, onClose }) => {
   return (
     <Drawer
       title={title}
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnHidden

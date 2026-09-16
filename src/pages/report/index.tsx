@@ -78,6 +78,7 @@ const ReportHub = () => {
         loading={loading}
         dataSource={filtered}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         pagination={{ pageSize: 10 }}
       />
     </PageContainer>

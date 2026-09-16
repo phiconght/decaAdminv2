@@ -320,6 +320,7 @@ const ClassReport = () => {
             dataSource={students}
             columns={columns}
             pagination={{ pageSize: 20 }}
+            scroll={{ x: 'max-content' }}
           />
         </ProCard>
       </ProCard>

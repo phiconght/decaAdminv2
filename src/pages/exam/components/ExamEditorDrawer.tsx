@@ -1,5 +1,6 @@
 import { Drawer } from 'antd';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import ExamEditor from '../Editor';
 import ExportPdfDropdown from './ExportPdfDropdown';
 
@@ -16,25 +17,30 @@ const ExamEditorDrawer: React.FC<Props> = ({
   open,
   onClose,
   onSaved,
-}) => (
-  <Drawer
-    title={examId ? 'Sửa đề thi' : 'Tạo đề thi'}
-    open={open}
-    onClose={onClose}
-    destroyOnClose
-    extra={
-      examId ? <ExportPdfDropdown examId={examId} mode="button" /> : undefined
-    }
-  >
-    {open && (
-      <ExamEditor
-        embedded
-        id={examId ?? undefined}
-        onClose={onClose}
-        onSaved={onSaved}
-      />
-    )}
-  </Drawer>
-);
+}) => {
+  const drawerWidth = useDrawerWidth('90vw');
+
+  return (
+    <Drawer
+      title={examId ? 'Sửa đề thi' : 'Tạo đề thi'}
+      width={drawerWidth}
+      open={open}
+      onClose={onClose}
+      destroyOnClose
+      extra={
+        examId ? <ExportPdfDropdown examId={examId} mode="button" /> : undefined
+      }
+    >
+      {open && (
+        <ExamEditor
+          embedded
+          id={examId ?? undefined}
+          onClose={onClose}
+          onSaved={onSaved}
+        />
+      )}
+    </Drawer>
+  );
+};
 
 export default ExamEditorDrawer;

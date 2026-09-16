@@ -3,6 +3,7 @@ import { ProTable } from '@ant-design/pro-components';
 import { Drawer } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { CoinTransactionItem } from '../data';
 import { getCoinTransactions } from '../service';
 
@@ -16,6 +17,7 @@ const fmtCoin = (v: number) => new Intl.NumberFormat('vi-VN').format(v);
 
 // Drawer "Lịch sử Xu" (2/3 màn): thời gian · +/− Xu · số dư sau · lý do · người thao tác.
 const CoinHistoryDrawer: React.FC<Props> = ({ student, open, onClose }) => {
+  const drawerWidth = useDrawerWidth('66vw');
   const columns: ProColumns<CoinTransactionItem>[] = [
     {
       title: 'Thời gian',
@@ -48,7 +50,7 @@ const CoinHistoryDrawer: React.FC<Props> = ({ student, open, onClose }) => {
   return (
     <Drawer
       title={student ? `Lịch sử Xu — ${student.fullName}` : 'Lịch sử Xu'}
-      width="66vw"
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnClose
@@ -59,6 +61,7 @@ const CoinHistoryDrawer: React.FC<Props> = ({ student, open, onClose }) => {
           search={false}
           options={false}
           columns={columns}
+          scroll={{ x: 'max-content' }}
           request={async ({ current, pageSize }) =>
             getCoinTransactions(student.id, { current, pageSize })
           }

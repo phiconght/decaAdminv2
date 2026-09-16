@@ -99,6 +99,7 @@ const SessionPriceTable: React.FC<Props> = ({ data, loading, onChanged }) => {
       loading={loading}
       dataSource={data}
       columns={columns}
+      scroll={{ x: 'max-content' }}
       pagination={{ pageSize: 15, showSizeChanger: false }}
       locale={{ emptyText: 'Chưa có buổi học trong khoảng' }}
     />

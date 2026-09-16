@@ -10,8 +10,10 @@ import { request } from '@umijs/max';
 import { Button, message } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ClassDetail, ClassItem } from '../data';
 import { createClass, updateClass } from '../service';
+import ClassContentModal from './ClassContentModal';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -32,6 +34,8 @@ const ClassForm: React.FC<Props> = ({
   onSuccess,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [contentOpen, setContentOpen] = React.useState(false);
+  const drawerWidth = useDrawerWidth(520);
   const isEdit = mode === 'edit';
 
   const initialValues: Partial<ClassDetail> =
@@ -49,6 +53,7 @@ const ClassForm: React.FC<Props> = ({
           status: editData.status,
           pricePerSession: editData.pricePerSession,
           coinPrice: editData.coinPrice,
+          fullPrice: editData.fullPrice,
           paymentType: editData.paymentType ?? 'PREPAID_COIN',
           deliveryMode: editData.deliveryMode ?? 'OFFLINE',
         }
@@ -73,9 +78,17 @@ const ClassForm: React.FC<Props> = ({
   return (
     <>
       {contextHolder}
+      {isEdit && editData && (
+        <ClassContentModal
+          classId={Number(editData.id)}
+          className={editData.name}
+          open={contentOpen}
+          onOpenChange={setContentOpen}
+        />
+      )}
       <DrawerForm<ClassDetail>
         title={isEdit ? 'Sửa khóa' : 'Tạo khóa'}
-        width="520px"
+        width={drawerWidth}
         // Sửa: controlled (mở từ ngoài, không có nút trigger)
         trigger={
           isEdit ? undefined : (
@@ -88,7 +101,12 @@ const ClassForm: React.FC<Props> = ({
         onOpenChange={onOpenChange}
         key={editData?.id ?? 'create'}
         initialValues={initialValues}
-        drawerProps={{ destroyOnHidden: true }}
+        drawerProps={{
+          destroyOnHidden: true,
+          extra: isEdit && editData && (
+            <Button onClick={() => setContentOpen(true)}>Nội dung</Button>
+          ),
+        }}
         dateFormatter={(value) => value.format('YYYY-MM-DD')}
         onFinish={handleFinish}
       >
@@ -205,6 +223,14 @@ const ClassForm: React.FC<Props> = ({
           min={0}
           fieldProps={{ precision: 0, step: 1000 }}
           placeholder="Bỏ trống nếu không mở bán qua Xu"
+        />
+        <ProFormDigit
+          name="fullPrice"
+          label="Giá trọn gói (đăng ký chuyển khoản)"
+          tooltip="Học viên chưa ghi danh bấm 'Đăng ký' ở Card/trang chi tiết khóa học sẽ thấy giá này (kèm mã QR chuyển khoản nếu khóa online). Bỏ trống = ẩn nút Đăng ký + QR, chỉ còn hotline."
+          min={0}
+          fieldProps={{ precision: 0, step: 100000 }}
+          placeholder="Bỏ trống nếu chưa mở đăng ký chuyển khoản"
         />
       </DrawerForm>
     </>

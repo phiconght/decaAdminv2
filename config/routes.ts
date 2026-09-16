@@ -313,6 +313,13 @@ export default [
     component: './class',
   },
   {
+    path: '/enrollment-requests',
+    name: 'enrollment-requests',
+    icon: 'solution',
+    access: 'canWriteClass',
+    component: './enrollmentRequests',
+  },
+  {
     path: '/exam',
     name: 'exam',
     icon: 'fileText',
@@ -498,6 +505,12 @@ export default [
         name: 'user',
         icon: 'team',
         component: './system/user',
+      },
+      {
+        path: '/system/settings',
+        name: 'app-settings',
+        icon: 'phone',
+        component: './system/settings',
       },
     ],
   },

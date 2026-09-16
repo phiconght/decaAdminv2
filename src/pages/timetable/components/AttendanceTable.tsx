@@ -154,6 +154,7 @@ const AttendanceTable: React.FC<Props> = ({ sessionId, canEdit }) => {
       loading={loading}
       dataSource={rows}
       columns={columns}
+      scroll={{ x: 'max-content' }}
       pagination={false}
       locale={{ emptyText: 'Chưa có học viên trong buổi này' }}
     />

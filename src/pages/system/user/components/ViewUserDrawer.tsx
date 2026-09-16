@@ -1,6 +1,7 @@
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Drawer, Empty, message, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { UserDetail } from '../data';
 import { getUserDetail } from '../service';
 
@@ -29,6 +30,7 @@ const ViewUserDrawer: React.FC<Props> = ({ id, open, onClose }) => {
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(560);
 
   useEffect(() => {
     if (!open || id === null) {
@@ -106,7 +108,7 @@ const ViewUserDrawer: React.FC<Props> = ({ id, open, onClose }) => {
       {contextHolder}
       <Drawer
         title="Thông tin người dùng"
-        width={560}
+        width={drawerWidth}
         open={open}
         onClose={onClose}
         destroyOnHidden

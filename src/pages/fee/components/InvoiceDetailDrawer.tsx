@@ -11,6 +11,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { InvoiceDetail, InvoiceLineItem } from '../data';
 import { getInvoiceDetail } from '../service';
 import { formatVnd, INVOICE_STATUS_META } from '../utils';
@@ -27,6 +28,7 @@ const fmt = (v?: string | null) =>
 const InvoiceDetailDrawer: React.FC<Props> = ({ invoiceId, open, onClose }) => {
   const [detail, setDetail] = useState<InvoiceDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const drawerWidth = useDrawerWidth('66vw');
 
   useEffect(() => {
     if (!open || !invoiceId) return;
@@ -80,7 +82,7 @@ const InvoiceDetailDrawer: React.FC<Props> = ({ invoiceId, open, onClose }) => {
   return (
     <Drawer
       title="Chi tiết đợt thu"
-      width="66vw"
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnClose

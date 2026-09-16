@@ -12,6 +12,7 @@ import { request } from '@umijs/max';
 import { Button, Divider, Form, message, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { MathMarkdownEditor } from '@/components';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type {
   ChoiceOption,
   ExerciseDetail,
@@ -109,6 +110,7 @@ const CreateExerciseForm: React.FC<Props> = ({
   // Controlled if parent supplies open state (edit mode or create-from-exam)
   const isControlled = isEdit || open !== undefined;
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const drawerWidth = useDrawerWidth('66vw');
 
   const drawerTitle = readOnly
     ? 'Xem bài tập'
@@ -193,7 +195,7 @@ const CreateExerciseForm: React.FC<Props> = ({
       {contextHolder}
       <DrawerForm<ExerciseDetail>
         title={drawerTitle}
-        width="66vw"
+        width={drawerWidth}
         formRef={formRef}
         trigger={
           isControlled ? undefined : (

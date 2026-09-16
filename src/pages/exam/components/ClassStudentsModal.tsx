@@ -80,6 +80,7 @@ const ClassStudentsModal: React.FC<Props> = ({
         loading={loading}
         dataSource={filtered}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         pagination={{ pageSize: 10, showSizeChanger: false }}
         locale={{ emptyText: 'Khóa chưa có học sinh' }}
       />

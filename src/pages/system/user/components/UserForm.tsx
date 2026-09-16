@@ -6,6 +6,7 @@ import {
 } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type {
   CreateUserPayload,
   UpdateUserPayload,
@@ -57,6 +58,7 @@ const UserForm: React.FC<Props> = ({
   onOpenChange,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const drawerWidth = useDrawerWidth(520);
   const isEdit = mode === 'edit';
 
   const initialValues: Partial<FormValues> =
@@ -108,7 +110,7 @@ const UserForm: React.FC<Props> = ({
       {contextHolder}
       <DrawerForm<FormValues>
         title={isEdit ? 'Sửa người dùng' : 'Tạo tài khoản'}
-        width={520}
+        width={drawerWidth}
         trigger={
           // Edit là controlled (open/onOpenChange) nên không render nút trigger
           isEdit

@@ -1,6 +1,7 @@
 import { Button, Drawer, message, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
+import { useDrawerWidth } from '@/hooks/useResponsiveWidth';
 import type { ExamClassItem } from '../data';
 import { queryExamClasses } from '../service';
 import ClassStudentsModal from './ClassStudentsModal';
@@ -18,6 +19,7 @@ const ExamClassesDrawer: React.FC<Props> = ({
   open,
   onClose,
 }) => {
+  const drawerWidth = useDrawerWidth(560);
   const [classes, setClasses] = useState<ExamClassItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [studentsFor, setStudentsFor] = useState<{
@@ -72,6 +74,7 @@ const ExamClassesDrawer: React.FC<Props> = ({
   return (
     <Drawer
       title={`Khóa học của đề${examName ? ` — ${examName}` : ''}`}
+      width={drawerWidth}
       open={open}
       onClose={onClose}
       destroyOnClose
